@@ -5,14 +5,26 @@ interface Props {
 const { title } = Astro.props;
 import "../styles/global.css";
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&family=Special+Elite&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-zinc-950 text-zinc-100 overflow-x-hidden">
+  <body
+    class="min-h-screen"
+    style="
+  background-color: #f5f0e1;
+  background-image: repeating-linear-gradient(
+    transparent, transparent 31px,
+    #c9b8a0 31px, #c9b8a0 32px
+  );
+  background-size: 100% 32px;
+"
+  >
     <slot />
   </body>
 </html>
