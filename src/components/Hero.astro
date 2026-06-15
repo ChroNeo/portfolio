@@ -1,0 +1,22 @@
+---
+// Hero.astro
+---
+<section id="hero" class="min-h-screen flex flex-col justify-center px-8">
+  <h1 class="hero-title text-6xl font-bold opacity-0 ">
+    Hi, I'm ChroNeo
+  </h1>
+  <p class="hero-sub text-zinc-400 text-xl mt-4 opacity-0">
+    Fullstack Developer & IT Engineer
+  </p>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+
+  // รัน animation หลัง DOM พร้อม
+  document.addEventListener("DOMContentLoaded", () => {
+    gsap.timeline()
+      .to(".hero-title", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" })
+      .to(".hero-sub",   { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4");
+  });
+</script>

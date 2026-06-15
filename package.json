@@ -1,5 +1,5 @@
 {
-  "name": "better-belt",
+  "name": "portfolio",
   "type": "module",
   "version": "0.0.1",
   "engines": {
@@ -12,6 +12,9 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^6.4.6"
+    "@tailwindcss/vite": "^4.3.1",
+    "astro": "^6.4.6",
+    "gsap": "^3.15.0",
+    "tailwindcss": "^4.3.1"
   }
 }
