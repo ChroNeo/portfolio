@@ -1,0 +1,44 @@
+---
+const socials = [
+  { label: "Email", href: "mailto:you@example.com" },
+  { label: "LinkedIn", href: "https://linkedin.com/in/yourprofile" },
+  { label: "GitHub", href: "https://github.com/yourprofile" },
+];
+---
+
+<section id="contact" class="paper-bg px-8 py-20">
+  <p class="stamp text-xs text-amber-700/70 mb-4">SECTION 04 — CONTACT</p>
+
+  <div class="relative">
+    <div class="tape -top-2 left-[30%] -rotate-3"></div>
+    <div class="tape -top-2 left-[70%] rotate-3"></div>
+
+    <div
+      class="bg-amber-50/80 border border-dashed border-amber-300 shadow-sm rotate-[0.5deg] p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4"
+    >
+      <div>
+        <h2 class="font-caveat text-2xl font-semibold text-stone-800 mb-1">
+          Let's talk
+        </h2>
+        <p class="text-stone-600 text-base">
+          Open to junior dev &amp; IT roles
+        </p>
+      </div>
+
+      <div class="flex gap-2 flex-wrap">
+        {
+          socials.map((social, i) => (
+            <a
+              href={social.href}
+              class={`bg-white border border-amber-200 px-3 py-1.5 rounded text-sm text-stone-700 inline-block hover:bg-amber-50 transition-colors ${
+                i % 2 === 0 ? "-rotate-1" : "rotate-1"
+              }`}
+            >
+              {social.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,22 +1,52 @@
 ---
 // Hero.astro
 ---
-<section id="hero" class="min-h-screen flex flex-col justify-center px-8">
-  <h1 class="hero-title text-6xl font-bold opacity-0 ">
-    Hi, I'm ChroNeo
-  </h1>
-  <p class="hero-sub text-zinc-400 text-xl mt-4 opacity-0">
-    Fullstack Developer & IT Engineer
-  </p>
+
+<section id="hero" class="min-h-screen flex flex-row justify-center px-8">
+  <div class="flex flex-col justify-center">
+    <h1 class="hero-title text-6xl font-bold opacity-0">Hi, I'm ChroNeo</h1>
+    <p class="hero-sub text-zinc-400 text-xl mt-4 opacity-0">
+      Fullstack Developer & IT Engineer
+    </p>
+  </div>
+  <div
+    class="hero-img flex items-center justify-center ml-10 opacity-0 transform translate-y-10 drop-shadow-lg transition-transform duration-300 hover:translate-y-0"
+  >
+    <div class="cut-1 overflow-hidden w-64">
+      <img
+        src="/src/assets/hero.png"
+        alt="Hero Image"
+        class="w-full h-full object-cover"
+      />
+    </div>
+  </div>
 </section>
 
 <script>
   import { gsap } from "gsap";
 
-  // รัน animation หลัง DOM พร้อม
   document.addEventListener("DOMContentLoaded", () => {
-    gsap.timeline()
-      .to(".hero-title", { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" })
-      .to(".hero-sub",   { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" }, "-=0.4");
+    gsap
+      .timeline()
+      .to(
+        ".hero-title",
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        },
+        0,
+      )
+      .to(
+        ".hero-img",
+        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+        0,
+      )
+      .to(
+        ".hero-sub",
+        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+        "-=0.4",
+      );
   });
 </script>
