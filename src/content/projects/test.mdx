@@ -5,8 +5,12 @@ stack: ["React", "Socket.io", "Redis", "PostgreSQL"]
 github: "https://github.com/yourname/colladoc"
 demo: "https://colladoc.vercel.app"
 order: 1
+date: 2024-05-20
 thumbnail: "../../assets/images/projects/test.jpg"
 ---
+
+import Callout from "../../components/Callout.astro";
+import TechBadge from "../../components/TechBadge.astro";
 
 ## Problem
 
@@ -20,10 +24,20 @@ I chose Redis pub/sub over a plain in-memory broadcast because the app
 needed to support horizontal scaling across multiple Node instances —
 in-memory state would break the moment there's more than one server process.
 
+<TechBadge
+  name="Redis"
+  reason="Pub/sub across multiple Node instances, so state survives horizontal scaling"
+/>
+
 ## Challenges
 
 Handling out-of-order WebSocket messages during reconnects was the hardest
 part. Solved it with a sequence-numbered event log per document.
+
+<Callout type="warning">
+  Without sequence numbers, a reconnecting client could replay stale edits and
+  silently overwrite newer ones.
+</Callout>
 
 ## Result
 

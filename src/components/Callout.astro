@@ -1,0 +1,27 @@
+---
+interface Props {
+  type?: "info" | "warning" | "success";
+}
+const { type = "info" } = Astro.props;
+
+const styles = {
+  info: "bg-blue-50 border-blue-300 text-blue-900",
+  warning: "bg-amber-50 border-amber-400 text-amber-900",
+  success: "bg-green-50 border-green-300 text-green-900",
+};
+
+const icons = {
+  info: "💡",
+  warning: "⚠️",
+  success: "✅",
+};
+---
+
+<div
+  class={`border border-dashed ${styles[type]} p-4 my-4 -rotate-\\[0\\.5deg\\]`}
+>
+  <p class="text-sm leading-relaxed">
+    <span class="mr-1.5">{icons[type]}</span>
+    <slot />
+  </p>
+</div>
