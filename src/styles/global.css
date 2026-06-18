@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 body { font-family: 'Caveat', cursive; }
-h1, h2, label { font-family: 'Special Elite', serif; }
+h1, h2, label { font-family: 'Caveat', cursive; }
 
 
 /* src/styles/global.css */
