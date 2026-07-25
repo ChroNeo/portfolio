@@ -1,6 +1,21 @@
 ---
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import { 
+  SiReact, 
+  SiTypescript, 
+  SiJavascript, 
+  SiFastify, 
+  SiNodedotjs, 
+  SiMysql, 
+  SiDocker, 
+  SiLinux, 
+  SiGooglecloud, 
+  SiSocketdotio, 
+  SiRedis, 
+  SiPostgresql 
+} from 'react-icons/si';
+import { FaAws, FaLine } from 'react-icons/fa6';
 
 const projects = await getCollection("projects");
 
@@ -10,6 +25,28 @@ const cardStyles = [
   { rotate: "rotate-[1.5deg]", tape: "rotate-3" },
   { rotate: "-rotate-[0.8deg]", tape: "-rotate-2" },
 ];
+
+// Icon mapping for common tech
+const getTechIcon = (tech: string) => {
+  const icons: Record<string, any> = {
+    'React': SiReact,
+    'TypeScript': SiTypescript,
+    'JavaScript': SiJavascript,
+    'Fastify': SiFastify,
+    'Node.js': SiNodedotjs,
+    'MySQL': SiMysql,
+    'Docker': SiDocker,
+    'Linux': SiLinux,
+    'AWS': FaAws,
+    'GCP': SiGooglecloud,
+    'Socket.io': SiSocketdotio,
+    'Redis': SiRedis,
+    'PostgreSQL': SiPostgresql,
+    'LINE': FaLine,
+    'LINE Messaging API': FaLine,
+  };
+  return icons[tech] || SiJavascript;
+};
 ---
 
 <section id="projects" class="paper-bg px-8 py-20">
@@ -43,9 +80,17 @@ const cardStyles = [
               <p class="text-stone-600 text-sm mb-2 leading-snug">
                 {project.data.description}
               </p>
-              <p class="text-stone-500 text-xs mb-2">
-                {project.data.stack.join(" · ")}
-              </p>
+              <div class="flex flex-wrap gap-2 mb-2">
+                {project.data.stack.map((tech) => {
+                  const Icon = getTechIcon(tech);
+                  return (
+                    <span class="inline-flex items-center gap-1 text-stone-500 text-xs bg-amber-100/50 px-2 py-1 rounded">
+                      <Icon size={12} />
+                      <span>{tech}</span>
+                    </span>
+                  );
+                })}
+              </div>
               <span class="text-amber-700 text-sm underline">
                 View details →
               </span>

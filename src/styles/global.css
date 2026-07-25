@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
-body { font-family: 'Caveat', cursive; }
-h1, h2, label { font-family: 'Caveat', cursive; }
+body { font-family: 'Inter', system-ui, sans-serif; }
+h1, h2, h3, h4, h5, h6, label { font-family: 'Inter', system-ui, sans-serif; }
 
 
 /* src/styles/global.css */
@@ -17,4 +17,31 @@ h1, h2, label { font-family: 'Caveat', cursive; }
   .cut-3 {
     clip-path: polygon(0% 8%, 92% 0%, 100% 95%, 5% 100%);
   }
+}
+
+:root {
+  --paper-bg: #f5f0e1;
+  --paper-line: #c9b8a0;
+  --card-bg: #fff9f0;
+  --ink: #3a2e1e;
+  --ink-soft: #6b5c45;
+  --tape: rgba(255, 225, 90, 0.55);
+}
+
+.dark {
+  --paper-bg: #26221c;
+  --paper-line: #3d362a;
+  --card-bg: #2e2820;
+  --ink: #e8ddc7;
+  --ink-soft: #b3a584;
+  --tape: rgba(180, 150, 60, 0.35);
+}
+
+.prose h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 2.25rem;
+  color: #292524;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
 }
