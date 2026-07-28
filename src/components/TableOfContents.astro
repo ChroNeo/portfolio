@@ -10,8 +10,9 @@ const { headings } = Astro.props;
     <h3 class="font-semibold text-stone-800 mb-3">Contents</h3>
     <ul class="space-y-2 text-sm">
       {headings.map((heading) => (
-        <li 
-          class={`text-stone-600 hover:text-stone-900 ${
+        <li
+          id={`toc-${heading.slug}`}
+          class={`toc-item text-stone-600 hover:text-stone-900 transition-colors duration-200 rounded px-2 -mx-2 ${
             heading.depth > 2 ? 'pl-4' : ''
           }`}
         >
@@ -21,3 +22,30 @@ const { headings } = Astro.props;
     </ul>
   </nav>
 </aside>
+
+<script>
+  const observerOptions = {
+    root: null,
+    rootMargin: '-20% 0px -70% 0px',
+    threshold: 0
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        const tocItem = document.getElementById(`toc-${id}`);
+        if (tocItem) {
+          document.querySelectorAll('.toc-item').forEach(item => {
+            item.classList.remove('bg-amber-100', 'text-stone-900', 'font-medium');
+          });
+          tocItem.classList.add('bg-amber-100', 'text-stone-900', 'font-medium');
+        }
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').forEach(heading => {
+    observer.observe(heading);
+  });
+</script>
