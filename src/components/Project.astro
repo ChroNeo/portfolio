@@ -16,19 +16,14 @@ import {
   SiPostgresql 
 } from 'react-icons/si';
 import { FaAws, FaLine } from 'react-icons/fa6';
+import type { IconType } from "react-icons/lib";
 
 const projects = await getCollection("projects");
 
-// Manual rotation/tape variety per card index, cycles through 3 looks
-const cardStyles = [
-  { rotate: "-rotate-[1.5deg]", tape: "-rotate-3" },
-  { rotate: "rotate-[1.5deg]", tape: "rotate-3" },
-  { rotate: "-rotate-[0.8deg]", tape: "-rotate-2" },
-];
 
 // Icon mapping for common tech
 const getTechIcon = (tech: string) => {
-  const icons: Record<string, any> = {
+  const icons: Record<string, IconType> = {
     'React': SiReact,
     'TypeScript': SiTypescript,
     'JavaScript': SiJavascript,
@@ -50,17 +45,16 @@ const getTechIcon = (tech: string) => {
 ---
 
 <section id="projects" class="paper-bg px-8 py-20">
-  <p class="text-4xl font-bold text-black mb-4">PROJECTS</p>
+  <p class="mb-4 text-4xl font-bold text-black">PROJECTS</p>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
     {
-      projects.map((project, i) => {
-        const style = cardStyles[i % cardStyles.length];
+      projects.map((project) => {
         return (
           <div class="cut-2 relative drop-shadow-md">
             <a
               href={`/portfolio/projects/${project.id}`}
-              class={`block bg-amber-50 border border-amber-200 shadow-md p-4 hover:rotate-0 transition-transform duration-200`}
+              class={`block border border-amber-200 bg-amber-50 p-4 shadow-md transition-transform duration-200 hover:rotate-0`}
             >
               <div class="w-full h-40 rounded-lg bg-amber-100 mb-2 flex items-center justify-center text-amber-700/60 text-xs overflow-hidden ${style.rotate}">
                 {project.data.thumbnail ? (
@@ -68,30 +62,30 @@ const getTechIcon = (tech: string) => {
                     src={project.data.thumbnail}
                     alt={project.data.title}
                     width={300}
-                    class="w-full h-full object-cover"
+                    class="h-full w-full object-cover"
                   />
                 ) : (
                   "thumbnail"
                 )}
               </div>
-              <h3 class="font-caveat text-lg font-semibold text-stone-800 mb-1">
+              <h3 class="font-caveat mb-1 text-lg font-semibold text-stone-800">
                 {project.data.title}
               </h3>
-              <p class="text-stone-600 text-sm mb-2 leading-snug">
+              <p class="mb-2 text-sm leading-snug text-stone-600">
                 {project.data.description}
               </p>
-              <div class="flex flex-wrap gap-2 mb-2">
+              <div class="mb-2 flex flex-wrap gap-2">
                 {project.data.stack.map((tech) => {
                   const Icon = getTechIcon(tech);
                   return (
-                    <span class="inline-flex items-center gap-1 text-stone-500 text-xs bg-amber-100/50 px-2 py-1 rounded">
+                    <span class="inline-flex items-center gap-1 rounded bg-amber-100/50 px-2 py-1 text-xs text-stone-500">
                       <Icon size={12} />
                       <span>{tech}</span>
                     </span>
                   );
                 })}
               </div>
-              <span class="text-amber-700 text-sm underline">
+              <span class="text-sm text-amber-700 underline">
                 View details →
               </span>
             </a>
@@ -101,7 +95,7 @@ const getTechIcon = (tech: string) => {
     }
   </div>
 
-  <p class="text-stone-500 text-sm mt-3 px-0.5">
+  <p class="mt-3 px-0.5 text-sm text-stone-500">
     Also working with: Docker · Linux · Cloud (AWS/GCP)
   </p>
 </section>

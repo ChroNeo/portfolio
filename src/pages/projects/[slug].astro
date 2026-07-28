@@ -18,6 +18,7 @@ import {
   SiPostgresql 
 } from 'react-icons/si';
 import { FaAws, FaLine } from 'react-icons/fa6';
+import type { IconType } from "react-icons/lib";
 
 export async function getStaticPaths() {
   const projects = (await getCollection("projects")).sort(
@@ -34,7 +35,7 @@ const { Content, headings } = await render(project);
 
 // Icon mapping for common tech
 const getTechIcon = (tech: string) => {
-  const icons: Record<string, any> = {
+  const icons: Record<string, IconType> = {
     'React': SiReact,
     'TypeScript': SiTypescript,
     'JavaScript': SiJavascript,
@@ -56,35 +57,35 @@ const getTechIcon = (tech: string) => {
 ---
 
 <BaseLayout title={`${project.data.title} | ChroNeo`}>
-  <div class="flex gap-8 px-8 py-16 max-w-6xl mx-auto">
-    <article class="flex-1 paper-bg px-8 py-16">
-      <a href="/portfolio/#projects" class="text-amber-700 text-sm underline">
+  <div class="mx-auto flex max-w-6xl gap-8 px-8 py-16">
+    <article class="paper-bg flex-1 px-8 py-16">
+      <a href="/portfolio/#projects" class="text-sm text-amber-700 underline">
         ← Back to projects
       </a>
 
-      <h1 class="font-caveat text-4xl font-semibold text-stone-800 mt-4 mb-2">
+      <h1 class="font-caveat mt-4 mb-2 text-4xl font-semibold text-stone-800">
         {project.data.title}
       </h1>
-      <p class="text-stone-600 text-lg mb-4">{project.data.description}</p>
+      <p class="mb-4 text-lg text-stone-600">{project.data.description}</p>
 
       {
         project.data.thumbnail && (
-          <div class="cut-1 bg-amber-50 border border-amber-200 shadow-md -rotate-1 overflow-hidden mb-6 max-w-md">
+          <div class="cut-1 mb-6 max-w-md -rotate-1 overflow-hidden border border-amber-200 bg-amber-50 shadow-md">
             <Image
               src={project.data.thumbnail}
               alt={project.data.title}
               width={600}
-              class="w-full h-auto object-cover"
+              class="h-auto w-full object-cover"
             />
           </div>
         )
       }
 
-      <div class="flex flex-wrap gap-2 mb-6">
+      <div class="mb-6 flex flex-wrap gap-2">
         {project.data.stack.map((tech) => {
           const Icon = getTechIcon(tech);
           return (
-            <span class="inline-flex items-center gap-1 text-stone-500 text-base bg-amber-100/50 px-4 py-2 rounded">
+            <span class="inline-flex items-center gap-1 rounded bg-amber-100/50 px-4 py-2 text-base text-stone-500">
               <Icon size={16} />
               <span>{tech}</span>
             </span>
@@ -92,12 +93,12 @@ const getTechIcon = (tech: string) => {
         })}
       </div>
 
-      <div class="flex gap-3 mb-10">
+      <div class="mb-10 flex gap-3">
         {
           project.data.demo && (
             <a
               href={project.data.demo}
-              class="bg-white border border-amber-200 px-3 py-1.5 rounded text-sm text-stone-700 -rotate-1 inline-block"
+              class="inline-block -rotate-1 rounded border border-amber-200 bg-white px-3 py-1.5 text-sm text-stone-700"
             >
               Live demo
             </a>
@@ -107,7 +108,7 @@ const getTechIcon = (tech: string) => {
           project.data.github && (
             <a
               href={project.data.github}
-              class="bg-white border border-amber-200 px-3 py-1.5 rounded text-sm text-stone-700 rotate-1 inline-block"
+              class="inline-block rotate-1 rounded border border-amber-200 bg-white px-3 py-1.5 text-sm text-stone-700"
             >
               GitHub
             </a>
@@ -115,7 +116,7 @@ const getTechIcon = (tech: string) => {
         }
       </div>
 
-      <div class="prose prose-stone max-w-none text-stone-700 prose-h2:text-3xl prose-h2:font-semibold prose-h2:text-stone-800 prose-h2:mt-8 prose-h2:mb-4">
+      <div class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:text-stone-800 prose-h2:mt-8 prose-h2:mb-4 max-w-none text-stone-700">
         <Content />
       </div>
     </article>

@@ -4,20 +4,20 @@ import portrait from "../assets/hero.png";
 ---
 
 <section id="about" class="paper-bg px-8 py-20">
-  <p class="text-4xl font-bold text-black mb-4">ABOUT</p>
+  <p class="mb-4 text-4xl font-bold text-black">ABOUT</p>
 
-  <div class="grid grid-cols-1 md:grid-cols-[240px_1fr] gap-8 items-start">
+  <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-[240px_1fr]">
     <!-- Portrait cutout -->
     <div class="relative">
       <div class="tape -top-2 left-1/2 -translate-x-1/2 -rotate-3"></div>
       <div
-        class="cut-1 bg-amber-50 border border-amber-200 shadow-md -rotate-2 p-1.5 overflow-hidden"
+        class="cut-1 -rotate-2 overflow-hidden border border-amber-200 bg-amber-50 p-1.5 shadow-md"
       >
         <Image
           src={portrait}
           alt="ChroNeo portrait"
           width={300}
-          class="w-full h-full object-cover"
+          class="h-full w-full object-cover"
         />
       </div>
     </div>
@@ -26,29 +26,29 @@ import portrait from "../assets/hero.png";
     <div class="relative mt-2">
       <div class="tape -top-2 left-[60%] rotate-3"></div>
       <div
-        class="bg-amber-50/80 border border-dashed border-amber-300 shadow-sm rotate-1 p-5"
+        class="rotate-1 border border-dashed border-amber-300 bg-amber-50/80 p-5 shadow-sm"
       >
-        <h2 class="font-caveat text-2xl font-semibold text-stone-800 mb-2">
+        <h2 class="font-caveat mb-2 text-2xl font-semibold text-stone-800">
           Hi, I'm ChroNeo
         </h2>
-        <p class="text-stone-600 text-base leading-relaxed mb-3">
+        <p class="mb-3 text-base leading-relaxed text-stone-600">
           Fresh grad fullstack dev stepping into IT &amp; infra at a steel
           factory. Currently leveling up on cloud, networking, and AI-assisted
           dev workflows.
         </p>
-        <div class="flex gap-1.5 flex-wrap">
+        <div class="flex flex-wrap gap-1.5">
           <span
-            class="bg-green-200 text-green-900 px-2.5 py-0.5 rounded text-sm -rotate-1 inline-block"
+            class="inline-block -rotate-1 rounded bg-green-200 px-2.5 py-0.5 text-sm text-green-900"
           >
             React
           </span>
           <span
-            class="bg-green-200 text-green-900 px-2.5 py-0.5 rounded text-sm rotate-1 inline-block"
+            class="inline-block rotate-1 rounded bg-green-200 px-2.5 py-0.5 text-sm text-green-900"
           >
             Astro
           </span>
           <span
-            class="bg-green-200 text-green-900 px-2.5 py-0.5 rounded text-sm -rotate-2 inline-block"
+            class="inline-block -rotate-2 rounded bg-green-200 px-2.5 py-0.5 text-sm text-green-900"
           >
             Node.js
           </span>
