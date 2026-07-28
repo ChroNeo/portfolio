@@ -1,11 +1,11 @@
 // eslint.config.js
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
 import astro from "eslint-plugin-astro";
 import tailwind from "eslint-plugin-tailwindcss";
 import globals from "globals";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.config(
+export default defineConfig(
   // Ignore build output & deps
   {
     ignores: ["dist/**", "node_modules/**", ".astro/**"],
