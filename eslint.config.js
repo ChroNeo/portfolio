@@ -14,8 +14,6 @@ export default defineConfig(
   // Base JS recommended rules
   js.configs.recommended,
 
-  // TypeScript recommended rules
-  ...tseslint.configs.recommended,
 
   // Astro recommended rules — use FLAT config key
   ...astro.configs["flat/recommended"],
