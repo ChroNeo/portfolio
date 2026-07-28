@@ -1,25 +1,17 @@
 // eslint.config.js
 import js from "@eslint/js";
-import astro from "eslint-plugin-astro";
 import tailwind from "eslint-plugin-tailwindcss";
 import globals from "globals";
 import { defineConfig } from "eslint/config";
-
+import tseslint from 'typescript-eslint';
+import eslintPluginAstro from "eslint-plugin-astro"
 export default defineConfig(
   // Ignore build output & deps
   {
     ignores: ["dist/**", "node_modules/**", ".astro/**"],
   },
-
-  // Base JS recommended rules
-  js.configs.recommended,
-
-
-  // Astro recommended rules — use FLAT config key
-  ...astro.configs["flat/recommended"],
-
-  // Global settings for browser + node
   {
+    extends: [js.configs.recommended, tseslint.configs.recommended,eslintPluginAstro.configs.recommended],
     languageOptions: {
       globals: {
         ...globals.browser,
