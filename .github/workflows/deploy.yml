@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install, build and upload your site
-        uses: withastro/action@v3
+        uses: withastro/action@v6
         # ตัวนี้ทำให้ครบ: setup node, npm install, npm run build, upload artifact
 
   deploy:
