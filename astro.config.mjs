@@ -6,8 +6,10 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://ChroNeo.github.io',
+  base: '/portfolio',
   integrations: [mdx(), react()],
-  vite: {
+  vite: { 
     plugins: [tailwindcss()]
   }
 });
