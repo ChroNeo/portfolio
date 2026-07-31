@@ -12,6 +12,7 @@ import Callout from "../../components/Callout.astro";
 import TechBadge from "../../components/Techbadge.astro";
 import organizerImage from "../../assets/images/projects/ผู้จัดงาน.png";
 import structureImage from "../../assets/images/projects/2.png";
+import FastifyBenchmarkImage from "../../assets/images/projects/fastify-benchmark.png";
 
 ## ปัญหา
 
@@ -45,20 +46,20 @@ import structureImage from "../../assets/images/projects/2.png";
 
 1. **ฝั่งผู้ใช้ (Client)** — LINE Official Account + LIFF (LINE Front-end Framework)
    สำหรับหน้าจอลงทะเบียน แบบประเมิน และแสดงใบประกาศนียบัตร ทำงานอยู่ภายในแอป LINE
-   โดยตรง
+   โดยตรง โดยใช้ `React + TypeScript`
 2. **ฝั่ง Backend** — Fastify (Node.js + TypeScript) รับ Webhook Event จาก LINE,
    ประมวลผล Business Logic และให้บริการ REST API แก่หน้าแดชบอร์ดของผู้จัดงาน
 3. **ฐานข้อมูล** — MySQL แบ่งเป็น 3 โดเมนหลัก (Exhibition / Unit / Survey) เชื่อมโยง
    กันผ่านตาราง `exhibitions` เป็นศูนย์กลาง
 
 <Callout type="info">
-  แนวคิดหลักของสถาปัตยกรรมนี้คือให้ LINE ทำหน้าที่เป็น "หน้าบ้าน" ที่ผู้ใช้คุ้นเคยอยู่แล้ว
+  LINE ทำหน้าที่เป็น "หน้าบ้าน" ที่ผู้ใช้คุ้นเคยอยู่แล้ว
   ส่วน Backend และฐานข้อมูลทำหน้าที่เป็น "หลังบ้าน" ที่จัดการ Logic และข้อมูลทั้งหมด
 </Callout>
 
-## การตัดสินใจสำคัญ
+## ทำไมถึงใช้ LINE แทนแอปพลิเคชันมือถือ?
 
-เลือกใช้ LINE Official Account ร่วมกับ Webhook เป็นช่องทางหลักสำหรับผู้จัดงาน
+เลือกใช้ LINE Official Account ร่วมกับ Webhook เป็นช่องทางหลักสำหรับ
 เจ้าหน้าที่ประจำบูธ และผู้เข้าร่วมงาน แทนการสร้างแอปพลิเคชันมือถือแยกต่างหาก เพราะ LINE
 ถูกติดตั้งอยู่ในโทรศัพท์ของคนส่วนใหญ่อยู่แล้ว ผู้ใช้จึงสามารถลงทะเบียน เช็คอิน ทำแบบประเมิน
 และรับใบประกาศนียบัตรได้โดยไม่ต้องดาวน์โหลดแอปเพิ่ม
@@ -68,10 +69,12 @@ import structureImage from "../../assets/images/projects/2.png";
   reason="เข้าถึงผู้ใช้ผ่านแอปที่มีอยู่แล้วในเครื่อง ลดอุปสรรคในการใช้งานสำหรับกิจกรรมที่จัดในระยะเวลาสั้น"
 />
 
-ฝั่ง Backend เลือกใช้ Fastify แทนเฟรมเวิร์กที่พบได้ทั่วไปอย่าง Express เนื่องจากระบบต้อง
+ส่วนฝั่ง Backend เลือกใช้ Fastify ซึ่งเป็นเฟรมเวิร์กที่มีประสิทธิภาพสูงและมี Overhead ต่ำ 
+มีการเรียกใช้งานคล้ายกับ Express แต่ดีกว่าในเรื่องของประสิทธิภาพและความเร็ว เนื่องจากระบบต้อง
 รองรับคำขอที่เข้ามาพร้อมกันจำนวนมากในช่วงเวลาสั้น ๆ เช่น การเช็คอินด้วย QR Code และ
-Webhook Event ที่เข้ามาถี่ในช่วงเวลาที่งานนิทรรศการมีผู้เข้าร่วมสูงสุด ซึ่ง Fastify มี Overhead
-ต่ำกว่าและตอบสนองได้เสถียรกว่า
+Webhook Event ที่เข้ามาถี่ในช่วงเวลาที่งานนิทรรศการมีผู้เข้าร่วมสูงสุด
+
+<img src={FastifyBenchmarkImage.src} alt="Fastify Benchmark" style="display: block; margin: 1.5rem auto;" />
 
 <TechBadge
   name="Fastify"

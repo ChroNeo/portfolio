@@ -9,43 +9,120 @@ const { headings } = Astro.props;
   <nav class="border-l-2 border-amber-200 pl-4">
     <h3 class="mb-3 font-semibold text-stone-800">Contents</h3>
     <ul class="space-y-2 text-sm">
-      {headings.map((heading) => (
-        <li
-          id={`toc-${heading.slug}`}
-          class={`toc-item -mx-2 rounded px-2 text-stone-600 transition-colors duration-200 hover:text-stone-900 ${
-            heading.depth > 2 ? 'pl-4' : ''
-          }`}
-        >
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
+      {
+        headings.map((heading) => (
+          <li
+            id={`toc-${heading.slug}`}
+            class={`toc-item -mx-2 rounded px-2 text-stone-600 transition-colors duration-200 hover:text-stone-900 ${
+              heading.depth > 2 ? "pl-4" : ""
+            }`}
+          >
+            <a href={`#${heading.slug}`}>{heading.text}</a>
+          </li>
+        ))
+      }
     </ul>
   </nav>
 </aside>
 
 <script>
+  let isClickNavigation = false;
+
   const observerOptions = {
     root: null,
-    rootMargin: '-20% 0px -70% 0px',
-    threshold: 0
+    rootMargin: "-20% 0px -70% 0px",
+    threshold: 0,
   };
 
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
+    if (isClickNavigation) return;
+    entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const id = entry.target.id;
         const tocItem = document.getElementById(`toc-${id}`);
         if (tocItem) {
-          document.querySelectorAll('.toc-item').forEach(item => {
-            item.classList.remove('bg-amber-100', 'text-stone-900', 'font-medium');
+          document.querySelectorAll(".toc-item").forEach((item) => {
+            item.classList.remove(
+              "bg-amber-100",
+              "text-stone-900",
+              "font-medium",
+            );
           });
-          tocItem.classList.add('bg-amber-100', 'text-stone-900', 'font-medium');
+          tocItem.classList.add(
+            "bg-amber-100",
+            "text-stone-900",
+            "font-medium",
+          );
         }
       }
     });
   }, observerOptions);
 
-  document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').forEach(heading => {
-    observer.observe(heading);
+  document
+    .querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]")
+    .forEach((heading) => {
+      observer.observe(heading);
+    });
+
+  // Handle click events to manually highlight the selected item
+  const nav = document.querySelector("aside nav");
+  let scrollEndTimeout: ReturnType<typeof setTimeout> | null = null;
+  const clearClickNavigation = () => {
+    isClickNavigation = false;
+    if (scrollEndTimeout) {
+      clearTimeout(scrollEndTimeout);
+      scrollEndTimeout = null;
+    }
+  };
+
+  // Primary: native scrollend event (fires once scrolling truly stops)
+  window.addEventListener("scrollend", () => {
+    if (isClickNavigation) clearClickNavigation();
   });
+
+  // Fallback for browsers without scrollend (older Safari): debounce scroll
+  let scrollDebounce: ReturnType<typeof setTimeout> | null = null;
+  window.addEventListener("scroll", () => {
+    if (!isClickNavigation) return;
+    if (scrollDebounce) clearTimeout(scrollDebounce);
+    scrollDebounce = setTimeout(() => {
+      clearClickNavigation();
+    }, 150); // no scroll movement for 150ms = settled
+  });
+
+  // Absolute safety net in case neither fires (e.g. click didn't scroll at all)
+  const armSafetyNet = () => {
+    if (scrollEndTimeout) clearTimeout(scrollEndTimeout);
+    scrollEndTimeout = setTimeout(clearClickNavigation, 3000);
+  };
+
+  if (nav) {
+    nav.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      const link = target.closest("a");
+      if (link) {
+        const href = link.getAttribute("href");
+        if (href && href.startsWith("#")) {
+          const slug = href.substring(1);
+          const tocItem = document.getElementById(`toc-${slug}`);
+          if (tocItem) {
+            isClickNavigation = true;
+            document.querySelectorAll(".toc-item").forEach((item) => {
+              item.classList.remove(
+                "bg-amber-100",
+                "text-stone-900",
+                "font-medium",
+              );
+            });
+            tocItem.classList.add(
+              "bg-amber-100",
+              "text-stone-900",
+              "font-medium",
+            );
+            armSafetyNet();
+          }
+        }
+      }
+    });
+  }
 </script>
