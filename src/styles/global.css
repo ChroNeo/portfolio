@@ -1,7 +1,18 @@
 @import "tailwindcss";
 
-body { font-family: 'Inter', system-ui, sans-serif; }
-h1, h2, h3, h4, h5, h6, label { font-family: 'Inter', system-ui, sans-serif; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+label {
+  font-family: 'Inter', system-ui, sans-serif;
+}
 
 
 /* src/styles/global.css */
@@ -11,9 +22,11 @@ h1, h2, h3, h4, h5, h6, label { font-family: 'Inter', system-ui, sans-serif; }
   .cut-1 {
     clip-path: polygon(2% 4%, 30% 0%, 68% 2%, 100% 5%, 98% 35%, 100% 70%, 96% 100%, 60% 98%, 25% 100%, 0% 90%, 3% 50%);
   }
+
   .cut-2 {
     clip-path: polygon(3% 0%, 100% 8%, 97% 100%, 0% 95%);
   }
+
   .cut-3 {
     clip-path: polygon(0% 8%, 92% 0%, 100% 95%, 5% 100%);
   }
@@ -35,13 +48,4 @@ h1, h2, h3, h4, h5, h6, label { font-family: 'Inter', system-ui, sans-serif; }
   --ink: #e8ddc7;
   --ink-soft: #b3a584;
   --tape: rgba(180, 150, 60, 0.35);
-}
-
-.prose h2 {
-  font-size: 1.875rem;
-  font-weight: 600;
-  line-height: 2.25rem;
-  color: #292524;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
 }

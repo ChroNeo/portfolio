@@ -3,21 +3,22 @@ import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import TableOfContents from "../../components/TableOfContents.astro";
-import { 
-  SiReact, 
-  SiTypescript, 
-  SiJavascript, 
-  SiFastify, 
-  SiNodedotjs, 
-  SiMysql, 
-  SiDocker, 
-  SiLinux, 
-  SiGooglecloud, 
-  SiSocketdotio, 
-  SiRedis, 
-  SiPostgresql 
-} from 'react-icons/si';
-import { FaAws, FaLine } from 'react-icons/fa6';
+import "../../styles/project.css";
+import {
+  SiReact,
+  SiTypescript,
+  SiJavascript,
+  SiFastify,
+  SiNodedotjs,
+  SiMysql,
+  SiDocker,
+  SiLinux,
+  SiGooglecloud,
+  SiSocketdotio,
+  SiRedis,
+  SiPostgresql,
+} from "react-icons/si";
+import { FaAws, FaLine } from "react-icons/fa6";
 import type { IconType } from "react-icons/lib";
 
 export async function getStaticPaths() {
@@ -36,21 +37,21 @@ const { Content, headings } = await render(project);
 // Icon mapping for common tech
 const getTechIcon = (tech: string) => {
   const icons: Record<string, IconType> = {
-    'React': SiReact,
-    'TypeScript': SiTypescript,
-    'JavaScript': SiJavascript,
-    'Fastify': SiFastify,
-    'Node.js': SiNodedotjs,
-    'MySQL': SiMysql,
-    'Docker': SiDocker,
-    'Linux': SiLinux,
-    'AWS': FaAws,
-    'GCP': SiGooglecloud,
-    'Socket.io': SiSocketdotio,
-    'Redis': SiRedis,
-    'PostgreSQL': SiPostgresql,
-    'LINE': FaLine,
-    'LINE Messaging API': FaLine,
+    React: SiReact,
+    TypeScript: SiTypescript,
+    JavaScript: SiJavascript,
+    Fastify: SiFastify,
+    "Node.js": SiNodedotjs,
+    MySQL: SiMysql,
+    Docker: SiDocker,
+    Linux: SiLinux,
+    AWS: FaAws,
+    GCP: SiGooglecloud,
+    "Socket.io": SiSocketdotio,
+    Redis: SiRedis,
+    PostgreSQL: SiPostgresql,
+    LINE: FaLine,
+    "LINE Messaging API": FaLine,
   };
   return icons[tech] || SiJavascript;
 };
@@ -82,15 +83,17 @@ const getTechIcon = (tech: string) => {
       }
 
       <div class="mb-6 flex flex-wrap gap-2">
-        {project.data.stack.map((tech) => {
-          const Icon = getTechIcon(tech);
-          return (
-            <span class="inline-flex items-center gap-1 rounded bg-amber-100/50 px-4 py-2 text-base text-stone-500">
-              <Icon size={16} />
-              <span>{tech}</span>
-            </span>
-          );
-        })}
+        {
+          project.data.stack.map((tech) => {
+            const Icon = getTechIcon(tech);
+            return (
+              <span class="inline-flex items-center gap-1 rounded bg-amber-100/50 px-4 py-2 text-base text-stone-500">
+                <Icon size={16} />
+                <span>{tech}</span>
+              </span>
+            );
+          })
+        }
       </div>
 
       <div class="mb-10 flex gap-3">
@@ -116,7 +119,9 @@ const getTechIcon = (tech: string) => {
         }
       </div>
 
-      <div class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:text-stone-800 prose-h2:mt-8 prose-h2:mb-4 max-w-none text-stone-700">
+      <div
+        class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:text-stone-800 prose-h2:mt-8 prose-h2:mb-4 max-w-none text-stone-700"
+      >
         <Content />
       </div>
     </article>
