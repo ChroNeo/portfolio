@@ -4,14 +4,14 @@ import portrait from "../assets/hero.png";
 ---
 
 <section id="about" class="paper-bg px-8 py-20">
-  <p class="mb-4 text-4xl font-bold text-black">ABOUT</p>
+  <p class="mb-4 text-4xl font-bold text-(--ink)">ABOUT</p>
 
   <div class="grid grid-cols-1 items-start gap-8 md:grid-cols-[240px_1fr]">
     <!-- Portrait cutout -->
     <div class="relative">
       <div class="tape -top-2 left-1/2 -translate-x-1/2 -rotate-3"></div>
       <div
-        class="cut-1 -rotate-2 overflow-hidden border border-amber-200 bg-amber-50 p-1.5 shadow-md"
+        class="cut-1 -rotate-2 overflow-hidden border border-(--paper-line) bg-(--card-bg) p-1.5 shadow-md"
       >
         <Image
           src={portrait}
@@ -26,29 +26,29 @@ import portrait from "../assets/hero.png";
     <div class="relative mt-2">
       <div class="tape -top-2 left-[60%] rotate-3"></div>
       <div
-        class="rotate-1 border border-dashed border-amber-300 bg-amber-50/80 p-5 shadow-sm"
+        class="rotate-1 border border-dashed border-(--paper-line) bg-(--card-bg) p-5 shadow-sm"
       >
-        <h2 class="font-caveat mb-2 text-2xl font-semibold text-stone-800">
+        <h2 class="font-caveat mb-2 text-2xl font-semibold text-(--ink)">
           Hi, I'm ChroNeo
         </h2>
-        <p class="mb-3 text-base leading-relaxed text-stone-600">
+        <p class="mb-3 text-base leading-relaxed text-(--ink-soft)">
           Fresh grad fullstack dev stepping into IT &amp; infra at a steel
           factory. Currently leveling up on cloud, networking, and AI-assisted
           dev workflows.
         </p>
         <div class="flex flex-wrap gap-1.5">
           <span
-            class="inline-block -rotate-1 rounded bg-green-200 px-2.5 py-0.5 text-sm text-green-900"
+            class="inline-block -rotate-1 rounded bg-(--paper-line) px-2.5 py-0.5 text-sm text-(--ink)"
           >
             React
           </span>
           <span
-            class="inline-block rotate-1 rounded bg-green-200 px-2.5 py-0.5 text-sm text-green-900"
+            class="inline-block rotate-1 rounded bg-(--paper-line) px-2.5 py-0.5 text-sm text-(--ink)"
           >
             Astro
           </span>
           <span
-            class="inline-block -rotate-2 rounded bg-green-200 px-2.5 py-0.5 text-sm text-green-900"
+            class="inline-block -rotate-2 rounded bg-(--paper-line) px-2.5 py-0.5 text-sm text-(--ink)"
           >
             Node.js
           </span>

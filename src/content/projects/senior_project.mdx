@@ -69,3 +69,16 @@ import FastifyBenchmarkImage from "../../assets/images/projects/fastify-benchmar
 **LINE Messaging API + LIFF vs Native App:**
 - ลด Friction ฝั่งผู้ใช้ ไม่ต้องดาวน์โหลดแอปเพิ่ม
 - โยนภาระงาน Push notification และ UI หน้าบ้านบางส่วนให้โครงสร้างพื้นฐานของ LINE แล้วใช้ Backend เราจัดการเฉพาะ Webhook Data
+
+## การแก้ปัญหาในการพัฒนาจริง
+- **Challenge 1: Webhook Debugging บน Local Environment**
+    
+    - _ข้อจำกัด:_ LINE บังคับใช้ HTTPS Endpoint เท่านั้นในการส่ง Webhook และรัน LIFF
+        
+    - _ทางแก้:_ ใช้ **Cloudflare Tunnel** จำลอง HTTPS Endpoint จากเครื่อง Local เข้าสู่ระบบ เพื่อทดสอบ Webhook Payload และการรับส่งข้อมูลจริงก่อน Deploy
+        
+- **Challenge 2: Data Integrity & Certificate Conditions**
+    
+    - _ข้อจำกัด:_ ต้องตรวจสอบเงื่อนไขการเช็คอินครบทุกบูธก่อนอนุญาตให้ทำแบบประเมินและรับใบประกาศฯ
+        
+    - _ทางแก้:_ ออกแบบ Index บน MySQL และปรับ Query ให้ตรวจเช็คเงื่อนไขความถูกต้อง (Transactional Check) ป้องกันการแจกใบประกาศฯ ซ้ำซ้อน

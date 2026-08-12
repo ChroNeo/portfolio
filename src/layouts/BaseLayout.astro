@@ -9,6 +9,14 @@ import "../styles/global.css";
 <!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
+    <script is:inline>
+      const stored = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+      ).matches;
+      const isDark = stored ? stored === "dark" : prefersDark;
+      document.documentElement.classList.toggle("dark", isDark);
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
@@ -18,13 +26,7 @@ import "../styles/global.css";
     /></head
   >
 
-  <body
-    class="min-h-screen"
-    style="
-  background-color: #f5f0e1;
-  background-size: 100% 32px;
-"
-  >
+  <body class="min-h-screen bg-(--paper-bg) bg-position-[100%_32px]">
     <slot />
   </body>
 </html>

@@ -20,6 +20,7 @@ import {
 } from "react-icons/si";
 import { FaAws, FaLine } from "react-icons/fa6";
 import type { IconType } from "react-icons/lib";
+import { FiArrowLeft } from "react-icons/fi";
 
 export async function getStaticPaths() {
   const projects = (await getCollection("projects")).sort(
@@ -60,8 +61,14 @@ const getTechIcon = (tech: string) => {
 <BaseLayout title={`${project.data.title} | ChroNeo`}>
   <div class="mx-auto flex max-w-6xl gap-8 px-8 py-16">
     <article class="paper-bg flex-1 px-8 py-16">
-      <a href="/portfolio/#projects" class="text-sm text-amber-700 underline">
-        ← Back to projects
+      <a
+        href="/portfolio/#projects"
+        class="group inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 transition-colors hover:text-amber-900"
+      >
+        <FiArrowLeft
+          className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
+        />
+        Back to projects
       </a>
 
       <h1 class="font-caveat mt-4 mb-2 text-4xl font-semibold text-stone-800">

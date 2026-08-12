@@ -6,9 +6,7 @@ interface Props {
 const { name, reason } = Astro.props;
 ---
 
-<div
-  class="my-3 border border-dashed border-amber-300 bg-amber-50 p-3"
->
-  <span class="font-semibold text-stone-800">{name}</span>
-  <span class="text-sm text-stone-600"> — {reason}</span>
+<div class="my-3 border border-dashed border-(--paper-line) bg-(--card-bg) p-3">
+  <span class="font-semibold text-(--ink)">{name}</span>
+  <span class="text-sm text-(--ink-soft)"> — {reason}</span>
 </div>

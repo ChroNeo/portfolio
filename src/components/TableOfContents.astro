@@ -8,7 +8,7 @@ const { headings } = Astro.props;
 <!-- Mobile/Tablet Floating TOC Button -->
 <button
   id="toc-toggle"
-  class="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full border border-stone-200 bg-white/90 backdrop-blur-sm px-4 py-2 text-sm font-medium text-stone-700 shadow-md hover:bg-stone-50 transition-colors"
+  class="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full border border-(--paper-line) bg-(--card-bg)/90 backdrop-blur-sm px-4 py-2 text-sm font-medium text-(--ink) shadow-md hover:bg-(--paper-line) transition-colors"
 >
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -31,11 +31,11 @@ const { headings } = Astro.props;
 <!-- Mobile/Tablet Dropdown TOC -->
 <div
   id="toc-dropdown"
-  class="lg:hidden fixed top-16 right-4 z-40 hidden w-72 bg-white/95 backdrop-blur-sm p-2"
+  class="lg:hidden fixed top-16 right-4 z-40 hidden w-72 bg-(--card-bg)/95 backdrop-blur-sm p-2"
 >
   <nav>
     <h3
-      class="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400"
+      class="mb-3 text-xs font-semibold uppercase tracking-wide text-(--ink-soft)"
     >
       On this page
     </h3>
@@ -44,7 +44,7 @@ const { headings } = Astro.props;
         headings.map((heading) => (
           <li
             id={`toc-${heading.slug}`}
-            class={`toc-item rounded-r border-l-2 border-transparent text-stone-500 transition-colors duration-200 hover:text-stone-800 hover:bg-stone-50 ${
+            class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:text-(--ink) hover:bg-(--paper-line) ${
               heading.depth > 2 ? "pl-6" : "pl-3"
             }`}
           >
@@ -62,7 +62,7 @@ const { headings } = Astro.props;
 <aside class="sticky top-8 hidden h-fit w-64 shrink-0 lg:block">
   <nav>
     <h3
-      class="mb-3 text-xs font-semibold uppercase tracking-wide text-stone-400"
+      class="mb-3 text-xs font-semibold uppercase tracking-wide text-(--ink-soft)"
     >
       On this page
     </h3>
@@ -71,7 +71,7 @@ const { headings } = Astro.props;
         headings.map((heading) => (
           <li
             id={`toc-${heading.slug}`}
-            class={`toc-item rounded-r border-l-2 border-transparent text-stone-500 transition-colors duration-200 hover:text-stone-800 hover:bg-stone-50 ${
+            class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:text-(--ink) hover:bg-(--paper-line) ${
               heading.depth > 2 ? "pl-6" : "pl-3"
             }`}
           >
@@ -120,12 +120,8 @@ const { headings } = Astro.props;
 
   let isClickNavigation = false;
 
-  const ACTIVE_CLASSES = [
-    "border-emerald-500",
-    "text-stone-900",
-    "font-medium",
-  ];
-  const INACTIVE_CLASSES = ["border-transparent", "text-stone-500"];
+  const ACTIVE_CLASSES = ["border-(--ink)", "text-(--ink)", "font-medium"];
+  const INACTIVE_CLASSES = ["border-transparent", "text-(--ink-soft)"];
 
   const setActive = (tocItem: Element) => {
     document.querySelectorAll(".toc-item").forEach((item) => {
@@ -142,6 +138,28 @@ const { headings } = Astro.props;
     threshold: 0,
   };
 
+  const headingEls = Array.from(
+    document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]"),
+  ) as HTMLElement[];
+
+  // Figure out which heading should be active right now, on initial load,
+  // since IntersectionObserver only reports *changes* going forward.
+  const setInitialActive = () => {
+    if (headingEls.length === 0) return;
+    const thresholdLine = window.innerHeight * 0.2; // matches rootMargin top offset below
+    let current = headingEls[0];
+    for (const h of headingEls) {
+      if (h.getBoundingClientRect().top <= thresholdLine) {
+        current = h;
+      } else {
+        break;
+      }
+    }
+    const tocItem = document.getElementById(`toc-${current.id}`);
+    if (tocItem) setActive(tocItem);
+  };
+  setInitialActive();
+
   const observer = new IntersectionObserver((entries) => {
     if (isClickNavigation) return;
     entries.forEach((entry) => {
@@ -153,11 +171,9 @@ const { headings } = Astro.props;
     });
   }, observerOptions);
 
-  document
-    .querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]")
-    .forEach((heading) => {
-      observer.observe(heading);
-    });
+  headingEls.forEach((heading) => {
+    observer.observe(heading);
+  });
 
   // Handle click events to manually highlight the selected item
   const nav = document.querySelector("aside nav");

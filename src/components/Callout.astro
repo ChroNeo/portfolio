@@ -5,9 +5,9 @@ interface Props {
 const { type = "info" } = Astro.props;
 
 const styles = {
-  info: "bg-blue-50 border-blue-300 text-blue-900",
-  warning: "bg-amber-50 border-amber-400 text-amber-900",
-  success: "bg-green-50 border-green-300 text-green-900",
+  info: "bg-(--paper-line) border-(--paper-line) text-(--ink)",
+  warning: "bg-(--paper-line) border-(--paper-line) text-(--ink)",
+  success: "bg-(--paper-line) border-(--paper-line) text-(--ink)",
 };
 
 const icons = {
@@ -17,9 +17,7 @@ const icons = {
 };
 ---
 
-<div
-  class={`border border-dashed ${styles[type]} my-4 p-4 `}
->
+<div class={`border border-dashed ${styles[type]} my-4 p-4 `}>
   <p class="text-sm leading-relaxed">
     <span class="mr-1.5">{icons[type]}</span>
     <slot />

@@ -9,24 +9,46 @@
       <li>
         <a
           href="#hero"
-          class="inline-block border border-transparent text-xl text-[--ink] transition-all duration-200 hover:-translate-y-1 hover:border-[--ink] hover:text-[--ink-soft] hover:shadow-xl"
+          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
           >Home</a
         >
       </li>
       <li>
         <a
           href="#projects"
-          class="inline-block border border-transparent text-xl text-[--ink] transition-all duration-200 hover:-translate-y-1 hover:border-[--ink] hover:text-[--ink-soft] hover:shadow-xl"
+          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
           >Projects</a
         >
       </li>
       <li>
         <a
           href="#contact"
-          class="inline-block border border-transparent text-xl text-[--ink] transition-all duration-200 hover:-translate-y-1 hover:border-[--ink] hover:text-[--ink-soft] hover:shadow-xl"
+          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
           >Contact</a
         >
+      </li>
+      <li>
+        <button
+          id="theme-toggle"
+          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
+        >
+          Toggle Theme
+        </button>
       </li>
     </ul>
   </nav>
 </div>
+
+<script>
+  const btn = document.getElementById("theme-toggle");
+
+  function setTheme(theme: string) {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
+  }
+
+  btn?.addEventListener("click", () => {
+    const isDark = document.documentElement.classList.contains("dark");
+    setTheme(isDark ? "light" : "dark");
+  });
+</script>
