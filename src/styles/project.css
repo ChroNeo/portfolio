@@ -5,9 +5,9 @@
   background-color: var(--paper-bg);
 }
 
-/* Prose/Markdown content styling */
+/* Prose/Markdown content styling with theme support */
 .prose {
-  color: #292524;
+  color: var(--ink-soft);
   line-height: 1.75;
 }
 
@@ -15,7 +15,7 @@
   font-size: 1.875rem;
   font-weight: 600;
   line-height: 2.25rem;
-  color: #292524;
+  color: var(--ink);
   margin-top: 2rem;
   margin-bottom: 1rem;
 }
@@ -32,7 +32,7 @@
 
 .prose strong {
   font-weight: 700;
-  color: #1c1917;
+  color: var(--ink);
 }
 
 /* Lists */
@@ -56,7 +56,7 @@
 }
 
 .prose li::marker {
-  color: #78716c;
+  color: var(--ink-soft);
 }
 
 /* Nested lists get tighter spacing */

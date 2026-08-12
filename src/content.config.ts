@@ -14,6 +14,7 @@ const projects = defineCollection({
       video: z.url().optional(),
       thumbnail: image().optional(),
       date: z.date(),
+      category: z.string().optional(),
       tags: z.array(z.string()).default([]),
     }),
 });

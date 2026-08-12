@@ -4,6 +4,7 @@ interface Props {
 }
 const { title } = Astro.props;
 import "../styles/global.css";
+import ThemeToggle from "../components/ThemeToggle.tsx";
 ---
 
 <!doctype html>
@@ -28,6 +29,7 @@ import "../styles/global.css";
 
   <body class="min-h-screen bg-(--paper-bg) bg-position-[100%_32px]">
     <slot />
+    <ThemeToggle client:load />
   </body>
 </html>
 

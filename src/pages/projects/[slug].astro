@@ -71,18 +71,42 @@ const getTechIcon = (tech: string) => {
         Back to projects
       </a>
 
-      <h1 class="font-caveat mt-4 mb-2 text-4xl font-semibold text-stone-800">
-        {project.data.title}
-      </h1>
-      <p class="mb-4 text-lg text-stone-600">{project.data.description}</p>
+      <div class="mx-auto mt-6 mb-10 max-w-3xl text-center">
+        <div class="mb-4 flex items-center justify-center gap-3 text-sm">
+          <span
+            class="rounded-full bg-lime-100 px-3 py-1 font-medium text-lime-800"
+          >
+            {project.data.category ?? "Project"}
+          </span>
+          <span class="text-stone-400">
+            {
+              project.data.date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
+            }
+          </span>
+        </div>
+
+        <h1
+          class="font-caveat mb-4 text-4xl leading-tight font-semibold text-(--ink) sm:text-5xl"
+        >
+          {project.data.title}
+        </h1>
+
+        <p class="mx-auto max-w-2xl text-lg text-(--ink-soft)">
+          {project.data.description}
+        </p>
+      </div>
 
       {
         project.data.thumbnail && (
-          <div class="cut-1 mb-6 max-w-md -rotate-1 overflow-hidden border border-amber-200 bg-amber-50 shadow-md">
+          <div class="mb-10 max-w-2xl mx-auto overflow-hidden rounded-2xl border border-(--paper-line) shadow-md">
             <Image
               src={project.data.thumbnail}
               alt={project.data.title}
-              width={600}
+              width={1200}
               class="h-auto w-full object-cover"
             />
           </div>
@@ -94,7 +118,7 @@ const getTechIcon = (tech: string) => {
           project.data.stack.map((tech) => {
             const Icon = getTechIcon(tech);
             return (
-              <span class="inline-flex items-center gap-1 rounded bg-amber-100/50 px-4 py-2 text-base text-stone-500">
+              <span class="inline-flex items-center gap-1 rounded bg-(--card-bg) px-4 py-2 text-base text-(--ink)">
                 <Icon size={16} />
                 <span>{tech}</span>
               </span>
@@ -127,7 +151,7 @@ const getTechIcon = (tech: string) => {
       </div>
 
       <div
-        class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:text-stone-800 prose-h2:mt-8 prose-h2:mb-4 max-w-none text-stone-700"
+        class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-8 prose-h2:mb-4 max-w-none text-(--ink-soft) [--tw-prose-headings:var(--ink)]"
       >
         <Content />
       </div>
