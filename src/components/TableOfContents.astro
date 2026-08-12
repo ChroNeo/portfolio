@@ -1,4 +1,5 @@
 ---
+import { FiMenu } from "react-icons/fi";
 interface Props {
   headings: Array<{ depth: number; text: string; slug: string }>;
 }
@@ -8,23 +9,9 @@ const { headings } = Astro.props;
 <!-- Mobile/Tablet Floating TOC Button -->
 <button
   id="toc-toggle"
-  class="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full border border-(--paper-line) bg-(--card-bg)/90 backdrop-blur-sm px-4 py-2 text-sm font-medium text-(--ink) shadow-md hover:bg-(--paper-line) transition-colors"
+  class="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2 border border-(--paper-line) bg-(--card-bg)/90 backdrop-blur-sm px-4 py-2 text-sm font-medium text-(--ink) shadow-md hover:bg-(--paper-line) transition-colors"
 >
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    stroke-width="2"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  >
-    <line x1="3" y1="6" x2="21" y2="6"></line>
-    <line x1="3" y1="12" x2="21" y2="12"></line>
-    <line x1="3" y1="18" x2="21" y2="18"></line>
-  </svg>
+  <FiMenu size={16} className="text-(--ink-soft)" />
   On this page
 </button>
 
@@ -58,46 +45,86 @@ const { headings } = Astro.props;
   </nav>
 </div>
 
-<!-- Desktop Sidebar TOC -->
-<aside class="sticky top-8 hidden h-fit w-64 shrink-0 lg:block">
-  <nav>
-    <h3
-      class="mb-3 text-xs font-semibold uppercase tracking-wide text-(--ink-soft)"
+<!-- Desktop Floating TOC: icon-only when collapsed, unfolds right-to-left -->
+<div
+  id="toc-desktop"
+  class="hidden lg:block fixed top-24 right-6 z-40 w-11 border border-(--paper-line) bg-(--card-bg)/95 backdrop-blur-sm shadow-md overflow-hidden"
+>
+  <!-- Header row: icon is pinned to the right edge, label reveals to its left as the panel widens -->
+  <button
+    id="toc-header-toggle"
+    aria-expanded="false"
+    aria-controls="toc-desktop-content"
+    aria-label="Expand table of contents"
+    class="w-full h-11 flex items-center justify-end gap-2 px-3 text-left cursor-pointer hover:bg-(--paper-line) transition-colors"
+  >
+    <span
+      id="toc-label"
+      class="shrink-0 whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-(--ink-soft)"
     >
       On this page
-    </h3>
-    <ul class="space-y-1 text-sm">
-      {
-        headings.map((heading) => (
-          <li
-            id={`toc-${heading.slug}`}
-            class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:text-(--ink) hover:bg-(--paper-line) ${
-              heading.depth > 2 ? "pl-6" : "pl-3"
-            }`}
-          >
-            <a href={`#${heading.slug}`} class="block py-1 pr-2">
-              {heading.text}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-  </nav>
-</aside>
+    </span>
+    <FiMenu size={16} className="shrink-0 text-(--ink-soft)" />
+  </button>
+
+  <!-- Collapsible content, height + opacity animated by GSAP -->
+  <div id="toc-desktop-content" class="h-0 overflow-y-auto opacity-0">
+    <nav id="toc-desktop-nav" class="px-4 pb-4 max-h-[55vh] overflow-y-auto">
+      <ul class="space-y-1 text-sm">
+        {
+          headings.map((heading) => (
+            <li
+              id={`toc-${heading.slug}`}
+              class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:text-(--ink) hover:bg-(--paper-line) ${
+                heading.depth > 2 ? "pl-6" : "pl-3"
+              }`}
+            >
+              <a href={`#${heading.slug}`} class="block py-1 pr-2">
+                {heading.text}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</div>
 
 <script>
+  import { gsap } from "gsap";
+
   // Mobile TOC Toggle
   const tocToggle = document.getElementById("toc-toggle");
   const tocDropdown = document.getElementById("toc-dropdown");
   let isDropdownOpen = false;
 
   if (tocToggle && tocDropdown) {
+    gsap.set(tocDropdown, { autoAlpha: 0, y: -8 });
+
+    const openDropdown = () => {
+      tocDropdown.classList.remove("hidden");
+      gsap.to(tocDropdown, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.25,
+        ease: "power2.out",
+      });
+    };
+    const closeDropdown = () => {
+      gsap.to(tocDropdown, {
+        autoAlpha: 0,
+        y: -8,
+        duration: 0.2,
+        ease: "power2.in",
+        onComplete: () => tocDropdown.classList.add("hidden"),
+      });
+    };
+
     tocToggle.addEventListener("click", () => {
       isDropdownOpen = !isDropdownOpen;
-      tocDropdown.classList.toggle("hidden", !isDropdownOpen);
+      isDropdownOpen ? openDropdown() : closeDropdown();
     });
 
-    // Close dropdown when clicking outside
     document.addEventListener("click", (e) => {
       if (
         isDropdownOpen &&
@@ -105,18 +132,152 @@ const { headings } = Astro.props;
         !tocDropdown.contains(e.target as Node)
       ) {
         isDropdownOpen = false;
-        tocDropdown.classList.add("hidden");
+        closeDropdown();
       }
     });
 
-    // Close dropdown when clicking a link
     tocDropdown.querySelectorAll("a").forEach((link) => {
       link.addEventListener("click", () => {
         isDropdownOpen = false;
-        tocDropdown.classList.add("hidden");
+        closeDropdown();
       });
     });
   }
+
+  // Desktop Floating TOC — icon-only pill that unfolds right-to-left into
+  // the labeled panel. Icon stays pinned to the right edge (justify-end);
+  // as the container widens, the label reveals from behind it.
+  const tocContainer = document.getElementById("toc-desktop");
+  const tocHeaderToggle = document.getElementById("toc-header-toggle");
+  const tocContent = document.getElementById("toc-desktop-content");
+  const tocLabel = document.getElementById("toc-label");
+  const TOC_FOLD_KEY = "toc-desktop-folded";
+
+  const COLLAPSED_WIDTH = 44; // px, matches w-11
+  const EXPANDED_WIDTH = 256; // px, matches w-64
+  const COLLAPSED_RADIUS = 9999;
+  const EXPANDED_RADIUS = 16;
+
+  let isExpanded = false;
+  let isAnimating = false;
+
+  const expand = (instant = false) => {
+    if (!tocContainer || !tocContent || !tocLabel) return;
+    isExpanded = true;
+    isAnimating = true;
+    tocHeaderToggle?.setAttribute("aria-expanded", "true");
+    tocHeaderToggle?.setAttribute("aria-label", "Collapse table of contents");
+
+    const dur = instant ? 0 : 0.4;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        isAnimating = false;
+      },
+    });
+
+    // 1. Widen the container right-to-left (right edge stays pinned via `right-6`)
+    tl.to(tocContainer, {
+      width: EXPANDED_WIDTH,
+      borderRadius: EXPANDED_RADIUS,
+      duration: dur,
+      ease: "power3.out",
+    });
+    // 2. Fade the label in as it's revealed
+    tl.to(
+      tocLabel,
+      { opacity: 1, duration: dur * 0.6, ease: "power1.out" },
+      dur ? "-=0.3" : 0,
+    );
+    // 3. Drop in the list below
+    tl.add(
+      () => {
+        gsap.set(tocContent, { height: "auto" });
+        const targetHeight = tocContent.offsetHeight;
+        gsap.fromTo(
+          tocContent,
+          { height: 0, opacity: 0 },
+          {
+            height: targetHeight,
+            opacity: 1,
+            duration: dur || 0.3,
+            ease: "power2.in",
+            onComplete: () => gsap.set(tocContent, { height: "auto" }),
+          },
+        );
+      },
+      dur ? "-=0.15" : 0,
+    );
+
+    try {
+      sessionStorage.setItem(TOC_FOLD_KEY, "0");
+    } catch {
+      /* sessionStorage unavailable, ignore */
+    }
+  };
+
+  const collapse = (instant = false) => {
+    if (!tocContainer || !tocContent || !tocLabel) return;
+    isExpanded = false;
+    isAnimating = true;
+    tocHeaderToggle?.setAttribute("aria-expanded", "false");
+    tocHeaderToggle?.setAttribute("aria-label", "Expand table of contents");
+
+    const dur = instant ? 0 : 0.35;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        isAnimating = false;
+      },
+    });
+
+    // 1. Collapse the list first
+    tl.to(tocContent, {
+      height: 0,
+      opacity: 0,
+      duration: dur * 0.7 || 0,
+      ease: "power2.in",
+    });
+    // 2. Fade the label out
+    tl.to(
+      tocLabel,
+      { opacity: 0, duration: dur * 0.4 || 0, ease: "power1.in" },
+      dur ? "-=0.1" : 0,
+    );
+    // 3. Shrink the container back to just the icon, right edge pinned
+    tl.to(
+      tocContainer,
+      {
+        width: COLLAPSED_WIDTH,
+        borderRadius: COLLAPSED_RADIUS,
+        duration: dur,
+        ease: "power3.in",
+      },
+      dur ? "-=0.15" : 0,
+    );
+
+    try {
+      sessionStorage.setItem(TOC_FOLD_KEY, "1");
+    } catch {
+      /* sessionStorage unavailable, ignore */
+    }
+  };
+
+  // Default: expanded on first load, unless the reader collapsed it earlier this session
+  let startExpanded = true;
+  try {
+    startExpanded = sessionStorage.getItem(TOC_FOLD_KEY) !== "1";
+  } catch {
+    /* sessionStorage unavailable, ignore */
+  }
+  if (startExpanded) {
+    expand(true);
+  } else {
+    collapse(true);
+  }
+
+  tocHeaderToggle?.addEventListener("click", () => {
+    if (isAnimating) return;
+    isExpanded ? collapse() : expand();
+  });
 
   let isClickNavigation = false;
 
@@ -142,11 +303,9 @@ const { headings } = Astro.props;
     document.querySelectorAll("h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]"),
   ) as HTMLElement[];
 
-  // Figure out which heading should be active right now, on initial load,
-  // since IntersectionObserver only reports *changes* going forward.
   const setInitialActive = () => {
     if (headingEls.length === 0) return;
-    const thresholdLine = window.innerHeight * 0.2; // matches rootMargin top offset below
+    const thresholdLine = window.innerHeight * 0.2;
     let current = headingEls[0];
     for (const h of headingEls) {
       if (h.getBoundingClientRect().top <= thresholdLine) {
@@ -155,8 +314,8 @@ const { headings } = Astro.props;
         break;
       }
     }
-    const tocItem = document.getElementById(`toc-${current.id}`);
-    if (tocItem) setActive(tocItem);
+    const tocItems = document.querySelectorAll(`[id="toc-${current.id}"]`);
+    tocItems.forEach((tocItem) => setActive(tocItem));
   };
   setInitialActive();
 
@@ -165,8 +324,8 @@ const { headings } = Astro.props;
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
         const id = entry.target.id;
-        const tocItem = document.getElementById(`toc-${id}`);
-        if (tocItem) setActive(tocItem);
+        const tocItems = document.querySelectorAll(`[id="toc-${id}"]`);
+        tocItems.forEach((tocItem) => setActive(tocItem));
       }
     });
   }, observerOptions);
@@ -175,8 +334,7 @@ const { headings } = Astro.props;
     observer.observe(heading);
   });
 
-  // Handle click events to manually highlight the selected item
-  const nav = document.querySelector("aside nav");
+  const navs = document.querySelectorAll("#toc-dropdown nav, #toc-desktop-nav");
   let scrollEndTimeout: ReturnType<typeof setTimeout> | null = null;
   const clearClickNavigation = () => {
     isClickNavigation = false;
@@ -186,28 +344,25 @@ const { headings } = Astro.props;
     }
   };
 
-  // Primary: native scrollend event (fires once scrolling truly stops)
   window.addEventListener("scrollend", () => {
     if (isClickNavigation) clearClickNavigation();
   });
 
-  // Fallback for browsers without scrollend (older Safari): debounce scroll
   let scrollDebounce: ReturnType<typeof setTimeout> | null = null;
   window.addEventListener("scroll", () => {
     if (!isClickNavigation) return;
     if (scrollDebounce) clearTimeout(scrollDebounce);
     scrollDebounce = setTimeout(() => {
       clearClickNavigation();
-    }, 150); // no scroll movement for 150ms = settled
+    }, 150);
   });
 
-  // Absolute safety net in case neither fires (e.g. click didn't scroll at all)
   const armSafetyNet = () => {
     if (scrollEndTimeout) clearTimeout(scrollEndTimeout);
     scrollEndTimeout = setTimeout(clearClickNavigation, 3000);
   };
 
-  if (nav) {
+  navs.forEach((nav) => {
     nav.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
       const link = target.closest("a");
@@ -215,14 +370,14 @@ const { headings } = Astro.props;
         const href = link.getAttribute("href");
         if (href && href.startsWith("#")) {
           const slug = href.substring(1);
-          const tocItem = document.getElementById(`toc-${slug}`);
-          if (tocItem) {
+          const tocItems = document.querySelectorAll(`[id="toc-${slug}"]`);
+          if (tocItems.length > 0) {
             isClickNavigation = true;
-            setActive(tocItem);
+            tocItems.forEach((tocItem) => setActive(tocItem));
             armSafetyNet();
           }
         }
       }
     });
-  }
+  });
 </script>
