@@ -9,7 +9,7 @@ const { headings } = Astro.props;
 <!-- Mobile/Tablet Floating TOC Button -->
 <button
   id="toc-toggle"
-  class="lg:hidden fixed top-4 right-4 z-50 flex items-center gap-2 border border-(--paper-line) bg-(--card-bg)/90 backdrop-blur-sm px-4 py-2 text-sm font-medium text-(--ink) shadow-md hover:bg-(--paper-line) transition-colors"
+  class="fixed top-4 right-4 z-50 flex items-center gap-2 border border-(--paper-line) bg-(--card-bg)/90 px-4 py-2 text-sm font-medium text-(--ink) shadow-md backdrop-blur-sm transition-colors hover:bg-(--paper-line) lg:hidden"
 >
   <FiMenu size={16} className="text-(--ink-soft)" />
   On this page
@@ -18,11 +18,11 @@ const { headings } = Astro.props;
 <!-- Mobile/Tablet Dropdown TOC -->
 <div
   id="toc-dropdown"
-  class="lg:hidden fixed top-16 right-4 z-40 hidden w-72 bg-(--card-bg)/95 backdrop-blur-sm p-2"
+  class="fixed top-16 right-4 z-40 hidden w-72 bg-(--card-bg)/95 p-2 backdrop-blur-sm lg:hidden"
 >
   <nav>
     <h3
-      class="mb-3 text-xs font-semibold uppercase tracking-wide text-(--ink-soft)"
+      class="mb-3 text-xs font-semibold tracking-wide text-(--ink-soft) uppercase"
     >
       On this page
     </h3>
@@ -31,7 +31,7 @@ const { headings } = Astro.props;
         headings.map((heading) => (
           <li
             id={`toc-${heading.slug}`}
-            class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:text-(--ink) hover:bg-(--paper-line) ${
+            class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:bg-(--paper-line) hover:text-(--ink) ${
               heading.depth > 2 ? "pl-6" : "pl-3"
             }`}
           >
@@ -48,7 +48,7 @@ const { headings } = Astro.props;
 <!-- Desktop Floating TOC: icon-only when collapsed, unfolds right-to-left -->
 <div
   id="toc-desktop"
-  class="hidden lg:block fixed top-24 right-6 z-40 w-11 border border-(--paper-line) bg-(--card-bg)/95 backdrop-blur-sm shadow-md overflow-hidden"
+  class="fixed top-24 right-6 z-40 hidden w-11 overflow-hidden border border-(--paper-line) bg-(--card-bg)/95 shadow-md backdrop-blur-sm lg:block"
 >
   <!-- Header row: icon is pinned to the right edge, label reveals to its left as the panel widens -->
   <button
@@ -56,11 +56,11 @@ const { headings } = Astro.props;
     aria-expanded="false"
     aria-controls="toc-desktop-content"
     aria-label="Expand table of contents"
-    class="w-full h-11 flex items-center justify-end gap-2 px-3 text-left cursor-pointer hover:bg-(--paper-line) transition-colors"
+    class="flex h-11 w-full cursor-pointer items-center justify-end gap-2 px-3 text-left transition-colors hover:bg-(--paper-line)"
   >
     <span
       id="toc-label"
-      class="shrink-0 whitespace-nowrap text-xs font-semibold uppercase tracking-wide text-(--ink-soft)"
+      class="shrink-0 text-xs font-semibold tracking-wide whitespace-nowrap text-(--ink-soft) uppercase"
     >
       On this page
     </span>
@@ -69,13 +69,13 @@ const { headings } = Astro.props;
 
   <!-- Collapsible content, height + opacity animated by GSAP -->
   <div id="toc-desktop-content" class="h-0 overflow-y-auto opacity-0">
-    <nav id="toc-desktop-nav" class="px-4 pb-4 max-h-[55vh] overflow-y-auto">
+    <nav id="toc-desktop-nav" class="max-h-[55vh] overflow-y-auto px-4 pb-4">
       <ul class="space-y-1 text-sm">
         {
           headings.map((heading) => (
             <li
               id={`toc-${heading.slug}`}
-              class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:text-(--ink) hover:bg-(--paper-line) ${
+              class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:bg-(--paper-line) hover:text-(--ink) ${
                 heading.depth > 2 ? "pl-6" : "pl-3"
               }`}
             >
@@ -122,7 +122,11 @@ const { headings } = Astro.props;
 
     tocToggle.addEventListener("click", () => {
       isDropdownOpen = !isDropdownOpen;
-      isDropdownOpen ? openDropdown() : closeDropdown();
+      if (isDropdownOpen) {
+        openDropdown();
+      } else {
+        closeDropdown();
+      }
     });
 
     document.addEventListener("click", (e) => {
@@ -276,7 +280,11 @@ const { headings } = Astro.props;
 
   tocHeaderToggle?.addEventListener("click", () => {
     if (isAnimating) return;
-    isExpanded ? collapse() : expand();
+    if (isExpanded) {
+      collapse();
+    } else {
+      expand();
+    }
   });
 
   let isClickNavigation = false;

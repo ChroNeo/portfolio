@@ -23,10 +23,10 @@ export default function ThemeToggle() {
         <button
             onClick={toggleTheme}
             aria-label="Toggle theme"
-            className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full
+            className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center rounded-full
                 bg-(--paper-bg) text-(--ink)
-                shadow-lg ring-1 ring-black/10 dark:ring-white/10
-                transition-all duration-300 hover:scale-110 active:scale-95"
+                shadow-lg ring-1 ring-black/10 transition-all
+                duration-300 hover:scale-110 active:scale-95 dark:ring-white/10"
         >
             {isDark ? <LuSun className="h-6 w-6" /> : <LuMoon className="h-6 w-6" />}
         </button>
