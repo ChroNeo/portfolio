@@ -1,32 +1,53 @@
 ---
-
+// Nav.astro
 ---
 
-<div class="navbar_container">
-  <nav class="flex items-center justify-between p-4">
-    <div class="text-4xl font-bold text-(--ink)">ChroNeo</div>
+<div
+  id="navbar"
+  class="pointer-events-none fixed inset-x-0 top-0 z-50 -translate-y-full px-4 pt-4 opacity-0 transition-all duration-300 ease-out"
+>
+  <nav
+    class="pointer-events-auto mx-auto flex max-w-5xl items-center justify-between rounded-2xl border border-(--paper-line) bg-(--card-bg)/80 px-6 py-3 shadow-lg backdrop-blur-md"
+  >
+    <div class="text-3xl font-bold text-(--ink)">ChroNeo</div>
     <ul class="flex space-x-4">
       <li>
         <a
           href="#hero"
-          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
+          class="inline-block border border-transparent px-2 text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
           >Home</a
         >
       </li>
       <li>
         <a
           href="#projects"
-          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
+          class="inline-block border border-transparent px-2 text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
           >Projects</a
         >
       </li>
       <li>
         <a
           href="#contact"
-          class="inline-block border border-transparent text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
+          class="inline-block border border-transparent px-2 text-xl text-(--ink) transition-all duration-200 hover:-translate-y-1 hover:border-(--ink) hover:text-(--ink-soft) hover:shadow-xl"
           >Contact</a
         >
       </li>
     </ul>
   </nav>
 </div>
+
+<script>
+  const navbar = document.getElementById("navbar");
+  if (navbar) {
+    let shown = false;
+    const onScroll = () => {
+      const shouldShow = window.scrollY > 80;
+      if (shouldShow === shown) return;
+      shown = shouldShow;
+      navbar.classList.toggle("-translate-y-full", !shown);
+      navbar.classList.toggle("opacity-0", !shown);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+</script>

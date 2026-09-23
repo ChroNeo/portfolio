@@ -9,9 +9,16 @@
   <div
     class="cut-2 h-1/2 rotate-1 border border-(--paper-line) bg-(--card-bg) p-12 shadow-2xl"
   >
-    <h1 class="hero-title text-6xl font-bold text-(--ink) opacity-0">
+    <h1
+      class="hero-title text-6xl font-bold text-(--ink) opacity-0"
+      aria-label="Hi, I'm Neo"
+    >
       Hi, I'm Neo
     </h1>
+    <div
+      class="hero-underline mt-4 h-1.5 w-full origin-left scale-x-0 rounded-full bg-(--tape)"
+    >
+    </div>
     <p class="hero-sub mt-4 text-center text-xl text-(--ink-soft) opacity-0">
       Welcome to my portfolio.
     </p>
@@ -25,29 +32,48 @@
 
 <script>
   import { gsap } from "gsap";
+import { SplitText } from "gsap/SplitText";
+
+  gsap.registerPlugin(SplitText);
 
   document.addEventListener("DOMContentLoaded", () => {
-    gsap
-      .timeline()
-      .to(
-        ".hero-title",
-        {
+    document.fonts.ready.then(() => {
+      const title = document.querySelector<HTMLElement>(".hero-title");
+      if (!title) return;
+
+      const split = SplitText.create(title, {
+        type: "chars,words",
+        mask: "chars",
+      });
+
+      gsap.set(title, { opacity: 1, perspective: 600 });
+      gsap.set(split.chars, { opacity: 0, yPercent: 120, rotateX: -90 });
+
+      gsap
+        .timeline()
+        .to(split.chars, {
           opacity: 1,
-          y: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        0,
-      )
-      .to(
-        ".hero-img",
-        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-        0,
-      )
-      .to(
-        ".hero-sub",
-        { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-        "-=0.4",
-      );
+          yPercent: 0,
+          rotateX: 0,
+          duration: 0.9,
+          ease: "back.out(1.7)",
+          stagger: 0.04,
+        })
+        .to(
+          ".hero-underline",
+          { scaleX: 1, duration: 0.7, ease: "power3.out" },
+          "-=0.5",
+        )
+        .to(
+          ".hero-img",
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          0.2,
+        )
+        .to(
+          ".hero-sub",
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          "-=0.4",
+        );
+    });
   });
 </script>

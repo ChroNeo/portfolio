@@ -2,7 +2,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 body {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
 }
 
 h1,
@@ -12,16 +12,27 @@ h4,
 h5,
 h6,
 label {
-  font-family: 'Inter', system-ui, sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
 }
-
 
 /* src/styles/global.css */
 @import "tailwindcss";
 
 @layer components {
   .cut-1 {
-    clip-path: polygon(2% 4%, 30% 0%, 68% 2%, 100% 5%, 98% 35%, 100% 70%, 96% 100%, 60% 98%, 25% 100%, 0% 90%, 3% 50%);
+    clip-path: polygon(
+      2% 4%,
+      30% 0%,
+      68% 2%,
+      100% 5%,
+      98% 35%,
+      100% 70%,
+      96% 100%,
+      60% 98%,
+      25% 100%,
+      0% 90%,
+      3% 50%
+    );
   }
 
   .cut-2 {
