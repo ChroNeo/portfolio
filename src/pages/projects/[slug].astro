@@ -59,19 +59,19 @@ const getTechIcon = (tech: string) => {
 ---
 
 <BaseLayout title={`${project.data.title} | ChroNeo`}>
-  <div class="mx-auto flex max-w-6xl gap-8 px-8 py-16">
-    <article class="paper-bg flex-1 px-8 py-16">
-      <a
-        href="/portfolio/#projects"
-        class="group inline-flex items-center gap-1.5 text-sm font-medium text-amber-700 transition-colors hover:text-amber-900"
-      >
-        <FiArrowLeft
-          className="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
-        />
-        Back to projects
-      </a>
+  <a
+    href="/portfolio/#projects"
+    aria-label="Back to projects"
+    class="group fixed top-4 left-4 z-50 inline-flex h-10 w-10 items-center justify-center rounded-full bg-(--card-bg)/90 text-(--ink) shadow-md backdrop-blur-sm transition-colors hover:bg-(--paper-line) hover:text-(--ink-soft)"
+  >
+    <FiArrowLeft
+      className="h-5 w-5 transition-transform group-hover:-translate-x-0.5"
+    />
+  </a>
 
-      <div class="mx-auto mt-6 mb-10 max-w-3xl text-center">
+  <div class="mx-auto flex max-w-6xl gap-8 px-4 pt-8 pb-16">
+    <article class="paper-bg flex-1 px-4 pt-8 pb-16 sm:px-8">
+      <div class="mx-auto mt-2 mb-10 max-w-3xl text-center">
         <div class="mb-4 flex items-center justify-center gap-3 text-sm">
           <span
             class="rounded-full bg-lime-100 px-3 py-1 font-medium text-lime-800"
@@ -102,7 +102,7 @@ const getTechIcon = (tech: string) => {
 
       {
         project.data.thumbnail && (
-          <div class="mx-auto mb-10 max-w-2xl overflow-hidden rounded-2xl border border-(--paper-line) shadow-md">
+          <div class="project-image mx-auto mb-10 max-w-2xl overflow-hidden rounded-2xl border border-(--paper-line) shadow-md">
             <Image
               src={project.data.thumbnail}
               alt={project.data.title}
@@ -159,3 +159,30 @@ const getTechIcon = (tech: string) => {
     <TableOfContents headings={headings} />
   </div>
 </BaseLayout>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const images = gsap.utils.toArray<HTMLElement>(
+    ".project-image, .prose img",
+  );
+
+  images.forEach((image) => {
+    gsap.from(image, {
+      autoAlpha: 0,
+      scale: 0.7,
+      duration: 0.4,
+      ease: "back.inOut(1.7)",
+      scrollTrigger: {
+        trigger: image,
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  });
+
+  ScrollTrigger.refresh();
+</script>
