@@ -9,7 +9,7 @@ const { headings } = Astro.props;
 <!-- Mobile/Tablet Floating TOC Button -->
 <button
   id="toc-toggle"
-  class="fixed top-4 right-4 z-50 flex items-center gap-2 border border-(--paper-line) bg-(--card-bg)/90 px-4 py-2 text-sm font-medium text-(--ink) shadow-md backdrop-blur-sm transition-colors hover:bg-(--paper-line) lg:hidden"
+  class="fixed top-4 right-4 z-50 flex items-center gap-2 bg-(--card-bg)/90 px-4 py-2 text-sm font-medium text-(--ink) shadow-md backdrop-blur-sm transition-colors hover:bg-(--paper-line) lg:hidden"
 >
   <FiMenu size={16} className="text-(--ink-soft)" />
   On this page
@@ -48,7 +48,7 @@ const { headings } = Astro.props;
 <!-- Desktop Floating TOC: icon-only when collapsed, unfolds right-to-left -->
 <div
   id="toc-desktop"
-  class="fixed top-24 right-6 z-40 hidden w-11 overflow-hidden border border-(--paper-line) bg-(--card-bg)/95 shadow-md backdrop-blur-sm lg:block"
+  class="fixed top-24 right-6 z-40 hidden w-11 overflow-hidden bg-(--card-bg)/95 shadow-md backdrop-blur-sm lg:block"
 >
   <!-- Header row: icon is pinned to the right edge, label reveals to its left as the panel widens -->
   <button
@@ -56,7 +56,7 @@ const { headings } = Astro.props;
     aria-expanded="false"
     aria-controls="toc-desktop-content"
     aria-label="Expand table of contents"
-    class="flex h-11 w-full cursor-pointer items-center justify-end gap-2 px-3 text-left transition-colors hover:bg-(--paper-line)"
+    class="flex h-11 w-full cursor-pointer items-center justify-end gap-2 px-3.5 text-left transition-colors hover:bg-(--paper-line)"
   >
     <span
       id="toc-label"
