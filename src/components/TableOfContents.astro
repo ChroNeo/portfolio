@@ -31,6 +31,7 @@ const { headings } = Astro.props;
         headings.map((heading) => (
           <li
             id={`toc-${heading.slug}`}
+            data-depth={heading.depth}
             class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:bg-(--paper-line) hover:text-(--ink) ${
               heading.depth > 2 ? "pl-6" : "pl-3"
             }`}
@@ -75,6 +76,7 @@ const { headings } = Astro.props;
           headings.map((heading) => (
             <li
               id={`toc-${heading.slug}`}
+              data-depth={heading.depth}
               class={`toc-item rounded-r border-l-2 border-transparent text-(--ink-soft) transition-colors duration-200 hover:bg-(--paper-line) hover:text-(--ink) ${
                 heading.depth > 2 ? "pl-6" : "pl-3"
               }`}

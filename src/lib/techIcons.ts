@@ -33,5 +33,7 @@ const icons: Record<string, IconType> = {
   "LINE Messaging API": FaLine,
 };
 
+export const hasTechIcon = (tech: string): boolean => tech in icons;
+
 export const getTechIcon = (tech: string): IconType =>
   icons[tech] ?? SiJavascript;

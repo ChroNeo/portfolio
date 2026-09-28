@@ -11,7 +11,9 @@
     "preview": "astro preview",
     "astro": "astro",
     "lint": "eslint . --max-warnings=0",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
@@ -26,11 +28,14 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
+    "@testing-library/react": "^16.3.3",
     "astro-eslint-parser": "^3.0.0",
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^3.0.1",
     "globals": "^17.8.0",
+    "happy-dom": "^20.14.5",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.65.0"
+    "typescript-eslint": "^8.65.0",
+    "vitest": "^5.0.2"
   }
 }

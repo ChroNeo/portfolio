@@ -67,6 +67,27 @@ The dev server runs at http://localhost:4321/portfolio.
 | `npm run preview` | Preview the production build locally          |
 | `npm run lint`    | Run ESLint (`--max-warnings=0`)               |
 | `npm run lint:fix`| Run ESLint with autofix                       |
+| `npm run test`    | Run the unit test suite (Vitest)              |
+| `npm run test:watch` | Run the tests in watch mode               |
+
+## Testing
+
+Tests run on [Vitest](https://vitest.dev), wired to the Astro pipeline via
+`getViteConfig`, and use the [Astro Container
+API](https://docs.astro.build/en/reference/container-reference/) to render
+components and pages.
+
+Conventions:
+
+- Tests are co-located with the code they test, as `*.test.ts` / `*.test.tsx`.
+- Tests assert observable behaviour through public seams — rendered HTML,
+  exported functions, the content schema, route params — never implementation
+  details such as internal CSS class names.
+- Component and page tests run against the real content collections, so they
+  double as a content contract.
+- Non-page files inside `src/pages/` must be `_`-prefixed, or Astro publishes
+  them as routes (the build-output test guards this).
+- `ThemeToggle.test.tsx` runs in a DOM environment (`happy-dom`).
 
 ## Adding a Project
 

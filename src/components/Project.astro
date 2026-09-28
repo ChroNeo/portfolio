@@ -18,7 +18,7 @@ const projects = await getCollection("projects");
               href={`/portfolio/projects/${project.id}`}
               class={`block border border-(--paper-line) bg-(--card-bg) p-4 shadow-md transition-transform duration-200 hover:rotate-0`}
             >
-              <div class="w-full h-40 rounded-lg bg-(--paper-line) mb-2 flex items-center justify-center text-(--ink-soft)/60 text-xs overflow-hidden ${style.rotate}">
+              <div class="mb-2 flex h-40 w-full items-center justify-center overflow-hidden rounded-lg bg-(--paper-line) text-xs text-(--ink-soft)/60">
                 {project.data.thumbnail ? (
                   <Image
                     src={project.data.thumbnail}
