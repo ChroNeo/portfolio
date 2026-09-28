@@ -21,19 +21,71 @@ category: "Senior Project"
 
 import Callout from "../../components/Callout.astro";
 import TechBadge from "../../components/Techbadge.astro";
+import ProjectGlance from "../../components/ProjectGlance.astro";
+import problemImage from "../../assets/images/projects/problem.png";
 import organizerImage from "../../assets/images/projects/ผู้จัดงาน.png";
 import structureImage from "../../assets/images/projects/2.png";
 import FastifyBenchmarkImage from "../../assets/images/projects/fastify-benchmark.png";
 
-## ปัญหา
+<ProjectGlance
+  items={[
+    { label: "Type", value: "Senior Project — Bachelor of CS" },
+    { label: "Duration", value: "ก.ค. 2025 – เม.ย. 2026" },
+    { label: "Team", value: "2 คน (Dev 2)" },
+    { label: "My Role", value: "Full-stack Developer & Team Lead" },
+    { label: "Advisor", value: "Athasart Narkthewan" },
+  ]}
+  stack={[
+    "React",
+    "TypeScript",
+    "Fastify",
+    "Node.js",
+    "MySQL",
+    "LINE Messaging API",
+    "Docker",
+  ]}
+/>
 
-การจัดการนิทรรศการและกิจกรรมโดยทั่วไปมักต้องใช้หลายระบบแยกกันสำหรับการลงทะเบียน
-การตรวจสอบการเข้าร่วม และการออกใบประกาศนียบัตร บางส่วนยังคงพึ่งพาเอกสารกระดาษอยู่
-ความกระจัดกระจายนี้ทำให้ขั้นตอนล่าช้าและข้อมูลผิดพลาดได้ง่าย ยากต่อการตรวจสอบย้อนหลัง หลังจบงาน จึงอยากรวมขั้นตอนทั้งหมด ตั้งแต่การลงทะเบียน การเช็คอินบูธ แบบประเมินความ พึงพอใจ ไปจนถึงการส่งใบประกาศนียบัตร ให้อยู่ในแพลตฟอร์มเดียวที่ทั้งผู้จัดงานและผู้เข้าร่วมใช้งานได้จริงโดยไม่ติดขัด
+## ปัญหาที่พบ
+
+การจัดนิทรรศการและกิจกรรมในปัจจุบันยังพึ่งพากระบวนการแบบกระจัดกระจาย ผู้เข้าร่วมลงชื่อบนกระดาษหน้างาน ทำแบบประเมินผ่านลิงก์อีกช่องทาง แล้วรอรับเกียรติบัตรทางอีเมลอีกหลายวันให้หลัง ขณะที่ผู้จัดงานต้องนำข้อมูลจากทุกช่องทางมารวมด้วยมือ เพื่อตรวจสอบว่าใครเข้าร่วมครบตามเกณฑ์บ้าง
+
+## ผลกระทบที่เกิดขึ้นจริง
+
+| ฝั่งผู้จัดงาน                                          | ฝั่งผู้เข้าร่วม                                   |
+| ------------------------------------------------------ | ------------------------------------------------- |
+| ต้องรวมข้อมูลจากหลายระบบด้วยมือ เสี่ยงตกหล่นและซ้ำซ้อน | ไม่รู้ว่าตัวเองเข้าร่วมครบตามเกณฑ์แล้วหรือยัง     |
+| ไม่เห็นยอดผู้เข้าร่วมระหว่างงาน ปรับแผนหน้างานไม่ได้   | ต้องเดินไปถามทีมงาน หรือรอให้ประกาศผล             |
+| ออกเกียรติบัตรทีละใบ ใช้เวลานานและพิมพ์ชื่อผิดบ่อย     | ได้รับเกียรติบัตรช้า บางครั้งชื่อสะกดผิดต้องขอแก้ |
+| ใช้กระดาษจำนวนมากทั้งใบเซ็นชื่อและเกียรติบัตร          | ทำเอกสารหายแล้วขอใหม่ไม่ได้                       |
+
+## ข้อจำกัดของทางออกที่มีอยู่
+
+ระบบจัดการงานอีเวนต์ที่มีในตลาดมักอยู่ในรูปแบบแอปพลิเคชันที่ต้องติดตั้งและสมัครสมาชิกใหม่ ซึ่งเป็นอุปสรรคสำคัญกับงานที่มีผู้เข้าร่วมหลากหลายกลุ่มและใช้งานเพียงครั้งเดียว ผู้เข้าร่วมจำนวนมากไม่ยอมโหลดแอปเพื่อร่วมงานเพียงวันเดียว ทำให้ระบบถูกใช้งานไม่เต็มประสิทธิภาพ
+
+## คำถามของโปรเจกต์นี้
+
+<Callout type="info">
+  เราจะรวมทุกขั้นตอนของงานนิทรรศการ ตั้งแต่ลงทะเบียน เช็กอิน ประเมินผล
+  จนถึงรับเกียรติบัตร ให้อยู่ในระบบเดียว
+  โดยที่ผู้เข้าร่วมไม่ต้องติดตั้งแอปพลิเคชันใหม่เลยได้อย่างไร
+</Callout>
+
+<img
+  src={problemImage.src}
+  alt="ปัญหาที่พบ"
+  style="display: block; margin: 1.5rem auto; max-width: 65%; height: auto;"
+/>
+
+คำตอบที่เราเลือกคือการใช้ LINE Official Account ร่วมกับ Webhook เป็นช่องทางหลักสำหรับผู้เข้าร่วม เพราะเป็นแอปที่คนไทยใช้อยู่แล้วทุกวัน ทำให้ระบบไปอยู่ในที่ที่ผู้ใช้อยู่ แทนที่จะพาผู้ใช้มาหาระบบ
 
 ## วัตถุประสงค์และขอบเขต
 
-<img src={organizerImage.src} alt="ผู้จัดงาน" style="display: block; margin: 1.5rem 0;" />
+<img
+  src={organizerImage.src}
+  alt="ผู้จัดงาน"
+  style="display: block; margin: 1.5rem 0;"
+/>
 
 ระบบนี้พัฒนาขึ้นเพื่อรองรับผู้ใช้งาน 3 บทบาทหลัก ได้แก่ **ผู้จัดงาน** (สร้าง/จัดการนิทรรศการ
 บูธ และดูสถิติ) **เจ้าหน้าที่ประจำบูธ** (เช็คอินผู้เข้าร่วมด้วย QR Code) และ **ผู้เข้าร่วมงาน**
@@ -48,7 +100,11 @@ import FastifyBenchmarkImage from "../../assets/images/projects/fastify-benchmar
 
 ## สถาปัตยกรรมระบบ
 
-<img src={structureImage.src} alt="โครงสร้างระบบ" style="display: block; margin: 1.5rem 0;" />
+<img
+  src={structureImage.src}
+  alt="โครงสร้างระบบ"
+  style="display: block; margin: 1.5rem 0;"
+/>
 
 ระบบแบ่งออกเป็น 3 ชั้นหลัก:
 
@@ -61,8 +117,8 @@ import FastifyBenchmarkImage from "../../assets/images/projects/fastify-benchmar
    กันผ่านตาราง `exhibitions` เป็นศูนย์กลาง
 
 <Callout type="info">
-  LINE ทำหน้าที่เป็น "หน้าบ้าน" ที่ผู้ใช้คุ้นเคยอยู่แล้ว
-  ส่วน Backend และฐานข้อมูลทำหน้าที่เป็น "หลังบ้าน" ที่จัดการ Logic และข้อมูลทั้งหมด
+  LINE ทำหน้าที่เป็น "หน้าบ้าน" ที่ผู้ใช้คุ้นเคยอยู่แล้ว ส่วน Backend
+  และฐานข้อมูลทำหน้าที่เป็น "หลังบ้าน" ที่จัดการ Logic และข้อมูลทั้งหมด
 </Callout>
 
 ## ปัญหาการรองรับ Traffic
@@ -74,22 +130,23 @@ import FastifyBenchmarkImage from "../../assets/images/projects/fastify-benchmar
 **เป้าหมายสถาปัตยกรรม:** ออกแบบระบบหลังบ้านที่ตอบสนองไว (Low Latency) มีเสถียรภาพ และจัดการข้อมูลที่มีความสัมพันธ์ซับซ้อนได้อย่างถูกต้อง
 
 ## ทำไมต้องเป็น Fastify และ LINE Messaging API?
+
 **Fastify vs Express:**
+
 - Fastify มี overhead ต่ำกว่า และใช้ JSON Schema Validation ในตัว
 - รองรับ Throughput ได้สูงกว่า เหมาะกับการรับส่ง Webhook ที่ถี่มากๆ ช่วงคนเข้างานพร้อมกัน
-**LINE Messaging API + LIFF vs Native App:**
+  **LINE Messaging API + LIFF vs Native App:**
 - ลด Friction ฝั่งผู้ใช้ ไม่ต้องดาวน์โหลดแอปเพิ่ม
 - โยนภาระงาน Push notification และ UI หน้าบ้านบางส่วนให้โครงสร้างพื้นฐานของ LINE แล้วใช้ Backend เราจัดการเฉพาะ Webhook Data
 
 ## การแก้ปัญหาในการพัฒนาจริง
+
 - **Challenge 1: Webhook Debugging บน Local Environment**
-    
-    - _ข้อจำกัด:_ LINE บังคับใช้ HTTPS Endpoint เท่านั้นในการส่ง Webhook และรัน LIFF
-        
-    - _ทางแก้:_ ใช้ **Cloudflare Tunnel** จำลอง HTTPS Endpoint จากเครื่อง Local เข้าสู่ระบบ เพื่อทดสอบ Webhook Payload และการรับส่งข้อมูลจริงก่อน Deploy
-        
+
+  - _ข้อจำกัด:_ LINE บังคับใช้ HTTPS Endpoint เท่านั้นในการส่ง Webhook และรัน LIFF
+  - _ทางแก้:_ ใช้ **Cloudflare Tunnel** จำลอง HTTPS Endpoint จากเครื่อง Local เข้าสู่ระบบ เพื่อทดสอบ Webhook Payload และการรับส่งข้อมูลจริงก่อน Deploy
+
 - **Challenge 2: Data Integrity & Certificate Conditions**
-    
-    - _ข้อจำกัด:_ ต้องตรวจสอบเงื่อนไขการเช็คอินครบทุกบูธก่อนอนุญาตให้ทำแบบประเมินและรับใบประกาศฯ
-        
-    - _ทางแก้:_ ออกแบบ Index บน MySQL และปรับ Query ให้ตรวจเช็คเงื่อนไขความถูกต้อง (Transactional Check) ป้องกันการแจกใบประกาศฯ ซ้ำซ้อน
+
+  - _ข้อจำกัด:_ ต้องตรวจสอบเงื่อนไขการเช็คอินครบทุกบูธก่อนอนุญาตให้ทำแบบประเมินและรับใบประกาศฯ
+  - _ทางแก้:_ ออกแบบ Index บน MySQL และปรับ Query ให้ตรวจเช็คเงื่อนไขความถูกต้อง (Transactional Check) ป้องกันการแจกใบประกาศฯ ซ้ำซ้อน
