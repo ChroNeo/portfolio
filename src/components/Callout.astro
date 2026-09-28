@@ -9,17 +9,49 @@ const styles = {
   warning: "bg-(--paper-line) border-(--paper-line) text-(--ink)",
   success: "bg-(--paper-line) border-(--paper-line) text-(--ink)",
 };
-
-const icons = {
-  info: "💡",
-  warning: "⚠️",
-  success: "✅",
-};
 ---
 
-<div class={`border border-dashed ${styles[type]} my-4 p-4 `}>
-  <p class="text-sm leading-relaxed">
-    <span class="mr-1.5">{icons[type]}</span>
-    <slot />
-  </p>
+<div
+  class={`callout-card relative border border-dashed ${styles[type]} my-4 p-6 text-center text-lg leading-relaxed font-medium`}
+>
+  <div
+    class="absolute -top-2.5 left-1/2 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-(--tape)"
+  >
+  </div>
+  <slot />
 </div>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const cards = gsap.utils.toArray<HTMLElement>(".callout-card");
+
+  cards.forEach((card) => {
+    gsap.set(card, { transformOrigin: "50% 0%" });
+
+    if (reduceMotion) return;
+
+    const swing = () => {
+      gsap.killTweensOf(card);
+      gsap.fromTo(
+        card,
+        { rotation: 8 },
+        { rotation: 0, duration: 2.5, ease: "elastic.out(1, 0.28)" },
+      );
+    };
+
+    ScrollTrigger.create({
+      trigger: card,
+      start: "top 85%",
+      onEnter: swing,
+      onEnterBack: swing,
+    });
+  });
+</script>
