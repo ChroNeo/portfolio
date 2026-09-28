@@ -4,23 +4,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import TableOfContents from "../../components/TableOfContents.astro";
 import "../../styles/project.css";
-import {
-  SiReact,
-  SiTypescript,
-  SiJavascript,
-  SiFastify,
-  SiNodedotjs,
-  SiMysql,
-  SiDocker,
-  SiLinux,
-  SiGooglecloud,
-  SiSocketdotio,
-  SiRedis,
-  SiPostgresql,
-} from "react-icons/si";
-import { FaAws, FaLine } from "react-icons/fa6";
-import type { IconType } from "react-icons/lib";
 import { FiArrowLeft } from "react-icons/fi";
+import { FaGithub, FaArrowUpRightFromSquare } from "react-icons/fa6";
 
 export async function getStaticPaths() {
   const projects = (await getCollection("projects")).sort(
@@ -34,31 +19,11 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content, headings } = await render(project);
-
-// Icon mapping for common tech
-const getTechIcon = (tech: string) => {
-  const icons: Record<string, IconType> = {
-    React: SiReact,
-    TypeScript: SiTypescript,
-    JavaScript: SiJavascript,
-    Fastify: SiFastify,
-    "Node.js": SiNodedotjs,
-    MySQL: SiMysql,
-    Docker: SiDocker,
-    Linux: SiLinux,
-    AWS: FaAws,
-    GCP: SiGooglecloud,
-    "Socket.io": SiSocketdotio,
-    Redis: SiRedis,
-    PostgreSQL: SiPostgresql,
-    LINE: FaLine,
-    "LINE Messaging API": FaLine,
-  };
-  return icons[tech] || SiJavascript;
-};
 ---
 
-<BaseLayout title={`${project.data.title} | ChroNeo`}>
+<BaseLayout
+  title={`${project.data.title}${project.data.titleEn ? ` / ${project.data.titleEn}` : ""} | ChroNeo`}
+>
   <a
     href="/portfolio/#projects"
     aria-label="Back to projects"
@@ -71,8 +36,8 @@ const getTechIcon = (tech: string) => {
 
   <div class="mx-auto flex max-w-6xl gap-8 px-4 pt-8 pb-16">
     <article class="paper-bg flex-1 px-4 pt-8 pb-16 sm:px-8">
-      <div class="mx-auto mt-2 mb-10 max-w-3xl text-center">
-        <div class="mb-4 flex items-center justify-center gap-3 text-sm">
+      <div class="mx-auto mt-2 mb-10 max-w-5xl text-center">
+        <div class="swing-in mb-4 flex items-center justify-center gap-3 text-sm opacity-0">
           <span
             class="rounded-full bg-lime-100 px-3 py-1 font-medium text-lime-800"
           >
@@ -90,12 +55,20 @@ const getTechIcon = (tech: string) => {
         </div>
 
         <h1
-          class="font-caveat mb-4 text-4xl leading-tight font-semibold text-(--ink) sm:text-5xl"
+          class="swing-in font-caveat mb-2 text-4xl leading-tight font-semibold text-(--ink) opacity-0 sm:text-5xl sm:whitespace-nowrap"
         >
           {project.data.title}
         </h1>
 
-        <p class="mx-auto max-w-2xl text-lg text-(--ink-soft)">
+        {
+          project.data.titleEn && (
+            <p class="swing-in font-caveat mb-4 text-xl font-medium text-(--ink) opacity-0 sm:text-2xl">
+              {project.data.titleEn}
+            </p>
+          )
+        }
+
+        <p class="swing-in mx-auto max-w-2xl text-lg text-(--ink-soft) opacity-0">
           {project.data.description}
         </p>
       </div>
@@ -113,27 +86,14 @@ const getTechIcon = (tech: string) => {
         )
       }
 
-      <div class="mb-6 flex flex-wrap gap-2">
-        {
-          project.data.stack.map((tech) => {
-            const Icon = getTechIcon(tech);
-            return (
-              <span class="inline-flex items-center gap-1 rounded bg-(--card-bg) px-4 py-2 text-base text-(--ink)">
-                <Icon size={16} />
-                <span>{tech}</span>
-              </span>
-            );
-          })
-        }
-      </div>
-
-      <div class="mb-10 flex gap-3">
+      <div class="swing-in mb-10 flex justify-center gap-3 opacity-0">
         {
           project.data.demo && (
             <a
               href={project.data.demo}
-              class="inline-block -rotate-1 rounded border border-amber-200 bg-white px-3 py-1.5 text-sm text-stone-700"
+              class="inline-flex -rotate-1 items-center gap-2 rounded-md border border-(--paper-line) bg-(--card-bg) px-4 py-1.5 text-sm text-(--ink) shadow-sm transition-transform duration-200 hover:rotate-0"
             >
+              <FaArrowUpRightFromSquare size={14} />
               Live demo
             </a>
           )
@@ -142,8 +102,9 @@ const getTechIcon = (tech: string) => {
           project.data.github && (
             <a
               href={project.data.github}
-              class="inline-block rotate-1 rounded border border-amber-200 bg-white px-3 py-1.5 text-sm text-stone-700"
+              class="inline-flex rotate-1 items-center gap-2 rounded-md border border-(--paper-line) bg-(--card-bg) px-4 py-1.5 text-sm text-(--ink) shadow-sm transition-transform duration-200 hover:rotate-0"
             >
+              <FaGithub size={14} />
               GitHub
             </a>
           )
@@ -165,6 +126,34 @@ const getTechIcon = (tech: string) => {
   import { ScrollTrigger } from "gsap/ScrollTrigger";
 
   gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const topItems = gsap.utils.toArray<HTMLElement>(".swing-in");
+
+  if (reduceMotion) {
+    gsap.set(topItems, { opacity: 1 });
+  } else {
+    gsap.set(topItems, { transformOrigin: "50% 0%" });
+    gsap.fromTo(
+      topItems,
+      {
+        autoAlpha: 0,
+        y: -24,
+        rotation: (index) => (index % 2 === 0 ? -6 : 6),
+      },
+      {
+        autoAlpha: 1,
+        y: 0,
+        rotation: 0,
+        duration: 1.2,
+        ease: "elastic.out(1, 0.45)",
+        stagger: 0.1,
+      },
+    );
+  }
 
   const images = gsap.utils.toArray<HTMLElement>(
     ".project-image, .prose img",

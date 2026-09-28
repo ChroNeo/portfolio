@@ -1,46 +1,9 @@
 ---
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
-import {
-  SiReact,
-  SiTypescript,
-  SiJavascript,
-  SiFastify,
-  SiNodedotjs,
-  SiMysql,
-  SiDocker,
-  SiLinux,
-  SiGooglecloud,
-  SiSocketdotio,
-  SiRedis,
-  SiPostgresql,
-} from "react-icons/si";
-import { FaAws, FaLine } from "react-icons/fa6";
-import type { IconType } from "react-icons/lib";
+import { getTechIcon } from "../lib/techIcons";
 
 const projects = await getCollection("projects");
-
-// Icon mapping for common tech
-const getTechIcon = (tech: string) => {
-  const icons: Record<string, IconType> = {
-    React: SiReact,
-    TypeScript: SiTypescript,
-    JavaScript: SiJavascript,
-    Fastify: SiFastify,
-    "Node.js": SiNodedotjs,
-    MySQL: SiMysql,
-    Docker: SiDocker,
-    Linux: SiLinux,
-    AWS: FaAws,
-    GCP: SiGooglecloud,
-    "Socket.io": SiSocketdotio,
-    Redis: SiRedis,
-    PostgreSQL: SiPostgresql,
-    LINE: FaLine,
-    "LINE Messaging API": FaLine,
-  };
-  return icons[tech] || SiJavascript;
-};
 ---
 
 <section id="projects" class="paper-bg px-8 py-20">

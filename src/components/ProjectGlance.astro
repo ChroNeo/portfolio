@@ -1,0 +1,149 @@
+---
+import {
+  FaTag,
+  FaClock,
+  FaUsers,
+  FaUserTie,
+  FaUserGraduate,
+  FaCode,
+  FaCircleInfo,
+  FaChevronRight,
+} from "react-icons/fa6";
+import type { IconType } from "react-icons/lib";
+import { getTechIcon } from "../lib/techIcons";
+
+interface GlanceItem {
+  label: string;
+  value: string;
+}
+
+interface Props {
+  title?: string;
+  items: GlanceItem[];
+  stack?: string[];
+}
+
+const { title = "Overview", items, stack } = Astro.props;
+
+const icons: Record<string, IconType> = {
+  Type: FaTag,
+  Duration: FaClock,
+  Team: FaUsers,
+  "My Role": FaUserTie,
+  Advisor: FaUserGraduate,
+  "Tech Stack": FaCode,
+};
+
+const getIcon = (label: string) => icons[label] ?? FaChevronRight;
+---
+
+<section
+  class="glance-card relative my-8 rounded-lg border border-(--paper-line) bg-(--card-bg) p-6 shadow-md"
+>
+  <div
+    class="absolute -top-2.5 left-1/2 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-(--tape)"
+  >
+  </div>
+
+  <div class="mb-4 flex items-center gap-2">
+    <FaCircleInfo className="shrink-0 text-(--ink-soft)" size={22} />
+    <span class="font-caveat text-2xl font-semibold text-(--ink)"
+      >{title}</span
+    >
+  </div>
+
+  <dl class="flex flex-col">
+    {
+      items.map((item) => {
+        const Icon = getIcon(item.label);
+        return (
+          <div class="flex gap-4 border-b border-dashed border-(--paper-line) py-2.5 last:border-b-0">
+            <dt class="flex w-28 shrink-0 items-center gap-1.5 text-sm font-semibold text-(--ink)">
+              <Icon className="shrink-0 text-(--ink-soft)" size={14} />
+              {item.label}
+            </dt>
+            <dd class="text-sm leading-relaxed text-(--ink-soft)">
+              {item.value}
+            </dd>
+          </div>
+        );
+      })
+    }
+
+    {
+      stack && stack.length > 0 && (
+        <div class="flex gap-4 border-b border-dashed border-(--paper-line) py-2.5 last:border-b-0">
+          <dt class="flex w-28 shrink-0 items-center gap-1.5 text-sm font-semibold text-(--ink)">
+            <FaCode className="shrink-0 text-(--ink-soft)" size={14} />
+            Tech Stack
+          </dt>
+          <dd class="flex flex-wrap gap-1.5">
+            {stack.map((tech) => {
+              const Icon = getTechIcon(tech);
+              return (
+                <span class="tech-chip inline-flex items-center gap-1.5 rounded-md border border-(--paper-line) bg-(--paper-bg) px-3 py-1 text-sm text-(--ink)">
+                  <Icon size={16} />
+                  <span>{tech}</span>
+                </span>
+              );
+            })}
+          </dd>
+        </div>
+      )
+    }
+  </dl>
+</section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const cards = gsap.utils.toArray<HTMLElement>(".glance-card");
+
+  cards.forEach((card) => {
+    gsap.set(card, { transformOrigin: "50% 0%", rotation: -0.5 });
+
+    if (reduceMotion) return;
+
+    const chips = card.querySelectorAll<HTMLElement>(".tech-chip");
+    gsap.set(chips, { transformOrigin: "50% 0%" });
+
+    const swingAngle = (target: Element, max: number) => {
+      const width = (target as HTMLElement).offsetWidth || 1;
+      const scale = gsap.utils.clamp(0.35, 1, 90 / width);
+      return max * scale;
+    };
+
+    const swing = () => {
+      gsap.killTweensOf([card, chips]);
+      gsap.fromTo(
+        card,
+        { rotation: 8 },
+        { rotation: -0.5, duration: 2.5, ease: "elastic.out(1, 0.28)" },
+      );
+      gsap.fromTo(
+        chips,
+        { rotation: (_index: number, target: Element) => swingAngle(target, 16) },
+        {
+          rotation: 0,
+          duration: 1,
+          ease: "back.out(1.7)",
+          stagger: { each: 0.06, from: "random" },
+        },
+      );
+    };
+
+    ScrollTrigger.create({
+      trigger: card,
+      start: "top 85%",
+      onEnter: swing,
+      onEnterBack: swing,
+    });
+  });
+</script>
