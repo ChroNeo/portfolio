@@ -33,7 +33,7 @@ portfolio/
 │   ├── pages/            # File-based routing
 │   │   ├── index.astro   # Homepage
 │   │   └── projects/
-│   │       └── [slug].astro  # Dynamic project pages
+│   │       └── [project].astro  # Dynamic project pages
 │   └── styles/
 │       └── global.css    # Global styles
 ├── astro.config.mjs      # Astro configuration
@@ -57,7 +57,7 @@ portfolio/
 ### 2. Routing System
 Astro uses file-based routing:
 - **`src/pages/index.astro`** → `/` (homepage)
-- **`src/pages/projects/[slug].astro`** → `/projects/:slug` (dynamic project pages)
+- **`src/pages/projects/[project].astro`** → `/projects/:project` (dynamic project pages)
 
 ### 3. Homepage Flow
 **`src/pages/index.astro`**:
@@ -110,7 +110,7 @@ Astro uses file-based routing:
 - Used within project markdown files
 
 ### 6. Dynamic Project Pages
-**`src/pages/projects/[slug].astro`**:
+**`src/pages/projects/[project].astro`**:
 - Uses `getStaticPaths()` to generate routes for all projects
 - Sorts projects by date (newest first)
 - Renders individual project page with:

@@ -12,7 +12,7 @@ export async function getStaticPaths() {
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
   );
   return projects.map((project) => ({
-    params: { slug: project.id },
+    params: { project: project.id },
     props: { project },
   }));
 }
