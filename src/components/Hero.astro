@@ -7,7 +7,7 @@
   class="flex min-h-screen flex-row items-center justify-center px-8"
 >
   <div
-    class="cut-2 h-1/2 rotate-1 border border-(--paper-line) bg-(--card-bg) p-12 shadow-2xl"
+    class="hero-card cut-2 h-1/2 rotate-1 border border-(--paper-line) bg-(--card-bg) p-12 shadow-2xl"
   >
     <h1
       class="hero-title text-6xl font-bold text-(--ink) opacity-0"
@@ -32,9 +32,10 @@
 
 <script>
   import { gsap } from "gsap";
-import { SplitText } from "gsap/SplitText";
+  import { SplitText } from "gsap/SplitText";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-  gsap.registerPlugin(SplitText);
+  gsap.registerPlugin(SplitText, ScrollTrigger);
 
   document.addEventListener("DOMContentLoaded", () => {
     document.fonts.ready.then(() => {
@@ -74,6 +75,31 @@ import { SplitText } from "gsap/SplitText";
           { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
           "-=0.4",
         );
+
+      gsap.to(".hero-card", {
+        yPercent: -12,
+        autoAlpha: 0,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      gsap.to(".hero-img", {
+        yPercent: -45,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      ScrollTrigger.refresh();
     });
   });
 </script>

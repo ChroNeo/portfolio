@@ -57,3 +57,38 @@ import portrait from "../assets/hero.png";
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const label = document.querySelector("#about > p");
+  if (label) {
+    gsap.from(label, {
+      autoAlpha: 0,
+      y: 40,
+      duration: 0.7,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#about",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  }
+
+  gsap.from("#about .grid > *", {
+    autoAlpha: 0,
+    y: 60,
+    duration: 0.8,
+    ease: "power3.out",
+    stagger: 0.15,
+    scrollTrigger: {
+      trigger: "#about",
+      start: "top 80%",
+      toggleActions: "play none none reverse",
+    },
+  });
+</script>
