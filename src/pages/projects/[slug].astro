@@ -112,7 +112,7 @@ const { Content, headings } = await render(project);
       </div>
 
       <div
-        class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-8 prose-h2:mb-4 max-w-none text-(--ink-soft) [--tw-prose-headings:var(--ink)]"
+        class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-8 prose-h2:mb-4 max-w-none text-lg text-(--ink-soft) [--tw-prose-headings:var(--ink)]"
       >
         <Content />
       </div>
@@ -162,9 +162,9 @@ const { Content, headings } = await render(project);
   images.forEach((image) => {
     gsap.from(image, {
       autoAlpha: 0,
-      scale: 0.7,
-      duration: 0.4,
-      ease: "back.inOut(1.7)",
+      y: 48,
+      duration: 0.6,
+      ease: "power3.out",
       scrollTrigger: {
         trigger: image,
         start: "top 85%",
@@ -172,6 +172,26 @@ const { Content, headings } = await render(project);
       },
     });
   });
+
+  if (!reduceMotion) {
+    const textItems = gsap.utils.toArray<HTMLElement>(
+      ".prose > h2, .prose > p, .prose > ul, .prose > ol, .prose > table",
+    );
+
+    textItems.forEach((item) => {
+      gsap.from(item, {
+        autoAlpha: 0,
+        y: 28,
+        duration: 0.5,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: item,
+          start: "top 88%",
+          toggleActions: "play none none reverse",
+        },
+      });
+    });
+  }
 
   ScrollTrigger.refresh();
 </script>
