@@ -39,3 +39,29 @@ const year = new Date().getFullYear();
     © {year} ChroNeo. all rights reserved.
   </p>
 </footer>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  if (!reduceMotion) {
+    gsap.from("footer > *", {
+      autoAlpha: 0,
+      y: 24,
+      duration: 0.7,
+      ease: "power3.out",
+      stagger: 0.12,
+      scrollTrigger: {
+        trigger: "footer",
+        start: "top 95%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  }
+</script>

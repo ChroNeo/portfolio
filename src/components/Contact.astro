@@ -9,7 +9,7 @@ const socials = [
 <section id="contact" class="paper-bg px-8 py-20">
   <p class="mb-4 text-4xl font-bold text-(--ink)">CONTACT</p>
 
-  <div class="relative">
+  <div class="contact-card relative">
     <div class="tape -top-2 left-[30%] -rotate-3"></div>
     <div class="tape -top-2 left-[70%] rotate-3"></div>
 
@@ -30,7 +30,7 @@ const socials = [
           socials.map((social, i) => (
             <a
               href={social.href}
-              class={`inline-block rounded border border-(--paper-line) bg-(--card-bg) px-3 py-1.5 text-sm text-(--ink) transition-colors hover:bg-(--paper-line) ${
+              class={`contact-link inline-block rounded border border-(--paper-line) bg-(--card-bg) px-3 py-1.5 text-sm text-(--ink) transition-colors hover:bg-(--paper-line) ${
                 i % 2 === 0 ? "-rotate-1" : "rotate-1"
               }`}
             >
@@ -42,3 +42,64 @@ const socials = [
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const label = document.querySelector("#contact > p");
+  if (label && !reduceMotion) {
+    gsap.from(label, {
+      autoAlpha: 0,
+      y: 40,
+      duration: 0.7,
+      ease: "power3.out",
+      scrollTrigger: {
+        trigger: "#contact",
+        start: "top 85%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  }
+
+  const card = document.querySelector<HTMLElement>("#contact .contact-card");
+  if (card && !reduceMotion) {
+    gsap.set(card, { transformOrigin: "50% 0%" });
+
+    gsap
+      .timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          toggleActions: "play none none reverse",
+        },
+      })
+      .from(card, { autoAlpha: 0, y: 40, duration: 0.5, ease: "power2.out" })
+      .from(
+        card,
+        { rotation: 5, duration: 1.1, ease: "power3.out" },
+        "<0.1",
+      );
+  }
+
+  if (!reduceMotion) {
+    gsap.from("#contact .contact-link", {
+      autoAlpha: 0,
+      y: 16,
+      duration: 0.5,
+      ease: "back.out(1.7)",
+      stagger: 0.08,
+      scrollTrigger: {
+        trigger: "#contact",
+        start: "top 70%",
+        toggleActions: "play none none reverse",
+      },
+    });
+  }
+</script>

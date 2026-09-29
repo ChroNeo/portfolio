@@ -1,7 +1,12 @@
-import { execSync } from "node:child_process";
+import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, statSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { getCollection } from "astro:content";
 import { describe, expect, test } from "vitest";
+
+const astroCli = fileURLToPath(
+  new URL("../../node_modules/astro/bin/astro.mjs", import.meta.url),
+);
 
 const listFiles = (dir: string): string[] =>
   readdirSync(dir).flatMap((entry) => {
@@ -22,7 +27,10 @@ describe("build output", () => {
   });
 
   test("a production build emits exactly the expected routes", async () => {
-    execSync("npx astro build", { stdio: "pipe", timeout: 120_000 });
+    execFileSync(process.execPath, [astroCli, "build"], {
+      stdio: "pipe",
+      timeout: 120_000,
+    });
 
     expect(existsSync("dist/index.html")).toBe(true);
 

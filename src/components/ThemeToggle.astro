@@ -1,0 +1,22 @@
+---
+import { LuSun, LuMoon } from "react-icons/lu";
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Toggle theme"
+  class="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-(--paper-bg) text-(--ink) shadow-lg ring-1 ring-black/10 transition-all duration-300 hover:scale-110 active:scale-95 dark:ring-white/10"
+>
+  <LuMoon className="h-6 w-6 dark:hidden" />
+  <LuSun className="hidden h-6 w-6 dark:block" />
+</button>
+
+<script>
+  const button = document.getElementById("theme-toggle");
+
+  button?.addEventListener("click", () => {
+    const isDark = document.documentElement.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+  });
+</script>
