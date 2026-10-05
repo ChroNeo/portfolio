@@ -1,0 +1,375 @@
+---
+import { FaCircleInfo } from "react-icons/fa6";
+
+interface Bar {
+  name: string;
+  value: number;
+  version: string;
+}
+
+interface Benchmark {
+  label: string;
+  unit: string;
+  note: string;
+  bars: Bar[];
+}
+
+interface Props {
+  source?: string;
+  sourceUrl?: string;
+  dataUpdatedAt?: string;
+  benchmarks?: Benchmark[];
+}
+
+const {
+  source = "fastify.dev/benchmarks",
+  sourceUrl = "https://fastify.dev/benchmarks/",
+  dataUpdatedAt = "1 Oct 2026",
+  benchmarks = [
+    {
+      label: "Requests per second",
+      unit: "req/s",
+      note: "higher is better",
+      bars: [
+        { name: "Fastify", value: 50373, version: "5.12.5" },
+        { name: "Hono", value: 45102, version: "4.13.9" },
+        { name: "H3", value: 39767, version: "2.0.1-rc.29" },
+        { name: "Koa", value: 38917, version: "3.2.1" },
+        { name: "Restify", value: 32424, version: "12.0.0" },
+        { name: "Hapi", value: 31978, version: "21.4.10" },
+        { name: "Express", value: 27474, version: "5.2.1" },
+      ],
+    },
+    {
+      label: "Latency",
+      unit: "ms",
+      note: "lower is better",
+      bars: [
+        { name: "Express", value: 35.89, version: "5.2.1" },
+        { name: "Hapi", value: 30.79, version: "21.4.10" },
+        { name: "Restify", value: 30.34, version: "12.0.0" },
+        { name: "Koa", value: 25.2, version: "3.2.1" },
+        { name: "H3", value: 24.67, version: "2.0.1-rc.29" },
+        { name: "Hono", value: 21.67, version: "4.13.9" },
+        { name: "Fastify", value: 19.33, version: "5.12.5" },
+      ],
+    },
+    {
+      label: "Throughput",
+      unit: "MB/s",
+      note: "higher is better",
+      bars: [
+        { name: "Fastify", value: 9.03, version: "5.12.5" },
+        { name: "Hono", value: 7.4, version: "4.13.9" },
+        { name: "H3", value: 6.98, version: "2.0.1-rc.29" },
+        { name: "Koa", value: 6.94, version: "3.2.1" },
+        { name: "Restify", value: 5.84, version: "12.0.0" },
+        { name: "Hapi", value: 5.7, version: "21.4.10" },
+        { name: "Express", value: 4.9, version: "5.2.1" },
+      ],
+    },
+  ],
+} = Astro.props;
+
+const formatNumber = (value: number) =>
+  Number.isInteger(value)
+    ? value.toLocaleString("en-US")
+    : value.toFixed(2);
+
+const ratioFor = (benchmark: Benchmark) => {
+  const fastify = benchmark.bars.find((bar) => bar.name === "Fastify");
+  const express = benchmark.bars.find((bar) => bar.name === "Express");
+  if (!fastify || !express) return null;
+  const lowerWins = benchmark.note.includes("lower");
+  const higher = lowerWins ? express.value : fastify.value;
+  const lower = lowerWins ? fastify.value : express.value;
+  return {
+    ratio: (higher / lower).toFixed(1),
+    direction: lowerWins ? "ต่ำกว่า" : "สูงกว่า",
+  };
+};
+
+const initialRatio = ratioFor(benchmarks[0]);
+const initialBadge = initialRatio
+  ? `Fastify ${initialRatio.ratio}× ${initialRatio.direction} Express`
+  : "";
+
+const uid = `benchmark-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<figure
+  class="benchmark-chart relative my-6 rounded-lg border border-(--paper-line) bg-(--card-bg) p-4 shadow-sm"
+  data-benchmark={uid}
+  tabindex="0"
+>
+  <figcaption class="mb-3 flex items-center justify-between gap-3">
+    <div class="flex flex-col">
+      <span class="benchmark-label text-sm font-semibold text-(--ink)">
+        {benchmarks[0].label}
+        <span class="benchmark-unit font-normal text-(--ink-soft)">
+          · {benchmarks[0].unit}
+        </span>
+      </span>
+      <span
+        class="benchmark-badge text-xs font-medium text-(--ink-soft)"
+      >{initialBadge}</span>
+    </div>
+
+    <div class="benchmark-nav flex shrink-0 items-center gap-1">
+      <button
+        type="button"
+        class="benchmark-prev flex h-7 w-7 items-center justify-center rounded-full border border-(--paper-line) bg-(--paper-line)/30 text-(--ink) transition hover:bg-(--paper-line)/60"
+        aria-label="benchmark ก่อนหน้า"
+      >
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"></path>
+        </svg>
+      </button>
+      <span class="benchmark-counter w-8 text-center text-xs text-(--ink-soft) tabular-nums">
+        1 / {benchmarks.length}
+      </span>
+      <button
+        type="button"
+        class="benchmark-next flex h-7 w-7 items-center justify-center rounded-full border border-(--paper-line) bg-(--paper-line)/30 text-(--ink) transition hover:bg-(--paper-line)/60"
+        aria-label="benchmark ถัดไป"
+      >
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M8.59 16.59 10 18l6-6-6-6-1.41 1.41L13.17 12z"></path>
+        </svg>
+      </button>
+    </div>
+  </figcaption>
+
+  <div class="benchmark-viewport overflow-hidden">
+    <ul class="benchmark-track flex list-none p-0 transition-transform duration-300 ease-out">
+      {
+        benchmarks.map((benchmark, index) => {
+          const max = Math.max(...benchmark.bars.map((bar) => bar.value));
+          return (
+            <li
+              class="benchmark-panel w-full shrink-0"
+              data-index={index}
+              aria-hidden={index === 0 ? "false" : "true"}
+            >
+              <h3 class="sr-only">
+                {benchmark.label} ({benchmark.unit}) — {benchmark.note}
+              </h3>
+              <ul class="flex list-none flex-col gap-1.5 p-0">
+                {benchmark.bars.map((bar) => {
+                  const pct = (bar.value / max) * 100;
+                  const isFastify = bar.name === "Fastify";
+                  return (
+                    <li class="flex items-center gap-2 text-xs sm:text-sm">
+                      <span class="w-16 shrink-0 truncate text-(--ink-soft)">
+                        {bar.name}
+                      </span>
+                      <span class="relative h-5 flex-1 overflow-hidden rounded-sm bg-(--paper-line)/40">
+                        <span
+                          class={`benchmark-bar absolute inset-y-0 left-0 rounded-sm ${isFastify ? "bg-(--pin)" : "bg-(--ink-soft)/45"}`}
+                          style={`width:${pct}%`}
+                          data-value={bar.value}
+                          data-index={index}
+                        />
+                      </span>
+                      <span
+                        class={`w-14 shrink-0 text-right tabular-nums ${isFastify ? "font-semibold text-(--ink)" : "text-(--ink-soft)"}`}
+                      >
+                        {formatNumber(bar.value)}
+                      </span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+
+  <div class="benchmark-indicators mt-3 flex items-center justify-center gap-1.5">
+    {
+      benchmarks.map((benchmark, index) => (
+        <button
+          type="button"
+          class={`benchmark-dot h-2 w-2 rounded-full transition ${index === 0 ? "bg-(--ink)" : "bg-(--paper-line)"}`}
+          data-index={index}
+          aria-label={`ไป benchmark ${benchmark.label}`}
+          aria-current={index === 0 ? "true" : "false"}
+        />
+      ))
+    }
+  </div>
+
+  <p
+    class="mt-2 flex flex-wrap items-center justify-end gap-x-1 gap-y-0.5 text-[11px] text-(--ink-soft)"
+  >
+    <FaCircleInfo className="shrink-0" size={11} aria-hidden="true" />
+    <span>ข้อมูลเมื่อ <span class="benchmark-date">{dataUpdatedAt}</span></span>
+    <span aria-hidden="true">·</span>
+    <span>ที่มา:</span>
+    <a
+      href={sourceUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="underline decoration-dotted underline-offset-2 transition hover:text-(--ink)"
+    >
+      {source}
+    </a>
+    <span aria-hidden="true">·</span>
+    <span class="benchmark-note">{benchmarks[0].note}</span>
+  </p>
+</figure>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const charts = gsap.utils.toArray<HTMLElement>("[data-benchmark]");
+
+  charts.forEach((chart) => {
+    const track = chart.querySelector<HTMLElement>(".benchmark-track");
+    const panels = chart.querySelectorAll<HTMLElement>(".benchmark-panel");
+    const dots = chart.querySelectorAll<HTMLButtonElement>(".benchmark-dot");
+    const counter = chart.querySelector<HTMLElement>(".benchmark-counter");
+    const label = chart.querySelector<HTMLElement>(".benchmark-label");
+    const unit = chart.querySelector<HTMLElement>(".benchmark-unit");
+    const note = chart.querySelector<HTMLElement>(".benchmark-note");
+    const badge = chart.querySelector<HTMLElement>(".benchmark-badge");
+    const prev = chart.querySelector<HTMLButtonElement>(".benchmark-prev");
+    const next = chart.querySelector<HTMLButtonElement>(".benchmark-next");
+
+    if (!track || panels.length === 0) return;
+
+    const total = panels.length;
+    let index = 0;
+
+    const datasets = Array.from(panels).map((panel) => {
+      const bars = panel.querySelectorAll<HTMLElement>(".benchmark-bar");
+      const values = Array.from(bars).map(
+        (bar) => Number(bar.dataset.value) || 0,
+      );
+      const max = Math.max(...values, 1);
+      const names = Array.from(bars).map((bar) =>
+        bar.closest("li")?.querySelector("span")?.textContent?.trim(),
+      );
+      const fastifyIndex = names.indexOf("Fastify");
+      const expressIndex = names.indexOf("Express");
+      const fastifyValue = values[fastifyIndex] ?? values[0];
+      const expressValue = values[expressIndex] ?? values[values.length - 1];
+      const ratio =
+        fastifyValue <= expressValue
+          ? (expressValue / fastifyValue).toFixed(1)
+          : (fastifyValue / expressValue).toFixed(1);
+      const direction =
+        fastifyValue <= expressValue ? "ต่ำกว่า" : "สูงกว่า";
+      return {
+        bars,
+        max,
+        label: panel
+          .closest("[data-benchmark]")
+          ?.querySelector(`.benchmark-dot[data-index="${panel.dataset.index}"]`)
+          ?.getAttribute("aria-label")
+          ?.replace("ไป benchmark ", ""),
+        badge: `Fastify ${ratio}× ${direction} Express`,
+      };
+    });
+
+    const animateBars = (panelIndex: number) => {
+      const dataset = datasets[panelIndex];
+      if (reduceMotion) return;
+
+      gsap.fromTo(
+        dataset.bars,
+        { width: 0 },
+        {
+          width: (_i: number, target: Element) =>
+            `${((Number((target as HTMLElement).dataset.value) || 0) / dataset.max) * 100}%`,
+          duration: 0.8,
+          ease: "power3.out",
+          stagger: 0.06,
+        },
+      );
+    };
+
+    const render = (animate: boolean) => {
+      if (reduceMotion) {
+        gsap.set(track, { xPercent: -index * 100, duration: 0 });
+      } else {
+        gsap.to(track, {
+          xPercent: -index * 100,
+          duration: 0.35,
+          ease: "power2.out",
+        });
+      }
+
+      panels.forEach((panel, i) => {
+        panel.setAttribute("aria-hidden", i === index ? "false" : "true");
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("bg-(--ink)", i === index);
+        dot.classList.toggle("bg-(--paper-line)", i !== index);
+        dot.setAttribute("aria-current", i === index ? "true" : "false");
+      });
+
+      if (counter) counter.textContent = `${index + 1} / ${total}`;
+      if (label && datasets[index].label)
+        label.textContent = datasets[index].label;
+      if (note) note.textContent = datasets[index].note;
+      if (badge)
+        badge.textContent = datasets[index].badge;
+      if (unit) unit.textContent = `· ${datasets[index].unit}`;
+
+      if (animate) animateBars(index);
+    };
+
+    const goTo = (target: number) => {
+      const nextIndex = (target + total) % total;
+      if (nextIndex === index) return;
+      index = nextIndex;
+      render(true);
+    };
+
+    prev?.addEventListener("click", () => goTo(index - 1));
+    next?.addEventListener("click", () => goTo(index + 1));
+    dots.forEach((dot) =>
+      dot.addEventListener("click", () =>
+        goTo(Number(dot.dataset.index ?? 0)),
+      ),
+    );
+
+    chart.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") goTo(index - 1);
+      else if (event.key === "ArrowRight") goTo(index + 1);
+    });
+
+    let startX: number | null = null;
+    chart.addEventListener("pointerdown", (event) => {
+      startX = event.clientX;
+    });
+    chart.addEventListener("pointerup", (event) => {
+      if (startX === null) return;
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 40) goTo(delta > 0 ? index - 1 : index + 1);
+      startX = null;
+    });
+
+    render(false);
+
+    if (!reduceMotion) {
+      ScrollTrigger.create({
+        trigger: chart,
+        start: "top 85%",
+        once: true,
+        onEnter: () => animateBars(0),
+      });
+    }
+  });
+</script>

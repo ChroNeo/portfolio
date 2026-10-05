@@ -44,20 +44,35 @@ describe("[project] page", () => {
     expect(withoutHtml).toContain(">Project<");
   });
 
-  test("renders the English title and demo/GitHub links when set", async () => {
+  test("renders the English title and GitHub link when set", async () => {
     const projects = await getCollection("projects");
     const linked = projects.find(
-      (entry) => entry.data.titleEn && entry.data.github && entry.data.demo,
+      (entry) => entry.data.titleEn && entry.data.github,
     );
     expect(
       linked,
-      "expected a project with an English title, github and demo links",
+      "expected a project with an English title and a GitHub link",
     ).toBeDefined();
 
     const html = await render(linked!);
 
     expect(html).toContain(linked!.data.titleEn!);
     expect(html).toContain(`href="${linked!.data.github}"`);
-    expect(html).toContain(`href="${linked!.data.demo}"`);
+  });
+
+  test("renders the demo link only when the project sets one", async () => {
+    const projects = await getCollection("projects");
+    const entry = projects[0];
+    const withDemo = {
+      ...entry,
+      data: { ...entry.data, demo: "https://example.com/demo" },
+    } as typeof entry;
+
+    const withHtml = await render(withDemo);
+    const withoutHtml = await render(entry);
+
+    expect(withHtml).toContain('href="https://example.com/demo"');
+    expect(withHtml).toContain("Live demo");
+    expect(withoutHtml).not.toContain("Live demo");
   });
 });

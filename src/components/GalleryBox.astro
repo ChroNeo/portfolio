@@ -1,0 +1,181 @@
+---
+import { Image } from "astro:assets";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import type { ImageMetadata } from "astro";
+
+interface GalleryItem {
+  src: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+}
+
+interface Props {
+  items: GalleryItem[];
+}
+
+const { items } = Astro.props;
+
+const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
+---
+
+<div
+  class="gallery-box relative my-8 rounded-lg border border-(--paper-line) bg-(--card-bg) p-4 shadow-md"
+  data-gallery={uid}
+  tabindex="0"
+>
+  <div
+    class="absolute -top-2.5 left-1/2 z-10 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-(--tape)"
+  >
+  </div>
+
+  <div class="gallery-viewport relative overflow-hidden rounded-md">
+    <ul class="gallery-track flex list-none p-0 transition-transform duration-300 ease-out">
+      {
+        items.map((item, index) => (
+          <li
+            class="gallery-slide w-full shrink-0"
+            aria-hidden={index === 0 ? "false" : "true"}
+          >
+            <figure class="m-0">
+              <Image
+                src={item.src}
+                alt={item.alt}
+                width={720}
+                height={405}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding="async"
+                class="mx-auto block h-auto max-w-full"
+              />
+              {item.caption && (
+                <figcaption class="mt-2 text-center text-sm text-(--ink-soft)">
+                  {item.caption}
+                </figcaption>
+              )}
+            </figure>
+          </li>
+        ))
+      }
+    </ul>
+
+    {
+      items.length > 1 && (
+        <>
+          <button
+            type="button"
+            class="gallery-prev absolute top-1/2 left-2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
+            aria-label="ภาพก่อนหน้า"
+          >
+            <FaChevronLeft size={14} />
+          </button>
+          <button
+            type="button"
+            class="gallery-next absolute top-1/2 right-2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
+            aria-label="ภาพถัดไป"
+          >
+            <FaChevronRight size={14} />
+          </button>
+        </>
+      )
+    }
+  </div>
+
+  {
+    items.length > 1 && (
+      <div class="mt-3 flex items-center justify-center gap-3">
+        <div class="flex items-center gap-1.5">
+          {items.map((_, index) => (
+            <button
+              type="button"
+              class={`gallery-dot h-2 w-2 rounded-full transition ${index === 0 ? "bg-(--ink)" : "bg-(--paper-line)"}`}
+              data-index={index}
+              aria-label={`ไปภาพที่ ${index + 1}`}
+              aria-current={index === 0 ? "true" : "false"}
+            />
+          ))}
+        </div>
+        <span class="gallery-counter text-xs text-(--ink-soft)">
+          1 / {items.length}
+        </span>
+      </div>
+    )
+  }
+</div>
+
+<script>
+  import { gsap } from "gsap";
+
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
+
+  const galleries = gsap.utils.toArray<HTMLElement>(".gallery-box");
+
+  galleries.forEach((root) => {
+    const track = root.querySelector<HTMLElement>(".gallery-track");
+    const slides = root.querySelectorAll<HTMLElement>(".gallery-slide");
+    const dots = root.querySelectorAll<HTMLButtonElement>(".gallery-dot");
+    const counter = root.querySelector<HTMLElement>(".gallery-counter");
+    const prev = root.querySelector<HTMLButtonElement>(".gallery-prev");
+    const next = root.querySelector<HTMLButtonElement>(".gallery-next");
+
+    if (!track || slides.length === 0) return;
+
+    const total = slides.length;
+    let index = 0;
+
+    const render = () => {
+      if (reduceMotion) {
+        gsap.set(track, { xPercent: -index * 100, duration: 0 });
+      } else {
+        gsap.to(track, {
+          xPercent: -index * 100,
+          duration: 0.3,
+          ease: "power2.out",
+        });
+      }
+
+      slides.forEach((slide, i) => {
+        slide.setAttribute("aria-hidden", i === index ? "false" : "true");
+      });
+
+      dots.forEach((dot, i) => {
+        dot.classList.toggle("bg-(--ink)", i === index);
+        dot.classList.toggle("bg-(--paper-line)", i !== index);
+        dot.setAttribute("aria-current", i === index ? "true" : "false");
+      });
+
+      if (counter) counter.textContent = `${index + 1} / ${total}`;
+    };
+
+    const goTo = (target: number) => {
+      index = (target + total) % total;
+      render();
+    };
+
+    prev?.addEventListener("click", () => goTo(index - 1));
+    next?.addEventListener("click", () => goTo(index + 1));
+    dots.forEach((dot) =>
+      dot.addEventListener("click", () =>
+        goTo(Number(dot.dataset.index ?? 0)),
+      ),
+    );
+
+    root.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft") goTo(index - 1);
+      else if (event.key === "ArrowRight") goTo(index + 1);
+    });
+
+    let startX: number | null = null;
+    root.addEventListener("pointerdown", (event) => {
+      startX = event.clientX;
+    });
+    root.addEventListener("pointerup", (event) => {
+      if (startX === null) return;
+      const delta = event.clientX - startX;
+      if (Math.abs(delta) > 40) goTo(delta > 0 ? index - 1 : index + 1);
+      startX = null;
+    });
+
+    render();
+  });
+</script>

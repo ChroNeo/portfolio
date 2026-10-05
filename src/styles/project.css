@@ -73,6 +73,21 @@
   color: var(--ink-soft);
 }
 
+/* Components with their own layout reset the prose list styling */
+.prose .gallery-box ul,
+.prose .gallery-box li,
+.prose .benchmark-chart ul,
+.prose .benchmark-chart li {
+  list-style: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+.prose .gallery-box li::marker,
+.prose .benchmark-chart li::marker {
+  content: none;
+}
+
 /* Nested lists get tighter spacing */
 .prose li>ul,
 .prose li>ol {
