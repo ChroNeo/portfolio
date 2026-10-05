@@ -26,6 +26,18 @@ import BenchmarkChart from "../../components/BenchmarkChart.astro";
 import problemImage from "../../assets/images/projects/problem.png";
 import organizerImage from "../../assets/images/projects/ผู้จัดงาน.png";
 import stackImage from "../../assets/images/projects/2.png";
+import exhibitionListImage from "../../assets/images/projects/senior/exhibition-list.png";
+import exhibitionDetailImage from "../../assets/images/projects/senior/exhibition-detail.png";
+import checkinQrImage from "../../assets/images/projects/senior/checkin-qr.png";
+import checkinScanImage from "../../assets/images/projects/senior/checkin-scan.png";
+import unitAddImage from "../../assets/images/projects/senior/unit-add.png";
+import unitDetailImage from "../../assets/images/projects/senior/unit-detail.png";
+import surveyCreateImage from "../../assets/images/projects/senior/survey-create.png";
+import surveyAnswerImage from "../../assets/images/projects/senior/survey-answer.png";
+import certManageImage from "../../assets/images/projects/senior/cert-manage.png";
+import certReceiveImage from "../../assets/images/projects/senior/cert-receive.png";
+import newsManageImage from "../../assets/images/projects/senior/news-manage.png";
+import newsReceiveImage from "../../assets/images/projects/senior/news-receive.png";
 
 <ProjectGlance
   items={[
@@ -208,21 +220,21 @@ import stackImage from "../../assets/images/projects/2.png";
 
 ### ภาพหน้าจอฟีเจอร์
 
-แต่ละฟีเจอร์มีหน้าจอการใช้งานจริง เลื่อนดูภาพด้วยปุ่มลูกศรหรือจุดด้านล่าง
+ภาพหน้าจอการใช้งานจริงจากเล่มปริญญานิพนธ์ — เลื่อนดูภาพด้วยปุ่มลูกศรหรือจุดด้านล่าง
 
 #### จัดการข้อมูลนิทรรศการ
 
 <GalleryBox
   items={[
     {
-      src: organizerImage,
-      alt: "หน้าจัดการข้อมูลนิทรรศการ",
-      caption: "สร้าง/แก้ไข/ลบงาน กำหนดช่วงเวลาและสถานที่",
+      src: exhibitionListImage,
+      alt: "หน้ารวมนิทรรศการทั้งหมดในระบบหลังบ้าน แสดงการ์ดงานพร้อมวันที่และสถานะ",
+      caption: "หน้ารวมนิทรรศการทั้งหมด เพิ่ม/แก้ไข/ลบได้จากที่เดียว",
     },
     {
-      src: stackImage,
-      alt: "รายละเอียดนิทรรศการ",
-      caption: "หน้ารายละเอียดงานและหน่วยงานที่ร่วมจัด",
+      src: exhibitionDetailImage,
+      alt: "หน้ารายละเอียดนิทรรศการ แสดงช่วงเวลา สถานที่ และปุ่มลงทะเบียน",
+      caption: "หน้ารายละเอียดงาน ช่วงเวลา สถานที่ และหน่วยงานที่ร่วมจัด",
     },
   ]}
 />
@@ -232,14 +244,14 @@ import stackImage from "../../assets/images/projects/2.png";
 <GalleryBox
   items={[
     {
-      src: organizerImage,
-      alt: "หน้าลงทะเบียนและเช็กอินด้วย QR Code",
-      caption: "สแกน QR ยืนยันการเข้าร่วม บันทึกเวลาอัตโนมัติ",
+      src: checkinQrImage,
+      alt: "หน้าจอ E-Ticket บน LINE ของผู้เข้าร่วมงาน แสดง QR Code ประจำตัวให้เจ้าหน้าที่สแกน",
+      caption: "ผู้เข้าร่วมเปิด E-Ticket แสดง QR Code ประจำตัว",
     },
     {
-      src: problemImage,
-      alt: "ผลการเช็กอิน",
-      caption: "สถานะการเช็กอินและประวัติการเข้าร่วม",
+      src: checkinScanImage,
+      alt: "หน้าจอ Staff Scanner บน LINE ของเจ้าหน้าที่ แสดงข้อความเช็กอินสำเร็จ",
+      caption: "เจ้าหน้าที่ประจำบูธสแกน QR แล้วบันทึกเช็กอินสำเร็จ",
     },
   ]}
 />
@@ -249,14 +261,14 @@ import stackImage from "../../assets/images/projects/2.png";
 <GalleryBox
   items={[
     {
-      src: organizerImage,
-      alt: "หน้าจัดการบูธกิจกรรม",
-      caption: "จัดการบูธและเจ้าหน้าที่ประจำบูธ",
+      src: unitAddImage,
+      alt: "หน้าเพิ่มบูธกิจกรรมในระบบหลังบ้าน กรอกชื่อหน่วยงานและรายละเอียด",
+      caption: "เพิ่มบูธกิจกรรมและกำหนดเจ้าหน้าที่ประจำบูธ",
     },
     {
-      src: stackImage,
-      alt: "check-in รายบูธ",
-      caption: "เก็บ check-in แยกรายบูธ",
+      src: unitDetailImage,
+      alt: "Staff Dashboard บน LINE แสดงจำนวนเช็กอินและคะแนนของบูธตัวเอง",
+      caption: "Staff Dashboard สถิติเช็กอินรายบูธ",
     },
   ]}
 />
@@ -266,14 +278,14 @@ import stackImage from "../../assets/images/projects/2.png";
 <GalleryBox
   items={[
     {
-      src: organizerImage,
-      alt: "หน้าสร้างแบบสอบถามออนไลน์",
-      caption: "สร้างชุดคำถามและเก็บคำตอบผ่าน LINE",
+      src: surveyCreateImage,
+      alt: "หน้า Survey Editor สร้างชุดคำถามและตัวเลือกคำตอบในระบบหลังบ้าน",
+      caption: "สร้างชุดคำถามที่นำกลับมาใช้ซ้ำได้",
     },
     {
-      src: stackImage,
-      alt: "สรุปคะแนนแบบสอบถาม",
-      caption: "สรุปคะแนนอัตโนมัติในระบบเดียว",
+      src: surveyAnswerImage,
+      alt: "หน้าแบบประเมินความพึงพอใจบน LINE ของผู้เข้าร่วมงาน",
+      caption: "ผู้เข้าร่วมตอบแบบประเมินผ่าน LINE",
     },
   ]}
 />
@@ -283,14 +295,14 @@ import stackImage from "../../assets/images/projects/2.png";
 <GalleryBox
   items={[
     {
-      src: organizerImage,
-      alt: "หน้าตั้งค่า E-Certificate",
-      caption: "กำหนด template และเกณฑ์การออกเกียรติบัตร",
+      src: certManageImage,
+      alt: "หน้าจัดการใบประกาศนียบัตร ตั้งค่าแม่แบบและดูตัวอย่างเกียรติบัตร",
+      caption: "ตั้งค่า template ใบประกาศนียบัตรและเกณฑ์การออก",
     },
     {
-      src: stackImage,
-      alt: "ตัวอย่าง E-Certificate",
-      caption: "ออก PDF อัตโนมัติให้ผู้ที่เข้าร่วมครบเกณฑ์",
+      src: certReceiveImage,
+      alt: "หน้าเกียรติบัตรบน LINE แสดงชื่อผู้เข้าร่วมและปุ่มดาวน์โหลด PDF",
+      caption: "ผู้เข้าร่วมตรวจสอบสถานะและดาวน์โหลดเกียรติบัตรได้เอง",
     },
   ]}
 />
@@ -300,14 +312,14 @@ import stackImage from "../../assets/images/projects/2.png";
 <GalleryBox
   items={[
     {
-      src: organizerImage,
-      alt: "หน้าส่งข่าวสารประชาสัมพันธ์",
-      caption: "ส่งข่าวสารและแจ้งเตือนผ่าน LINE OA",
+      src: newsManageImage,
+      alt: "หน้าจัดการข่าวสารและประกาศในระบบหลังบ้าน พร้อมรูปประกอบของงาน",
+      caption: "จัดการข่าวสารและประกาศของงาน",
     },
     {
-      src: stackImage,
-      alt: "ตัวอย่างข้อความที่ส่งผ่าน LINE",
-      caption: "ข้อความที่ผู้เข้าร่วมได้รับบน LINE",
+      src: newsReceiveImage,
+      alt: "หน้าข่าวสารและประกาศบน LINE ของผู้เข้าร่วมงาน",
+      caption: "ผู้เข้าร่วมรับข่าวสารผ่าน LINE OA",
     },
   ]}
 />
