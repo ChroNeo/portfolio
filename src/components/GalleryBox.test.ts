@@ -10,7 +10,7 @@ const items = [
   { src: problemImage, alt: "ภาพที่สาม", caption: "คำอธิบายสาม" },
 ];
 
-const renderGallery = (props: { items: typeof items }) =>
+const renderGallery = (props: { items: typeof items; title?: string }) =>
   AstroContainer.create().then((container) => {
     container.addServerRenderer({ renderer: reactRenderer });
     return container.renderToString(GalleryBox, { props });
@@ -23,6 +23,12 @@ describe("GalleryBox", () => {
     for (const item of items) {
       expect(html).toContain(item.alt);
     }
+  });
+
+  test("renders the gallery title when provided", async () => {
+    const html = await renderGallery({ items, title: "จัดการข้อมูลนิทรรศการ" });
+
+    expect(html).toContain("จัดการข้อมูลนิทรรศการ");
   });
 
   test("renders captions when provided", async () => {

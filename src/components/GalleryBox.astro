@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
+import { FaChevronLeft, FaChevronRight, FaXmark } from "react-icons/fa6";
 import type { ImageMetadata } from "astro";
 
 interface GalleryItem {
@@ -11,15 +11,24 @@ interface GalleryItem {
 
 interface Props {
   items: GalleryItem[];
+  title?: string;
 }
 
-const { items } = Astro.props;
+const { items, title } = Astro.props;
+
+const slides = items.map((item) => {
+  const meta = typeof item.src === "string" ? null : item.src;
+  const width = 720;
+  const height = meta ? Math.round((width * meta.height) / meta.width) : 540;
+  const full = typeof item.src === "string" ? item.src : item.src.src;
+  return { ...item, width, height, full };
+});
 
 const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
 <div
-  class="gallery-box relative my-8 rounded-lg border border-(--paper-line) bg-(--card-bg) p-4 shadow-md"
+  class="gallery-box relative my-8 w-full max-w-full min-w-0 rounded-lg border border-(--paper-line) bg-(--card-bg) p-4 shadow-md"
   data-gallery={uid}
   tabindex="0"
 >
@@ -28,24 +37,40 @@ const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
   >
   </div>
 
-  <div class="gallery-viewport relative overflow-hidden rounded-md">
-    <ul class="gallery-track flex list-none p-0 transition-transform duration-300 ease-out">
+  {
+    title && (
+      <h4 class="mt-1 mb-3 text-center text-base font-semibold tracking-wide text-(--ink)">
+        {title}
+      </h4>
+    )
+  }
+
+  <div class="gallery-viewport relative w-full max-w-full min-w-0 overflow-hidden rounded-md">
+    <ul class="gallery-track flex w-full min-w-0 list-none p-0 transition-transform duration-300 ease-out">
       {
-        items.map((item, index) => (
+        slides.map((item, index) => (
           <li
-            class="gallery-slide w-full shrink-0"
+            class="gallery-slide flex w-full min-w-0 shrink-0 items-center justify-center"
             aria-hidden={index === 0 ? "false" : "true"}
           >
-            <figure class="m-0">
-              <Image
-                src={item.src}
-                alt={item.alt}
-                width={720}
-                height={540}
-                loading={index === 0 ? "eager" : "lazy"}
-                decoding="async"
-                class="mx-auto block h-auto max-w-full"
-              />
+            <figure class="m-0 w-full">
+              <button
+                type="button"
+                class="gallery-zoom-trigger block w-full cursor-zoom-in border-0 bg-transparent p-0"
+                data-full={item.full}
+                aria-label={`ซูมภาพ: ${item.alt}`}
+              >
+                <Image
+                  src={item.src}
+                  alt={item.alt}
+                  width={item.width}
+                  height={item.height}
+                  fit="contain"
+                  loading={index === 0 ? "eager" : "lazy"}
+                  decoding="async"
+                  class="mx-auto block h-auto max-h-[70vh] w-auto max-w-full object-contain"
+                />
+              </button>
               {item.caption && (
                 <figcaption class="mt-2 text-center text-sm text-(--ink-soft)">
                   {item.caption}
@@ -62,14 +87,14 @@ const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
         <>
           <button
             type="button"
-            class="gallery-prev absolute top-1/2 left-2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
+            class="gallery-prev absolute top-1/2 left-2 z-10 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
             aria-label="ภาพก่อนหน้า"
           >
             <FaChevronLeft size={14} />
           </button>
           <button
             type="button"
-            class="gallery-next absolute top-1/2 right-2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
+            class="gallery-next absolute top-1/2 right-2 z-10 flex h-9 w-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
             aria-label="ภาพถัดไป"
           >
             <FaChevronRight size={14} />
@@ -81,12 +106,12 @@ const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
 
   {
     items.length > 1 && (
-      <div class="mt-3 flex items-center justify-center gap-3">
+      <div class="mt-3 flex flex-col items-center justify-center gap-1.5">
         <div class="flex items-center gap-1.5">
           {items.map((_, index) => (
             <button
               type="button"
-              class={`gallery-dot h-2 w-2 rounded-full transition ${index === 0 ? "bg-(--ink)" : "bg-(--paper-line)"}`}
+              class={`gallery-dot h-2 w-2 cursor-pointer rounded-full transition ${index === 0 ? "bg-(--ink)" : "bg-(--paper-line)"}`}
               data-index={index}
               aria-label={`ไปภาพที่ ${index + 1}`}
               aria-current={index === 0 ? "true" : "false"}
@@ -99,7 +124,30 @@ const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
       </div>
     )
   }
+
+  <dialog
+    class="gallery-lightbox m-auto max-h-[92vh] max-w-[94vw] rounded-lg border border-(--paper-line) bg-(--card-bg) p-2 shadow-2xl"
+  >
+    <button
+      type="button"
+      class="gallery-lightbox-close absolute top-1 right-1 z-10 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full border border-(--paper-line) bg-(--card-bg) text-(--ink) shadow-md transition hover:bg-(--paper-bg)"
+      aria-label="ปิด"
+    >
+      <FaXmark size={16} />
+    </button>
+    <img
+      class="gallery-lightbox-img mx-auto block max-h-[88vh] max-w-[90vw] object-contain"
+      alt=""
+    />
+  </dialog>
 </div>
+
+<style>
+  .gallery-lightbox::backdrop {
+    background-color: color-mix(in srgb, var(--ink) 72%, transparent);
+    backdrop-filter: blur(2px);
+  }
+</style>
 
 <script>
   import { gsap } from "gsap";
@@ -174,6 +222,31 @@ const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
       const delta = event.clientX - startX;
       if (Math.abs(delta) > 40) goTo(delta > 0 ? index - 1 : index + 1);
       startX = null;
+    });
+
+    const lightbox = root.querySelector<HTMLDialogElement>(".gallery-lightbox");
+    const lightboxImg =
+      root.querySelector<HTMLImageElement>(".gallery-lightbox-img");
+    const lightboxClose = root.querySelector<HTMLButtonElement>(
+      ".gallery-lightbox-close",
+    );
+
+    root
+      .querySelectorAll<HTMLButtonElement>(".gallery-zoom-trigger")
+      .forEach((trigger) => {
+        trigger.addEventListener("click", () => {
+          const full = trigger.dataset.full;
+          if (!full || !lightbox || !lightboxImg) return;
+          lightboxImg.src = full;
+          lightboxImg.alt = trigger.querySelector("img")?.alt ?? "";
+          lightbox.showModal();
+        });
+      });
+
+    lightboxClose?.addEventListener("click", () => lightbox?.close());
+
+    lightbox?.addEventListener("click", (event) => {
+      if (event.target === lightbox) lightbox.close();
     });
 
     render();

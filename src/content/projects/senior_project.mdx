@@ -38,6 +38,27 @@ import certManageImage from "../../assets/images/projects/senior/cert-manage.png
 import certReceiveImage from "../../assets/images/projects/senior/cert-receive.png";
 import newsManageImage from "../../assets/images/projects/senior/news-manage.png";
 import newsReceiveImage from "../../assets/images/projects/senior/news-receive.png";
+import wfFhHomepage from "../../assets/images/projects/senior/wireframe/fh-homepage-exhibition.png";
+import wfFhExhibitionDetail1 from "../../assets/images/projects/senior/wireframe/fh-exhibition-detail-1.png";
+import wfFhExhibitionEdit from "../../assets/images/projects/senior/wireframe/fh-exhibition-edit.png";
+import wfExhibitionsManageAdmin from "../../assets/images/projects/senior/wireframe/exhibitions-manage-admin.png";
+import wfAddExhibition from "../../assets/images/projects/senior/wireframe/add-exhibition.png";
+import wfEditExhibition from "../../assets/images/projects/senior/wireframe/edit-exhibition.png";
+import wfDetailExhibition from "../../assets/images/projects/senior/wireframe/detail-exhibition.png";
+import wfEventAamin from "../../assets/images/projects/senior/wireframe/event-aamin.png";
+import wfDetailEventAamin from "../../assets/images/projects/senior/wireframe/detail-event-aamin.png";
+import wfAddEvent from "../../assets/images/projects/senior/wireframe/add-event.png";
+import wfEditEvent from "../../assets/images/projects/senior/wireframe/edit-event.png";
+import wfRegistrationPage from "../../assets/images/projects/senior/wireframe/registration-page.png";
+import wfRegistrationPage1 from "../../assets/images/projects/senior/wireframe/registration-page-1.png";
+import wfScanQr from "../../assets/images/projects/senior/wireframe/scan-qr.png";
+import wfStaffScanQr from "../../assets/images/projects/senior/wireframe/staff-scan-qr.png";
+import wfSurvey from "../../assets/images/projects/senior/wireframe/survey.png";
+import wfSurveyCreate from "../../assets/images/projects/senior/wireframe/survey-create.png";
+import wfSurveyCreate1 from "../../assets/images/projects/senior/wireframe/survey-create-1.png";
+import wfCertificate from "../../assets/images/projects/senior/wireframe/certificate.png";
+import wfFeedback from "../../assets/images/projects/senior/wireframe/feedback.png";
+import wfAnnouncement from "../../assets/images/projects/senior/wireframe/announcement.png";
 
 <ProjectGlance
   items={[
@@ -181,6 +202,121 @@ import newsReceiveImage from "../../assets/images/projects/senior/news-receive.p
 - **ข้อสมมติ:** ผู้เข้าร่วมมี LINE บนสมาร์ตโฟนและเชื่อมต่ออินเทอร์เน็ตได้หน้างาน
 - **สถานะ:** เสร็จสมบูรณ์ ผ่านการสอบปริญญานิพนธ์ เม.ย. 2569
 
+### ภาพร่างการออกแบบ (Design Wireframe)
+
+ภาพร่างหน้าจอ (wireframe/mockup) ที่ออกแบบไว้ตั้งแต่เฟส Design — ครอบคลุมทั้งฝั่งผู้ดูแลระบบ (เว็บ) และฝั่งผู้เข้าร่วมงาน (LINE/mobile) เลื่อนดูด้วยปุ่มลูกศรหรือจุดด้านล่าง
+
+<GalleryBox
+  title="ภาพร่างการออกแบบ"
+  items={[
+    {
+      src: wfFhHomepage,
+      alt: "ภาพร่างหน้า Homepage จัดการนิทรรศการ ฝั่งผู้ดูแลระบบ",
+      caption: "Homepage จัดการนิทรรศการ",
+    },
+    {
+      src: wfFhExhibitionDetail1,
+      alt: "ภาพร่างหน้ารายละเอียดนิทรรศการ ฝั่งผู้ดูแลระบบ",
+      caption: "รายละเอียดนิทรรศการ",
+    },
+    {
+      src: wfFhExhibitionEdit,
+      alt: "ภาพร่างหน้าแก้ไขนิทรรศการ ฝั่งผู้ดูแลระบบ",
+      caption: "แก้ไขนิทรรศการ",
+    },
+    {
+      src: wfExhibitionsManageAdmin,
+      alt: "ภาพร่างหน้าจัดการนิทรรศการสำหรับผู้ดูแลระบบ",
+      caption: "จัดการนิทรรศการ (Admin)",
+    },
+    {
+      src: wfAddExhibition,
+      alt: "ภาพร่างหน้าเพิ่มนิทรรศการ",
+      caption: "เพิ่มนิทรรศการ",
+    },
+    {
+      src: wfEditExhibition,
+      alt: "ภาพร่างหน้าแก้ไขนิทรรศการ",
+      caption: "แก้ไขนิทรรศการ",
+    },
+    {
+      src: wfDetailExhibition,
+      alt: "ภาพร่างหน้ารายละเอียดนิทรรศการ",
+      caption: "รายละเอียดนิทรรศการ",
+    },
+    {
+      src: wfEventAamin,
+      alt: "ภาพร่างหน้ารายการกิจกรรม",
+      caption: "กิจกรรม",
+    },
+    {
+      src: wfDetailEventAamin,
+      alt: "ภาพร่างหน้ารายละเอียดกิจกรรม",
+      caption: "รายละเอียดกิจกรรม",
+    },
+    {
+      src: wfAddEvent,
+      alt: "ภาพร่างหน้าเพิ่มกิจกรรม",
+      caption: "เพิ่มกิจกรรม",
+    },
+    {
+      src: wfEditEvent,
+      alt: "ภาพร่างหน้าแก้ไขกิจกรรม",
+      caption: "แก้ไขกิจกรรม",
+    },
+    {
+      src: wfRegistrationPage,
+      alt: "ภาพร่างหน้าลงทะเบียนผู้เข้าร่วมงาน",
+      caption: "หน้าลงทะเบียน",
+    },
+    {
+      src: wfRegistrationPage1,
+      alt: "ภาพร่างหน้าลงทะเบียนผู้เข้าร่วมงาน (แบบที่ 2)",
+      caption: "หน้าลงทะเบียน (1)",
+    },
+    {
+      src: wfScanQr,
+      alt: "ภาพร่างหน้าสแกน QR Code สำหรับผู้เข้าร่วมงาน",
+      caption: "สแกน QR Code",
+    },
+    {
+      src: wfStaffScanQr,
+      alt: "ภาพร่างหน้าสแกน QR Code สำหรับเจ้าหน้าที่",
+      caption: "เจ้าหน้าที่สแกน QR Code",
+    },
+    {
+      src: wfSurvey,
+      alt: "ภาพร่างหน้าแบบสอบถาม",
+      caption: "แบบสอบถาม",
+    },
+    {
+      src: wfSurveyCreate,
+      alt: "ภาพร่างหน้าสร้างแบบสอบถาม",
+      caption: "สร้างแบบสอบถาม",
+    },
+    {
+      src: wfSurveyCreate1,
+      alt: "ภาพร่างหน้าสร้างแบบสอบถาม (แบบที่ 2)",
+      caption: "สร้างแบบสอบถาม (1)",
+    },
+    {
+      src: wfCertificate,
+      alt: "ภาพร่างหน้าใบประกาศนียบัตร",
+      caption: "ใบประกาศนียบัตร",
+    },
+    {
+      src: wfFeedback,
+      alt: "ภาพร่างหน้าแบบประเมินความพึงพอใจ",
+      caption: "แบบประเมินความพึงพอใจ",
+    },
+    {
+      src: wfAnnouncement,
+      alt: "ภาพร่างหน้าประกาศข่าวสาร",
+      caption: "ประกาศข่าวสาร",
+    },
+  ]}
+/>
+
 ## Role & Contribution
 
 ทีม 2 คน (ณัฐวัฒน์ + ยงศักดิ์) — เล่มไม่ได้แยกบทบาทไว้ชัดเจน จึงสรุปส่วนที่ผมรับผิดชอบไว้ดังนี้
@@ -217,112 +353,6 @@ import newsReceiveImage from "../../assets/images/projects/senior/news-receive.p
 | แบบสอบถามออนไลน์               | แบบประเมินถูกแยกไปอยู่อีกช่องทาง รวบรวมผลยาก              | สร้างชุดคำถาม เก็บคำตอบผ่าน LINE และสรุปคะแนนในระบบเดียว         |
 | E-Certificate อัตโนมัติ        | ออกเกียรติบัตรทีละใบ ใช้เวลานาน พิมพ์ชื่อผิดบ่อย           | ออก PDF ตาม template ให้ผู้ที่เข้าร่วมครบเกณฑ์โดยอัตโนมัติ       |
 | ประชาสัมพันธ์ข่าวสาร            | ผู้เข้าร่วมไม่รู้ความเคลื่อนไหวระหว่างงาน                  | ส่งข่าวสารและแจ้งเตือนถึงผู้ใช้ผ่าน LINE OA โดยตรง               |
-
-### ภาพหน้าจอฟีเจอร์
-
-ภาพหน้าจอการใช้งานจริงจากเล่มปริญญานิพนธ์ — เลื่อนดูภาพด้วยปุ่มลูกศรหรือจุดด้านล่าง
-
-#### จัดการข้อมูลนิทรรศการ
-
-<GalleryBox
-  items={[
-    {
-      src: exhibitionListImage,
-      alt: "หน้ารวมนิทรรศการทั้งหมดในระบบหลังบ้าน แสดงการ์ดงานพร้อมวันที่และสถานะ",
-      caption: "หน้ารวมนิทรรศการทั้งหมด เพิ่ม/แก้ไข/ลบได้จากที่เดียว",
-    },
-    {
-      src: exhibitionDetailImage,
-      alt: "หน้ารายละเอียดนิทรรศการ แสดงช่วงเวลา สถานที่ และปุ่มลงทะเบียน",
-      caption: "หน้ารายละเอียดงาน ช่วงเวลา สถานที่ และหน่วยงานที่ร่วมจัด",
-    },
-  ]}
-/>
-
-#### ลงทะเบียนและเช็กอินด้วย QR Code
-
-<GalleryBox
-  items={[
-    {
-      src: checkinQrImage,
-      alt: "หน้าจอ E-Ticket บน LINE ของผู้เข้าร่วมงาน แสดง QR Code ประจำตัวให้เจ้าหน้าที่สแกน",
-      caption: "ผู้เข้าร่วมเปิด E-Ticket แสดง QR Code ประจำตัว",
-    },
-    {
-      src: checkinScanImage,
-      alt: "หน้าจอ Staff Scanner บน LINE ของเจ้าหน้าที่ แสดงข้อความเช็กอินสำเร็จ",
-      caption: "เจ้าหน้าที่ประจำบูธสแกน QR แล้วบันทึกเช็กอินสำเร็จ",
-    },
-  ]}
-/>
-
-#### จัดการบูธกิจกรรม (Unit)
-
-<GalleryBox
-  items={[
-    {
-      src: unitAddImage,
-      alt: "หน้าเพิ่มบูธกิจกรรมในระบบหลังบ้าน กรอกชื่อหน่วยงานและรายละเอียด",
-      caption: "เพิ่มบูธกิจกรรมและกำหนดเจ้าหน้าที่ประจำบูธ",
-    },
-    {
-      src: unitDetailImage,
-      alt: "Staff Dashboard บน LINE แสดงจำนวนเช็กอินและคะแนนของบูธตัวเอง",
-      caption: "Staff Dashboard สถิติเช็กอินรายบูธ",
-    },
-  ]}
-/>
-
-#### แบบสอบถามออนไลน์
-
-<GalleryBox
-  items={[
-    {
-      src: surveyCreateImage,
-      alt: "หน้า Survey Editor สร้างชุดคำถามและตัวเลือกคำตอบในระบบหลังบ้าน",
-      caption: "สร้างชุดคำถามที่นำกลับมาใช้ซ้ำได้",
-    },
-    {
-      src: surveyAnswerImage,
-      alt: "หน้าแบบประเมินความพึงพอใจบน LINE ของผู้เข้าร่วมงาน",
-      caption: "ผู้เข้าร่วมตอบแบบประเมินผ่าน LINE",
-    },
-  ]}
-/>
-
-#### E-Certificate อัตโนมัติ
-
-<GalleryBox
-  items={[
-    {
-      src: certManageImage,
-      alt: "หน้าจัดการใบประกาศนียบัตร ตั้งค่าแม่แบบและดูตัวอย่างเกียรติบัตร",
-      caption: "ตั้งค่า template ใบประกาศนียบัตรและเกณฑ์การออก",
-    },
-    {
-      src: certReceiveImage,
-      alt: "หน้าเกียรติบัตรบน LINE แสดงชื่อผู้เข้าร่วมและปุ่มดาวน์โหลด PDF",
-      caption: "ผู้เข้าร่วมตรวจสอบสถานะและดาวน์โหลดเกียรติบัตรได้เอง",
-    },
-  ]}
-/>
-
-#### ประชาสัมพันธ์ข่าวสาร
-
-<GalleryBox
-  items={[
-    {
-      src: newsManageImage,
-      alt: "หน้าจัดการข่าวสารและประกาศในระบบหลังบ้าน พร้อมรูปประกอบของงาน",
-      caption: "จัดการข่าวสารและประกาศของงาน",
-    },
-    {
-      src: newsReceiveImage,
-      alt: "หน้าข่าวสารและประกาศบน LINE ของผู้เข้าร่วมงาน",
-      caption: "ผู้เข้าร่วมรับข่าวสารผ่าน LINE OA",
-    },
-  ]}
-/>
 
 ## Technical Deep Dive
 
@@ -439,6 +469,106 @@ LINE Platform ──HTTPS──▶ Cloudflare Edge ──tunnel──▶ localho
 | ระบบตรวจสอบการเข้าร่วมกิจกรรม  | สร้าง QR + เจ้าหน้าที่สแกนบันทึกการเช็กอิน     | ผ่าน    |
 
 **Impact เชิงกระบวนการ:** จากลงชื่อกระดาษ + แบบประเมินคนละลิงก์ + เกียรติบัตรพิมพ์เอง → เหลือช่องทางเดียวใน LINE
+
+### ภาพหน้าจอฟีเจอร์
+
+ภาพหน้าจอการใช้งานจริงจากเล่มปริญญานิพนธ์ — เลื่อนดูภาพด้วยปุ่มลูกศรหรือจุดด้านล่าง
+
+<GalleryBox
+  title="จัดการข้อมูลนิทรรศการ"
+  items={[
+    {
+      src: exhibitionListImage,
+      alt: "หน้ารวมนิทรรศการทั้งหมดในระบบหลังบ้าน แสดงการ์ดงานพร้อมวันที่และสถานะ",
+      caption: "หน้ารวมนิทรรศการทั้งหมด เพิ่ม/แก้ไข/ลบได้จากที่เดียว",
+    },
+    {
+      src: exhibitionDetailImage,
+      alt: "หน้ารายละเอียดนิทรรศการ แสดงช่วงเวลา สถานที่ และปุ่มลงทะเบียน",
+      caption: "หน้ารายละเอียดงาน ช่วงเวลา สถานที่ และหน่วยงานที่ร่วมจัด",
+    },
+  ]}
+/>
+
+<GalleryBox
+  title="ลงทะเบียนและเช็กอินด้วย QR Code"
+  items={[
+    {
+      src: checkinQrImage,
+      alt: "หน้าจอ E-Ticket บน LINE ของผู้เข้าร่วมงาน แสดง QR Code ประจำตัวให้เจ้าหน้าที่สแกน",
+      caption: "ผู้เข้าร่วมเปิด E-Ticket แสดง QR Code ประจำตัว",
+    },
+    {
+      src: checkinScanImage,
+      alt: "หน้าจอ Staff Scanner บน LINE ของเจ้าหน้าที่ แสดงข้อความเช็กอินสำเร็จ",
+      caption: "เจ้าหน้าที่ประจำบูธสแกน QR แล้วบันทึกเช็กอินสำเร็จ",
+    },
+  ]}
+/>
+
+<GalleryBox
+  title="จัดการบูธกิจกรรม (Unit)"
+  items={[
+    {
+      src: unitAddImage,
+      alt: "หน้าเพิ่มบูธกิจกรรมในระบบหลังบ้าน กรอกชื่อหน่วยงานและรายละเอียด",
+      caption: "เพิ่มบูธกิจกรรมและกำหนดเจ้าหน้าที่ประจำบูธ",
+    },
+    {
+      src: unitDetailImage,
+      alt: "Staff Dashboard บน LINE แสดงจำนวนเช็กอินและคะแนนของบูธตัวเอง",
+      caption: "Staff Dashboard สถิติเช็กอินรายบูธ",
+    },
+  ]}
+/>
+
+<GalleryBox
+  title="แบบสอบถามออนไลน์"
+  items={[
+    {
+      src: surveyCreateImage,
+      alt: "หน้า Survey Editor สร้างชุดคำถามและตัวเลือกคำตอบในระบบหลังบ้าน",
+      caption: "สร้างชุดคำถามที่นำกลับมาใช้ซ้ำได้",
+    },
+    {
+      src: surveyAnswerImage,
+      alt: "หน้าแบบประเมินความพึงพอใจบน LINE ของผู้เข้าร่วมงาน",
+      caption: "ผู้เข้าร่วมตอบแบบประเมินผ่าน LINE",
+    },
+  ]}
+/>
+
+<GalleryBox
+  title="E-Certificate อัตโนมัติ"
+  items={[
+    {
+      src: certManageImage,
+      alt: "หน้าจัดการใบประกาศนียบัตร ตั้งค่าแม่แบบและดูตัวอย่างเกียรติบัตร",
+      caption: "ตั้งค่า template ใบประกาศนียบัตรและเกณฑ์การออก",
+    },
+    {
+      src: certReceiveImage,
+      alt: "หน้าเกียรติบัตรบน LINE แสดงชื่อผู้เข้าร่วมและปุ่มดาวน์โหลด PDF",
+      caption: "ผู้เข้าร่วมตรวจสอบสถานะและดาวน์โหลดเกียรติบัตรได้เอง",
+    },
+  ]}
+/>
+
+<GalleryBox
+  title="ประชาสัมพันธ์ข่าวสาร"
+  items={[
+    {
+      src: newsManageImage,
+      alt: "หน้าจัดการข่าวสารและประกาศในระบบหลังบ้าน พร้อมรูปประกอบของงาน",
+      caption: "จัดการข่าวสารและประกาศของงาน",
+    },
+    {
+      src: newsReceiveImage,
+      alt: "หน้าข่าวสารและประกาศบน LINE ของผู้เข้าร่วมงาน",
+      caption: "ผู้เข้าร่วมรับข่าวสารผ่าน LINE OA",
+    },
+  ]}
+/>
 
 ### บทเรียนและก้าวต่อไป
 
