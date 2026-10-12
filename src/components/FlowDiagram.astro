@@ -1,0 +1,71 @@
+---
+export interface FlowStep {
+  label: string;
+  note?: string;
+}
+
+interface Props {
+  steps: FlowStep[];
+  label?: string;
+}
+
+const { steps, label } = Astro.props;
+---
+
+<figure class="flow-diagram mx-auto my-8 w-full max-w-xl">
+  <div
+    class="relative rounded-xl border border-dashed border-(--paper-line) bg-(--card-bg) px-6 py-8 shadow-sm"
+  >
+    <div
+      class="absolute -top-2.5 left-1/2 h-5 w-24 -translate-x-1/2 -rotate-2 rounded-sm bg-(--tape)"
+    >
+    </div>
+
+    <div class="flex flex-col items-center">
+      {
+        steps.map((step, index) => (
+          <>
+            <div class="flow-node w-full max-w-xs rounded-lg border border-(--paper-line) bg-(--paper-bg) px-5 py-2.5 text-center font-medium text-(--ink) shadow-sm">
+              {step.label}
+            </div>
+
+            {index < steps.length - 1 && (
+              <div class="flex flex-col items-center py-1">
+                <span class="text-xs font-medium text-(--ink-soft)">
+                  {step.note ?? ""}
+                </span>
+                <span
+                  class="my-0.5 text-sm leading-none text-(--pin)"
+                  aria-hidden="true"
+                >
+                  ▼
+                </span>
+              </div>
+            )}
+          </>
+        ))
+      }
+    </div>
+  </div>
+
+  {
+    label && (
+      <figcaption class="mt-3 text-center text-sm text-(--ink-soft)">
+        {label}
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .flow-diagram .flow-node {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .flow-diagram .flow-node:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.08);
+  }
+</style>
