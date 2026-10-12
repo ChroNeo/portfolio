@@ -29,6 +29,11 @@
   margin-bottom: 0.75rem;
 }
 
+/* Keep anchored headings clear of the floating TOC/back buttons */
+.prose :is(h2, h3, h4) {
+  scroll-margin-top: 5rem;
+}
+
 .prose h2+p,
 .prose h2+ul {
   margin-top: 0;
@@ -114,6 +119,13 @@
   text-align: left;
   vertical-align: top;
   border-bottom: 1px dashed var(--paper-line);
+  overflow-wrap: anywhere;
+}
+
+/* Long identifiers (e.g. snake_case table names) must be breakable so tables
+   never push the layout wider than the viewport on small screens */
+.prose code {
+  overflow-wrap: anywhere;
 }
 
 .prose th {
