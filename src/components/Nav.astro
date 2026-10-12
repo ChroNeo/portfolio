@@ -6,38 +6,113 @@
   id="navbar"
   class="pointer-events-none fixed inset-x-0 top-0 z-50 -translate-y-full px-4 pt-4 opacity-0 transition-all duration-300 ease-out"
 >
-  <nav
-    class="pointer-events-auto mx-auto flex max-w-5xl items-center justify-between rounded-2xl border border-(--paper-line) bg-(--card-bg)/80 px-6 py-3 shadow-lg backdrop-blur-md"
-  >
-    <div class="text-3xl font-bold text-(--ink)">ChroNeo</div>
-    <ul class="flex space-x-4">
-      <li>
-        <a
-          href="#hero"
-          class="relative inline-block px-2 text-xl text-(--ink) transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-(--ink) after:transition-transform after:duration-200 hover:-translate-y-1 hover:text-(--ink-soft) hover:after:scale-x-100"
-          >Home</a
+  <div class="pointer-events-auto mx-auto max-w-5xl">
+    <nav
+      class="flex items-center justify-between rounded-2xl border border-(--paper-line) bg-(--card-bg)/80 px-4 py-3 shadow-lg backdrop-blur-md sm:px-6"
+    >
+      <div class="text-2xl font-bold text-(--ink) sm:text-3xl">ChroNeo</div>
+
+      <ul class="hidden items-center space-x-4 md:flex">
+        <li>
+          <a
+            href="#hero"
+            class="relative inline-block px-2 text-xl text-(--ink) transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-(--ink) after:transition-transform after:duration-200 hover:-translate-y-1 hover:text-(--ink-soft) hover:after:scale-x-100"
+            >Home</a
+          >
+        </li>
+        <li>
+          <a
+            href="#projects"
+            class="relative inline-block px-2 text-xl text-(--ink) transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-(--ink) after:transition-transform after:duration-200 hover:-translate-y-1 hover:text-(--ink-soft) hover:after:scale-x-100"
+            >Projects</a
+          >
+        </li>
+        <li>
+          <a
+            href="#contact"
+            class="relative inline-block px-2 text-xl text-(--ink) transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-(--ink) after:transition-transform after:duration-200 hover:-translate-y-1 hover:text-(--ink-soft) hover:after:scale-x-100"
+            >Contact</a
+          >
+        </li>
+      </ul>
+
+      <button
+        id="nav-menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="Open menu"
+        class="flex h-10 w-10 items-center justify-center rounded-xl border border-(--paper-line) text-(--ink) transition-colors hover:bg-(--paper-line) md:hidden"
+      >
+        <svg
+          id="nav-icon-open"
+          class="h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
         >
-      </li>
-      <li>
-        <a
-          href="#projects"
-          class="relative inline-block px-2 text-xl text-(--ink) transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-(--ink) after:transition-transform after:duration-200 hover:-translate-y-1 hover:text-(--ink-soft) hover:after:scale-x-100"
-          >Projects</a
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+        <svg
+          id="nav-icon-close"
+          class="hidden h-5 w-5"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
         >
-      </li>
-      <li>
-        <a
-          href="#contact"
-          class="relative inline-block px-2 text-xl text-(--ink) transition-all duration-200 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-(--ink) after:transition-transform after:duration-200 hover:-translate-y-1 hover:text-(--ink-soft) hover:after:scale-x-100"
-          >Contact</a
-        >
-      </li>
-    </ul>
-  </nav>
+          <path d="M6 6l12 12M18 6L6 18" />
+        </svg>
+      </button>
+    </nav>
+
+    <div
+      id="nav-menu"
+      class="hidden overflow-hidden rounded-2xl border border-(--paper-line) bg-(--card-bg)/90 shadow-lg backdrop-blur-md md:hidden"
+    >
+      <nav>
+        <ul class="flex flex-col p-2">
+          <li>
+            <a
+              href="#hero"
+              class="block rounded-xl px-4 py-3 text-lg text-(--ink) transition-colors hover:bg-(--paper-line)"
+              >Home</a
+            >
+          </li>
+          <li>
+            <a
+              href="#projects"
+              class="block rounded-xl px-4 py-3 text-lg text-(--ink) transition-colors hover:bg-(--paper-line)"
+              >Projects</a
+            >
+          </li>
+          <li>
+            <a
+              href="#contact"
+              class="block rounded-xl px-4 py-3 text-lg text-(--ink) transition-colors hover:bg-(--paper-line)"
+              >Contact</a
+            >
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 </div>
 
 <script>
+  import { gsap } from "gsap";
+
   const navbar = document.getElementById("navbar");
+  const toggle = document.getElementById("nav-menu-toggle") as HTMLButtonElement;
+  const menu = document.getElementById("nav-menu");
+  const iconOpen = document.getElementById("nav-icon-open");
+  const iconClose = document.getElementById("nav-icon-close");
+
   if (navbar) {
     let shown = false;
     const onScroll = () => {
@@ -50,4 +125,90 @@
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
   }
+
+  let isMenuOpen = false;
+  let isMenuAnimating = false;
+
+  const openMenu = () => {
+    if (!menu || !toggle) return;
+    isMenuOpen = true;
+    isMenuAnimating = true;
+    toggle.setAttribute("aria-expanded", "true");
+    toggle.setAttribute("aria-label", "Close menu");
+    iconOpen?.classList.add("hidden");
+    iconClose?.classList.remove("hidden");
+
+    menu.classList.remove("hidden");
+    gsap.set(menu, { height: "auto" });
+    const targetHeight = menu.offsetHeight;
+    gsap.fromTo(
+      menu,
+      { height: 0, opacity: 0, y: -8 },
+      {
+        height: targetHeight,
+        opacity: 1,
+        y: 0,
+        duration: 0.3,
+        ease: "power2.out",
+        onComplete: () => {
+          gsap.set(menu, { height: "auto" });
+          isMenuAnimating = false;
+        },
+      },
+    );
+  };
+
+  const closeMenu = () => {
+    if (!menu || !toggle) return;
+    isMenuOpen = false;
+    isMenuAnimating = true;
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+    iconOpen?.classList.remove("hidden");
+    iconClose?.classList.add("hidden");
+
+    gsap.to(menu, {
+      height: 0,
+      opacity: 0,
+      y: -8,
+      duration: 0.2,
+      ease: "power2.in",
+      onComplete: () => {
+        menu.classList.add("hidden");
+        gsap.set(menu, { clearProps: "all" });
+        isMenuAnimating = false;
+      },
+    });
+  };
+
+  toggle?.addEventListener("click", () => {
+    if (isMenuAnimating) return;
+    if (isMenuOpen) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
+
+  menu?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", closeMenu);
+  });
+
+  document.addEventListener("click", (e) => {
+    if (
+      isMenuOpen &&
+      toggle &&
+      menu &&
+      !toggle.contains(e.target as Node) &&
+      !menu.contains(e.target as Node)
+    ) {
+      closeMenu();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && isMenuOpen) {
+      closeMenu();
+    }
+  });
 </script>
