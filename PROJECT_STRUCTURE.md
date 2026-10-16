@@ -15,6 +15,7 @@ This is a personal portfolio website built with **Astro**, featuring a paper-the
 ```
 portfolio/
 ├── public/                 # Static assets (favicon, etc.)
+├── cms/                    # Strapi CMS (project metadata, SQLite)
 ├── src/
 │   ├── assets/            # Images and media files
 │   ├── components/        # Reusable Astro components
@@ -30,6 +31,8 @@ portfolio/
 │   │   └── projects/     # Project markdown files
 │   ├── layouts/          # Page layouts
 │   │   └── BaseLayout.astro
+│   ├── lib/              # Shared helpers
+│   │   └── strapi.ts     # Reads project metadata from the CMS
 │   ├── pages/            # File-based routing
 │   │   ├── index.astro   # Homepage
 │   │   └── projects/
@@ -129,6 +132,22 @@ Projects are stored as MDX files in `src/content/projects/`:
 - Can import and use components (Callout, TechBadge)
 - Example: `test.mdx` demonstrates the structure
 
+#### Strapi CMS (`cms/`)
+Strapi holds the same metadata fields and takes precedence over the frontmatter
+when it is running (`npm run cms`). The custom loader in `src/content.config.ts`
+wraps the MDX glob loader: it loads the files as usual, fetches `project` entries
+from the CMS, and merges them by `slug`. `src/lib/strapi.ts` owns the fetching and
+the field mapping.
+
+Design notes:
+- If the CMS is unreachable, `fetchStrapiProjects()` returns `null` and the
+  frontmatter is used unchanged, so builds and tests never require a CMS.
+- Blank Strapi fields are omitted from the merge, so they fall back to the
+  frontmatter rather than clearing it.
+- The MDX body, images and embedded components are never touched by the CMS.
+- The store skips writes whose digest is unchanged, so the loader regenerates the
+  entry digest from the merged metadata.
+
 ### 8. Styling System
 **Tailwind CSS** with custom design:
 - Paper-themed color palette (amber, stone, zinc)
@@ -157,14 +176,16 @@ npm install          # Install dependencies
 npm run dev          # Start dev server at localhost:4321
 npm run build        # Build for production to ./dist/
 npm run preview      # Preview production build
+npm run cms          # Start the Strapi CMS at localhost:1337
 ```
 
 ### Adding a New Project
-1. Create new MDX file in `src/content/projects/`
+1. Create new MDX file in `src/content/projects/` (the file name is the slug)
 2. Add frontmatter with required fields
 3. Write project content in markdown
 4. Add thumbnail image to `src/assets/images/projects/`
-5. Project automatically appears on homepage and gets its own page
+5. Optionally add a Strapi entry with the same slug to manage the metadata
+6. Project automatically appears on homepage and gets its own page
 
 ### Modifying Design
 - Global styles: `src/styles/global.css`

@@ -89,9 +89,34 @@ Conventions:
   them as routes (the build-output test guards this).
 - `ThemeToggle.test.tsx` runs in a DOM environment (`happy-dom`).
 
+## Strapi CMS
+
+Project metadata (title, description, stack, links, dates, …) can be managed in
+the Strapi instance that lives in [`cms/`](./cms). The MDX files stay the source
+of the project body, images and embedded components; Strapi only overrides the
+frontmatter fields. Entries are matched to MDX files by `slug`, which must equal
+the MDX file name.
+
+```bash
+npm run cms    # starts Strapi at http://localhost:1337 (admin at /admin)
+npm run dev    # in a second terminal, starts the site
+```
+
+- **First run:** create an admin user at http://localhost:1337/admin. The CMS
+  seeds itself with the existing projects and enables public read access.
+- **Fallback:** if Strapi is unreachable the site falls back to the MDX
+  frontmatter, so builds, tests and CI work without a CMS running.
+- **Freshness:** the content layer runs at start-up, so restart `npm run dev`
+  after editing content in Strapi to see the change.
+- **Empty fields don't override:** leave a field blank in Strapi to keep the
+  value from the MDX frontmatter.
+
+The CMS URL is configurable with `STRAPI_URL` (see [`.env.example`](./.env.example)).
+
 ## Adding a Project
 
-1. Create a new `.md` / `.mdx` file in `src/content/projects/`.
+1. Create a new `.md` / `.mdx` file in `src/content/projects/`. The file name is
+   the project **slug**, and is what links the file to its Strapi entry.
 2. Add frontmatter validated by the schema in `src/content.config.ts`:
 
    | Field         | Required | Notes                          |
@@ -111,6 +136,9 @@ Conventions:
 3. Write the body in Markdown. You can import components such as `Callout` and
    `TechBadge`.
 4. Add the thumbnail image under `src/assets/images/projects/`, if used.
+5. Optionally create an entry in Strapi (`npm run cms`) with the **same slug** to
+   manage the metadata from the CMS. The frontmatter above stays as the fallback
+   for any field left blank in Strapi.
 
 The project appears on the homepage automatically and gets its own
 `/projects/<file-name>/` page.
