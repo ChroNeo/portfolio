@@ -41,8 +41,17 @@ export interface ProjectMetadata {
   video?: string;
 }
 
+/**
+ * The Strapi base URL: the Astro/Vite env first, then the plain-Node env.
+ *
+ * `npm run cms:sync` runs outside Astro, where `import.meta.env` does not exist at
+ * all — reading it unguarded throws under Node and would take the CLI down before
+ * it could report anything.
+ */
 export const getStrapiUrl = (): string =>
-  (import.meta.env.STRAPI_URL as string | undefined) ?? DEFAULT_STRAPI_URL;
+  (import.meta.env?.STRAPI_URL as string | undefined) ??
+  process.env.STRAPI_URL ??
+  DEFAULT_STRAPI_URL;
 
 /** Trims a value to `undefined` when it is missing, so it never clobbers the frontmatter. */
 const asText = (value: string | null | undefined): string | undefined => {
