@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "projects",
+  "info": {
+    "singularName": "project",
+    "pluralName": "projects",
+    "displayName": "Project",
+    "description": "Metadata for a portfolio project. The project body lives in the site's MDX files; entries here are joined to them by slug."
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "slug": {
+      "type": "uid",
+      "targetField": "title",
+      "required": true
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "titleEn": {
+      "type": "string"
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "date": {
+      "type": "date",
+      "required": true
+    },
+    "stack": {
+      "type": "json"
+    },
+    "tags": {
+      "type": "json"
+    },
+    "category": {
+      "type": "string"
+    },
+    "github": {
+      "type": "string"
+    },
+    "demo": {
+      "type": "string"
+    },
+    "video": {
+      "type": "string"
+    }
+  }
+}

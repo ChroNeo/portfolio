@@ -8,7 +8,7 @@ import eslintPluginAstro from "eslint-plugin-astro"
 export default defineConfig(
   // Ignore build output & deps
   {
-    ignores: ["dist/**", "node_modules/**", ".astro/**"],
+    ignores: ["dist/**", "node_modules/**", ".astro/**", "cms/**"],
   },
   {
     extends: [js.configs.recommended, tseslint.configs.recommended,eslintPluginAstro.configs.recommended],
