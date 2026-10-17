@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import type { ProjectBodyBlock } from "../lib/strapiBlocks";
+import type { ImageMetadata } from "astro";
+import type { ProjectBodyBlock, StrapiMedia } from "../lib/strapiBlocks";
 import BenchmarkChart from "./BenchmarkChart.astro";
 import Callout from "./Callout.astro";
 import CmsTable from "./CmsTable.astro";
@@ -17,6 +18,23 @@ const { blocks } = Astro.props;
 
 // The CMS returns null for an empty dynamic zone, and the prop is optional.
 const items = blocks ?? [];
+
+/**
+ * Every image `cms:sync` has downloaded into the repo, so the body can point at
+ * a real asset and Astro optimises it. Importing eagerly is fine: these are
+ * project screenshots that live in the repo either way.
+ */
+const ASSETS = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/projects/**/*.{png,jpg,jpeg,webp,avif,gif}",
+  { eager: true },
+);
+
+const resolveMedia = (media?: StrapiMedia | null): ImageMetadata | undefined => {
+  if (!media?.localPath) {
+    return undefined;
+  }
+  return ASSETS[`/${media.localPath}`]?.default;
+};
 ---
 
 {
@@ -41,14 +59,19 @@ const items = blocks ?? [];
           />
         );
 
-      case "blocks.image":
-        return block.image?.url ? (
-          <figure class="mx-auto my-8 max-w-2xl">
+      case "blocks.image": {
+        const src = resolveMedia(block.image);
+        if (src === undefined) {
+          console.warn(
+            `ProjectBody: no downloaded file for image "${block.image?.url ?? "unknown"}" — run \`npm run cms:sync\`.`,
+          );
+          return null;
+        }
+        return (
+          <figure class={`mx-auto my-8 ${block.wide ? "max-w-4xl" : "max-w-2xl"}`}>
             <Image
-              src={block.image.url}
-              alt={block.image.alternativeText ?? ""}
-              width={block.image.width ?? 1200}
-              height={block.image.height ?? 800}
+              src={src}
+              alt={block.image?.alternativeText ?? ""}
               loading="lazy"
               decoding="async"
               class="h-auto w-full rounded-xl border border-(--paper-line) shadow-md"
@@ -59,19 +82,29 @@ const items = blocks ?? [];
               </figcaption>
             )}
           </figure>
-        ) : null;
+        );
+      }
 
-      case "blocks.gallery":
+      case "blocks.gallery": {
+        const images = (block.images ?? [])
+          .map((image) => ({ src: resolveMedia(image), image }))
+          .filter((item): item is { src: ImageMetadata; image: StrapiMedia } => item.src !== undefined);
+
+        if (images.length < (block.images ?? []).length) {
+          console.warn(`ProjectBody: gallery "${block.title ?? ""}" is missing a downloaded file.`);
+        }
+
         return (
           <GalleryBox
             title={block.title ?? undefined}
-            items={(block.images ?? []).map((image) => ({
-              src: image.url,
+            items={images.map(({ src, image }) => ({
+              src,
               alt: image.alternativeText ?? "",
               caption: image.caption ?? undefined,
             }))}
           />
         );
+      }
 
       case "blocks.benchmark":
         return (

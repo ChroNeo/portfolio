@@ -36,6 +36,7 @@ const EVERY_BLOCK: ProjectBodyBlock[] = [
     __component: "blocks.image",
     image: {
       url: "http://localhost:1337/uploads/dashboard.png",
+      localPath: "src/assets/images/projects/test.jpg",
       alternativeText: "A screenshot of the dashboard",
       width: 1200,
       height: 800,
@@ -46,7 +47,11 @@ const EVERY_BLOCK: ProjectBodyBlock[] = [
     __component: "blocks.gallery",
     title: "Screens",
     images: [
-      { url: "http://localhost:1337/uploads/first.png", alternativeText: "First screen" },
+      {
+        url: "http://localhost:1337/uploads/first.png",
+        localPath: "src/assets/images/projects/test.jpg",
+        alternativeText: "First screen",
+      },
     ],
   },
   {
@@ -179,5 +184,18 @@ describe("ProjectBody", () => {
     ]);
 
     expect(html).toContain("Still here");
+  });
+
+  test("skips an image whose file was never downloaded", async () => {
+    const html = await render([
+      {
+        __component: "blocks.image",
+        image: { url: "http://localhost:1337/uploads/missing.png", alternativeText: "Gone" },
+      },
+      { __component: "blocks.rich-text", html: "<p>Still here</p>" },
+    ]);
+
+    expect(html).toContain("Still here");
+    expect(html).not.toContain("missing.png");
   });
 });
