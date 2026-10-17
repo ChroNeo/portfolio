@@ -126,27 +126,38 @@ Astro uses file-based routing:
 - Uses `render()` from `astro:content` to render MDX
 
 ### 7. Content Management
-Projects are stored as MDX files in `src/content/projects/`:
-- **Frontmatter** contains project metadata (validated by schema)
-- **Body** contains detailed content in markdown
-- Can import and use components (Callout, TechBadge)
-- Example: `test.mdx` demonstrates the structure
+Projects are authored in the Strapi CMS and synced into the repo, so every
+project is a pair of files:
+
+- **`<slug>.mdx`** — the project record; its frontmatter is the metadata
+  (validated by the schema in `content.config.ts`).
+- **`<slug>.body.json`** — the article, as an ordered list of blocks.
+
+New projects are created in the CMS (`npm run cms`), written into the repo with
+`npm run cms:sync`, and committed. An MDX file with no snapshot still renders its
+own body, which is how the two coexist.
 
 #### Strapi CMS (`cms/`)
-Strapi holds the same metadata fields and takes precedence over the frontmatter
-when it is running (`npm run cms`). The custom loader in `src/content.config.ts`
-wraps the MDX glob loader: it loads the files as usual, fetches `project` entries
-from the CMS, and merges them by `slug`. `src/lib/strapi.ts` owns the fetching and
-the field mapping.
+`cms:sync` is the bridge: it writes metadata into the MDX frontmatter, snapshots
+the body, and downloads the images the body references into
+`src/assets/images/projects/<slug>/`. The loader in `content.config.ts` reads
+those files and renders rich text through Astro's own Markdown renderer, which is
+what keeps syntax highlighting and heading ids identical to the rest of the site.
+`src/lib/strapi.ts` owns API access, `src/lib/cmsBodies.ts` the snapshot format,
+and `scripts/cms-sync.ts` the file writes.
 
 Design notes:
-- If the CMS is unreachable, `fetchStrapiProjects()` returns `null` and the
-  frontmatter is used unchanged, so builds and tests never require a CMS.
-- Blank Strapi fields are omitted from the merge, so they fall back to the
-  frontmatter rather than clearing it.
-- The MDX body, images and embedded components are never touched by the CMS.
-- The store skips writes whose digest is unchanged, so the loader regenerates the
-  entry digest from the merged metadata.
+- The build never contacts the CMS, so CI and deploys cannot break when it is
+  down. A stale snapshot is the only way the repo and the CMS can disagree.
+- Rich text is the pivot format: Strapi blocks become Markdown, which Astro then
+  renders, instead of a hand-written HTML renderer.
+- Images inside rich text are dropped with a warning — a downloaded file lives in
+  `src/assets`, which rendered Markdown cannot reach. Pictures belong in an Image
+  block, where the renderer resolves the file into a real asset.
+- Binary snapshots are deterministic, so a sync with no CMS changes rewrites
+  nothing.
+- `scripts/migrate-mdx.ts` is one-off migration tooling for moving an existing
+  MDX document into the CMS; it is not part of the build.
 
 ### 8. Styling System
 **Tailwind CSS** with custom design:

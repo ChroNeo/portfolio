@@ -91,27 +91,40 @@ Conventions:
 
 ## Strapi CMS
 
-Project metadata (title, description, stack, links, dates, …) can be managed in
-the Strapi instance that lives in [`cms/`](./cms). The MDX files stay the source
-of the project body, images and embedded components; Strapi only overrides the
-frontmatter fields. Entries are matched to MDX files by `slug`, which must equal
-the MDX file name.
+Content is authored in the Strapi instance in [`cms/`](./cms) and pulled into the
+repo by `cms:sync`. The build only ever reads files, so neither CI nor a deploy
+ever needs the CMS to be running.
 
 ```bash
-npm run cms    # starts Strapi at http://localhost:1337 (admin at /admin)
-npm run dev    # in a second terminal, starts the site
+npm run cms            # Strapi at http://localhost:1337 (admin at /admin)
+npm run cms:sync:dry   # see what a sync would change
+npm run cms:sync       # pull the CMS into the repo
+npm run dev            # the site
 ```
 
-- **First run:** create an admin user at http://localhost:1337/admin. The CMS
-  seeds itself with the existing projects and enables public read access.
-- **Fallback:** if Strapi is unreachable the site falls back to the MDX
-  frontmatter, so builds, tests and CI work without a CMS running.
-- **Freshness:** the content layer runs at start-up, so restart `npm run dev`
-  after editing content in Strapi to see the change.
-- **Empty fields don't override:** leave a field blank in Strapi to keep the
-  value from the MDX frontmatter.
+### The authoring loop
 
-The CMS URL is configurable with `STRAPI_URL` (see [`.env.example`](./.env.example)).
+1. `npm run cms` and edit the project in the admin.
+2. `npm run cms:sync` — writes the metadata into the MDX frontmatter, the body
+   into `<slug>.body.json`, and downloads any new images into the repo.
+3. Restart the dev server, then commit.
+
+The build renders the committed snapshot, not the CMS. **A stale snapshot is the
+only way the repo and the CMS can disagree**, and nothing will warn you if you
+forget step 2 — `npm run cms:sync:dry` is how you notice.
+
+Each project is two files: an MDX record holding its frontmatter, and a body
+snapshot holding the article. Entries are matched to files by `slug`, which is
+the MDX file name.
+
+### Authoring notes
+
+- Pictures go in an **Image** or **Gallery** block. Images inside rich text are
+  dropped with a warning, because a downloaded file cannot be reached from
+  rendered Markdown.
+- The benchmark chart keeps its data in the component unless the **Benchmark**
+  block is filled in — the migrated page uses the block's defaults.
+- The CMS URL is configurable with `STRAPI_URL` (see [`.env.example`](./.env.example)).
 
 ## Adding a Project
 

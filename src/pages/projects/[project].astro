@@ -19,12 +19,14 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content, headings } = await render(project);
 
 // A project authored in the CMS carries a snapshotted body; one still in MDX
-// falls back to its own body. Both feed the same table of contents.
+// falls back to its own body. The MDX body is only rendered when it is actually
+// needed, so a migrated document costs nothing at build time.
 const usesSnapshot = project.data.body.length > 0;
-const tocHeadings = usesSnapshot ? project.data.headings : headings;
+const rendered = usesSnapshot ? null : await render(project);
+const Content = rendered?.Content;
+const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?? []);
 ---
 
 <BaseLayout
@@ -120,7 +122,7 @@ const tocHeadings = usesSnapshot ? project.data.headings : headings;
       <div
         class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-8 prose-h2:mb-4 max-w-none text-lg text-(--ink-soft) [--tw-prose-headings:var(--ink)]"
       >
-        {usesSnapshot ? <ProjectBody blocks={project.data.body} /> : <Content />}
+        {Content ? <Content /> : <ProjectBody blocks={project.data.body} />}
       </div>
     </article>
     <TableOfContents headings={tocHeadings} />

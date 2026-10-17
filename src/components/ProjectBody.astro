@@ -118,13 +118,13 @@ const resolveMedia = (media?: StrapiMedia | null): ImageMetadata | undefined => 
           })),
         }));
 
+        // An empty array would defeat the component's own defaults - and it
+        // cannot render zero datasets - so the prop is left off instead.
         return (
           <BenchmarkChart
             source={block.source ?? undefined}
             sourceUrl={block.sourceUrl ?? undefined}
             dataUpdatedAt={block.dataUpdatedAt ?? undefined}
-            // An empty array would defeat the component's own defaults — and it
-            // cannot render zero datasets — so the prop is left off instead.
             benchmarks={datasets.length > 0 ? datasets : undefined}
           />
         );
