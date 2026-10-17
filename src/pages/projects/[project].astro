@@ -33,7 +33,7 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
   title={`${project.data.title}${project.data.titleEn ? ` / ${project.data.titleEn}` : ""} | ChroNeo`}
 >
   <a
-    href="/portfolio/#projects"
+    href={`${import.meta.env.BASE_URL}#projects`}
     aria-label="Back to projects"
     class="group fixed top-4 left-4 z-50 inline-flex h-10 w-10 items-center justify-center rounded-full bg-(--card-bg)/90 text-(--ink) shadow-md backdrop-blur-sm transition-colors hover:bg-(--paper-line) hover:text-(--ink-soft)"
   >
@@ -45,7 +45,7 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
   <div class="mx-auto flex max-w-6xl gap-8 px-4 pt-8 pb-16">
     <article class="paper-bg min-w-0 flex-1 px-4 pt-8 pb-16 sm:px-8">
       <div class="mx-auto mt-2 mb-10 max-w-5xl text-center">
-        <div class="swing-in mb-4 flex items-center justify-center gap-3 text-sm opacity-0">
+        <div class="swing-in mb-4 flex items-center justify-center gap-3 text-sm">
           <span
             class="rounded-full bg-lime-100 px-3 py-1 font-medium text-lime-800"
           >
@@ -63,20 +63,20 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
         </div>
 
         <h1
-          class="swing-in font-caveat mb-2 text-4xl leading-tight font-semibold text-(--ink) opacity-0 sm:text-5xl"
+          class="swing-in font-caveat mb-2 text-4xl leading-tight font-semibold text-(--ink) sm:text-5xl"
         >
           {project.data.title}
         </h1>
 
         {
           project.data.titleEn && (
-            <p class="swing-in font-caveat mb-4 text-xl font-medium text-(--ink) opacity-0 sm:text-2xl">
+            <p class="swing-in font-caveat mb-4 text-xl font-medium text-(--ink) sm:text-2xl">
               {project.data.titleEn}
             </p>
           )
         }
 
-        <p class="swing-in mx-auto max-w-2xl text-lg text-(--ink-soft) opacity-0">
+        <p class="swing-in mx-auto max-w-2xl text-lg text-(--ink-soft)">
           {project.data.description}
         </p>
       </div>
@@ -94,7 +94,7 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
         )
       }
 
-      <div class="swing-in mb-10 flex justify-center gap-3 opacity-0">
+      <div class="swing-in mb-10 flex justify-center gap-3">
         {
           project.data.demo && (
             <a
@@ -183,7 +183,9 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
 
   if (!reduceMotion) {
     const textItems = gsap.utils.toArray<HTMLElement>(
-      ".prose > h2, .prose > p, .prose > ul, .prose > ol, .prose > table",
+      // .cms-table: CMS tables are wrapped in a <figure>, so they are no
+      // longer direct <table> children of .prose. Plain MDX tables still are.
+      ".prose > h2, .prose > p, .prose > ul, .prose > ol, .prose > table, .prose > .cms-table",
     );
 
     textItems.forEach((item) => {
