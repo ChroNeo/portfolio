@@ -19,12 +19,10 @@ describe("Project", () => {
 
     expect(html).toContain("PROJECTS");
     expect(html).toContain("<img");
-    expect(html.match(/\/portfolio\/projects\//g)?.length).toBe(
-      projects.length,
-    );
+    expect(html.match(/\/projects\//g)?.length).toBe(projects.length);
 
     for (const project of projects) {
-      expect(html).toContain(`/portfolio/projects/${project.id}`);
+      expect(html).toContain(`/projects/${project.id}`);
       expect(html).toContain(project.data.title);
     }
   });

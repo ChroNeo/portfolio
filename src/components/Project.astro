@@ -18,7 +18,7 @@ const projects = await getCollection("projects");
               <div class="project-card relative drop-shadow-md">
                 <div class="pin -top-2 left-1/2 -translate-x-1/2" />
                 <a
-                  href={`/portfolio/projects/${project.id}`}
+                  href={`${import.meta.env.BASE_URL}projects/${project.id}`}
                   class={`block rounded-lg border border-(--paper-line) bg-(--card-bg) p-4 text-center shadow-md transition-transform duration-300 hover:scale-[1.03]`}
                 >
                   <div class="mb-2 flex h-40 w-full items-center justify-center overflow-hidden rounded-lg bg-(--paper-line) text-xs text-(--ink-soft)/60">

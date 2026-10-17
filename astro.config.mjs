@@ -6,14 +6,10 @@ import react from '@astrojs/react';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://ChroNeo.github.io',
-  base: '/portfolio',
+  // TODO: replace with the real Vercel domain (used for canonical URLs only)
+  site: 'https://portfolio-chroneo.vercel.app',
   integrations: [mdx(), react()],
-  image: {
-    // Media served by the Strapi CMS; fetched and optimised at build time.
-    remotePatterns: [{ protocol: 'http', hostname: 'localhost', port: '1337' }],
-  },
-  vite: { 
+  vite: {
     plugins: [tailwindcss()]
   }
 });

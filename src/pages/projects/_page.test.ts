@@ -23,7 +23,7 @@ describe("[project] page", () => {
 
     expect(html).toContain(projects[0].data.title);
     expect(html).toContain(projects[0].data.description);
-    expect(html).toContain("/portfolio/#projects");
+    expect(html).toContain("/#projects");
     expect(html).toContain("prose");
   });
 
