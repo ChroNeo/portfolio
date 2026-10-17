@@ -9,6 +9,10 @@ export default defineConfig({
   site: 'https://ChroNeo.github.io',
   base: '/portfolio',
   integrations: [mdx(), react()],
+  image: {
+    // Media served by the Strapi CMS; fetched and optimised at build time.
+    remotePatterns: [{ protocol: 'http', hostname: 'localhost', port: '1337' }],
+  },
   vite: { 
     plugins: [tailwindcss()]
   }

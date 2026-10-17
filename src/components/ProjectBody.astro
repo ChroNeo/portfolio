@@ -1,0 +1,125 @@
+---
+import { Image } from "astro:assets";
+import type { ProjectBodyBlock } from "../lib/strapiBlocks";
+import BenchmarkChart from "./BenchmarkChart.astro";
+import Callout from "./Callout.astro";
+import CmsTable from "./CmsTable.astro";
+import FlowDiagram from "./FlowDiagram.astro";
+import GalleryBox from "./GalleryBox.astro";
+import ProjectGlance from "./ProjectGlance.astro";
+import Techbadge from "./Techbadge.astro";
+
+interface Props {
+  blocks?: ProjectBodyBlock[] | null;
+}
+
+const { blocks } = Astro.props;
+
+// The CMS returns null for an empty dynamic zone, and the prop is optional.
+const items = blocks ?? [];
+---
+
+{
+  items.map((block) => {
+    switch (block.__component) {
+      case "blocks.rich-text":
+        return <Fragment set:html={block.html ?? ""} />;
+
+      case "blocks.callout":
+        return (
+          <Callout type={block.type ?? "info"}>
+            <Fragment set:html={block.bodyHtml ?? ""} />
+          </Callout>
+        );
+
+      case "blocks.data-table":
+        return (
+          <CmsTable
+            caption={block.caption ?? undefined}
+            headers={block.headers ?? []}
+            rows={block.rows ?? []}
+          />
+        );
+
+      case "blocks.image":
+        return block.image?.url ? (
+          <figure class="mx-auto my-8 max-w-2xl">
+            <Image
+              src={block.image.url}
+              alt={block.image.alternativeText ?? ""}
+              width={block.image.width ?? 1200}
+              height={block.image.height ?? 800}
+              loading="lazy"
+              decoding="async"
+              class="h-auto w-full rounded-xl border border-(--paper-line) shadow-md"
+            />
+            {block.caption && (
+              <figcaption class="mt-2 text-center text-sm text-(--ink-soft)">
+                {block.caption}
+              </figcaption>
+            )}
+          </figure>
+        ) : null;
+
+      case "blocks.gallery":
+        return (
+          <GalleryBox
+            title={block.title ?? undefined}
+            items={(block.images ?? []).map((image) => ({
+              src: image.url,
+              alt: image.alternativeText ?? "",
+              caption: image.caption ?? undefined,
+            }))}
+          />
+        );
+
+      case "blocks.benchmark":
+        return (
+          <BenchmarkChart
+            source={block.source ?? undefined}
+            sourceUrl={block.sourceUrl ?? undefined}
+            dataUpdatedAt={block.dataUpdatedAt ?? undefined}
+            benchmarks={(block.datasets ?? []).map((dataset) => ({
+              label: dataset.label ?? "",
+              unit: dataset.unit ?? "",
+              note: dataset.note ?? "",
+              bars: (dataset.bars ?? []).map((bar) => ({
+                name: bar.name ?? "",
+                value: typeof bar.value === "string" ? Number(bar.value) : (bar.value ?? 0),
+                version: bar.version ?? "",
+              })),
+            }))}
+          />
+        );
+
+      case "blocks.flow-diagram":
+        return (
+          <FlowDiagram
+            label={block.label ?? undefined}
+            steps={(block.steps ?? []).map((step) => ({
+              label: step.label ?? "",
+              note: step.note ?? undefined,
+            }))}
+          />
+        );
+
+      case "blocks.project-glance":
+        return (
+          <ProjectGlance
+            title={block.title ?? undefined}
+            items={(block.items ?? []).map((item) => ({
+              label: item.label ?? "",
+              value: item.value ?? "",
+            }))}
+            stack={block.stack ?? undefined}
+          />
+        );
+
+      case "blocks.tech-badge":
+        return <Techbadge name={block.name ?? ""} reason={block.reason ?? ""} />;
+
+      default:
+        return null;
+    }
+  })
+}

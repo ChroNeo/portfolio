@@ -1,0 +1,51 @@
+---
+interface Props {
+  caption?: string | null;
+  headers?: string[] | null;
+  rows?: string[][] | null;
+}
+
+const { caption, headers, rows } = Astro.props;
+
+// The CMS can return null for an unset field, which a destructuring default
+// does not cover.
+const headerCells = headers ?? [];
+const bodyRows = rows ?? [];
+const columnCount = Math.max(
+  headerCells.length,
+  ...bodyRows.map((row) => row.length),
+  1,
+);
+---
+
+<figure class="my-8">
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse text-left text-base">
+      <thead>
+        <tr>
+          {
+            Array.from({ length: columnCount }, (_, index) => (
+              <th class="border-b-2 border-(--paper-line) px-3 py-2 font-semibold text-(--ink)">
+                {headerCells[index] ?? ""}
+              </th>
+            ))
+          }
+        </tr>
+      </thead>
+      <tbody>
+        {
+          bodyRows.map((row) => (
+            <tr>
+              {Array.from({ length: columnCount }, (_, index) => (
+                <td class="border-b border-(--paper-line) px-3 py-2 align-top text-(--ink-soft)">
+                  {row[index] ?? ""}
+                </td>
+              ))}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  {caption && <figcaption class="mt-2 text-sm text-(--ink-soft)">{caption}</figcaption>}
+</figure>
