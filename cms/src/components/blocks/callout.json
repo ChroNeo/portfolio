@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_blocks_callouts",
+  "info": {
+    "displayName": "Callout",
+    "description": "A taped note that breaks the flow of the article"
+  },
+  "options": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": ["info", "warning", "success"],
+      "default": "info"
+    },
+    "body": {
+      "type": "blocks"
+    }
+  }
+}

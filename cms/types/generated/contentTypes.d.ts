@@ -455,6 +455,19 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    body: Schema.Attribute.DynamicZone<
+      [
+        'blocks.rich-text',
+        'blocks.callout',
+        'blocks.data-table',
+        'blocks.image',
+        'blocks.gallery',
+        'blocks.benchmark',
+        'blocks.flow-diagram',
+        'blocks.project-glance',
+        'blocks.tech-badge',
+      ]
+    >;
     category: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

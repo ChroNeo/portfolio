@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_blocks_flow_diagrams",
+  "info": {
+    "displayName": "Flow Diagram",
+    "description": "A vertical sequence of steps, e.g. an architecture flow"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "steps": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.flow-step"
+    }
+  }
+}

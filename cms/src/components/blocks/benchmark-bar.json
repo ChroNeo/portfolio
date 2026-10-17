@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_benchmark_bars",
+  "info": {
+    "displayName": "Benchmark Bar",
+    "description": "One measured value in a benchmark dataset"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "value": {
+      "type": "decimal"
+    },
+    "version": {
+      "type": "string"
+    }
+  }
+}

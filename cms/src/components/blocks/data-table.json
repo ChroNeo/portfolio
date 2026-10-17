@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_blocks_data_tables",
+  "info": {
+    "displayName": "Table",
+    "description": "A data table (the Blocks editor has no native table)"
+  },
+  "options": {},
+  "attributes": {
+    "caption": {
+      "type": "string"
+    },
+    "headers": {
+      "type": "json"
+    },
+    "rows": {
+      "type": "json"
+    },
+    "availability": {
+      "type": "enumeration",
+      "enum": ["full", "partial"],
+      "default": "full"
+    }
+  }
+}

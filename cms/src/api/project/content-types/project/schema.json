@@ -12,6 +12,20 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "body": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.rich-text",
+        "blocks.callout",
+        "blocks.data-table",
+        "blocks.image",
+        "blocks.gallery",
+        "blocks.benchmark",
+        "blocks.flow-diagram",
+        "blocks.project-glance",
+        "blocks.tech-badge"
+      ]
+    },
     "slug": {
       "type": "uid",
       "targetField": "title",

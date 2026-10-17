@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_blocks_benchmark_datasets",
+  "info": {
+    "displayName": "Benchmark Dataset",
+    "description": "One metric shown in the benchmark chart"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "unit": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "bars": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.benchmark-bar"
+    }
+  }
+}

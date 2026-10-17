@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_glance_items",
+  "info": {
+    "displayName": "Glance Item",
+    "description": "A label/value pair in the project glance box"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    }
+  }
+}

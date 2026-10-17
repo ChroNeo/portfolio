@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_flow_steps",
+  "info": {
+    "displayName": "Flow Step",
+    "description": "One node in a flow diagram"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    }
+  }
+}

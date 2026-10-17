@@ -1,0 +1,21 @@
+{
+  "collectionName": "components_blocks_project_glances",
+  "info": {
+    "displayName": "Project Glance",
+    "description": "The at-a-glance facts box near the top of a project"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.glance-item"
+    },
+    "stack": {
+      "type": "json"
+    }
+  }
+}

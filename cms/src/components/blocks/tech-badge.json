@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_blocks_tech_badges",
+  "info": {
+    "displayName": "Tech Badge",
+    "description": "A technology with a short reason for choosing it"
+  },
+  "options": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "reason": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

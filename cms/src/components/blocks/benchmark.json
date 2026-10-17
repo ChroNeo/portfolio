@@ -1,0 +1,24 @@
+{
+  "collectionName": "components_blocks_benchmarks",
+  "info": {
+    "displayName": "Benchmark",
+    "description": "A benchmark chart with one or more datasets"
+  },
+  "options": {},
+  "attributes": {
+    "source": {
+      "type": "string"
+    },
+    "sourceUrl": {
+      "type": "string"
+    },
+    "dataUpdatedAt": {
+      "type": "string"
+    },
+    "datasets": {
+      "type": "component",
+      "repeatable": true,
+      "component": "blocks.benchmark-dataset"
+    }
+  }
+}
