@@ -10,22 +10,22 @@
     class="hero-card cut-2 h-1/2 rotate-1 border border-(--paper-line) bg-(--card-bg) p-12 shadow-2xl"
   >
     <h1
-      class="hero-title text-6xl font-bold text-(--ink) opacity-0"
+      class="hero-title text-6xl font-bold text-(--ink)"
       aria-label="Hi, I'm Neo"
     >
       Hi, I'm Neo
     </h1>
     <div
-      class="hero-underline mt-4 h-1.5 w-full origin-left scale-x-0 rounded-full bg-(--tape)"
+      class="hero-underline mt-4 h-1.5 w-full origin-left rounded-full bg-(--tape)"
     >
     </div>
-    <p class="hero-sub mt-4 text-center text-xl text-(--ink-soft) opacity-0">
+    <p class="hero-sub mt-4 text-center text-xl text-(--ink-soft)">
       Welcome to my portfolio.
     </p>
   </div>
 
   <div
-    class="hero-img ml-10 flex translate-y-10 transform items-center justify-center opacity-0 drop-shadow-lg transition-transform duration-300 hover:translate-y-0"
+    class="hero-img ml-10 flex translate-y-10 transform items-center justify-center drop-shadow-lg transition-transform duration-300 hover:translate-y-0"
   >
   </div>
 </section>
@@ -37,69 +37,82 @@
 
   gsap.registerPlugin(SplitText, ScrollTrigger);
 
-  document.addEventListener("DOMContentLoaded", () => {
-    document.fonts.ready.then(() => {
-      const title = document.querySelector<HTMLElement>(".hero-title");
-      if (!title) return;
+  const reduceMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)",
+  ).matches;
 
-      const split = SplitText.create(title, {
-        type: "chars,words",
-        mask: "chars",
+  // The markup never hides anything: if this script fails to run, the hero is
+  // still fully visible. Hidden states are only set from here, immediately
+  // before the animations that reveal them, and never under reduced motion.
+  if (!reduceMotion) {
+    gsap.set(".hero-underline", { scaleX: 0 });
+    gsap.set(".hero-sub", { autoAlpha: 0 });
+    gsap.set(".hero-img", { autoAlpha: 0 });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.fonts.ready.then(() => {
+        const title = document.querySelector<HTMLElement>(".hero-title");
+        if (!title) return;
+
+        const split = SplitText.create(title, {
+          type: "chars,words",
+          mask: "chars",
+        });
+
+        gsap.set(title, { perspective: 600 });
+        gsap.set(split.chars, { opacity: 0, yPercent: 120, rotateX: -90 });
+
+        gsap
+          .timeline()
+          .to(split.chars, {
+            opacity: 1,
+            yPercent: 0,
+            rotateX: 0,
+            duration: 0.9,
+            ease: "back.out(1.7)",
+            stagger: 0.04,
+          })
+          .to(
+            ".hero-underline",
+            { scaleX: 1, duration: 0.7, ease: "power3.out" },
+            "-=0.5",
+          )
+          .to(
+            ".hero-img",
+            { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" },
+            0.2,
+          )
+          .to(
+            ".hero-sub",
+            { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" },
+            "-=0.4",
+          );
+
+        gsap.to(".hero-card", {
+          yPercent: -12,
+          autoAlpha: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        gsap.to(".hero-img", {
+          yPercent: -45,
+          ease: "none",
+          scrollTrigger: {
+            trigger: "#hero",
+            start: "top top",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+
+        ScrollTrigger.refresh();
       });
-
-      gsap.set(title, { opacity: 1, perspective: 600 });
-      gsap.set(split.chars, { opacity: 0, yPercent: 120, rotateX: -90 });
-
-      gsap
-        .timeline()
-        .to(split.chars, {
-          opacity: 1,
-          yPercent: 0,
-          rotateX: 0,
-          duration: 0.9,
-          ease: "back.out(1.7)",
-          stagger: 0.04,
-        })
-        .to(
-          ".hero-underline",
-          { scaleX: 1, duration: 0.7, ease: "power3.out" },
-          "-=0.5",
-        )
-        .to(
-          ".hero-img",
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          0.2,
-        )
-        .to(
-          ".hero-sub",
-          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
-          "-=0.4",
-        );
-
-      gsap.to(".hero-card", {
-        yPercent: -12,
-        autoAlpha: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      gsap.to(".hero-img", {
-        yPercent: -45,
-        ease: "none",
-        scrollTrigger: {
-          trigger: "#hero",
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      ScrollTrigger.refresh();
     });
-  });
+  }
 </script>
