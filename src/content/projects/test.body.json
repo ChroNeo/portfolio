@@ -1,0 +1,124 @@
+[
+  {
+    "id": 3,
+    "content": [
+      {
+        "type": "heading",
+        "level": 2,
+        "children": [
+          {
+            "type": "text",
+            "text": "Problem"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Most note apps don't handle real-time multi-user editing well. I wanted to understand how operational transforms and conflict resolution actually work under the hood instead of just using a library blindly."
+          }
+        ]
+      }
+    ],
+    "__component": "blocks.rich-text"
+  },
+  {
+    "id": 4,
+    "content": [
+      {
+        "type": "heading",
+        "level": 2,
+        "children": [
+          {
+            "type": "text",
+            "text": "Key decisions"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "I chose Redis pub/sub over a plain in-memory broadcast because the app needed to support horizontal scaling across multiple Node instances - in-memory state would break the moment there is more than one server process."
+          }
+        ]
+      }
+    ],
+    "__component": "blocks.rich-text"
+  },
+  {
+    "id": 3,
+    "name": "Redis",
+    "reason": "Pub/sub across multiple Node instances, so state survives horizontal scaling",
+    "__component": "blocks.tech-badge"
+  },
+  {
+    "id": 5,
+    "content": [
+      {
+        "type": "heading",
+        "level": 2,
+        "children": [
+          {
+            "type": "text",
+            "text": "Challenges"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Handling out-of-order WebSocket messages during reconnects was the hardest part. Solved it with a sequence-numbered event log per document."
+          }
+        ]
+      }
+    ],
+    "__component": "blocks.rich-text"
+  },
+  {
+    "id": 3,
+    "type": "warning",
+    "body": [
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Without sequence numbers, a reconnecting client could replay stale edits and silently overwrite newer ones."
+          }
+        ]
+      }
+    ],
+    "__component": "blocks.callout"
+  },
+  {
+    "id": 6,
+    "content": [
+      {
+        "type": "heading",
+        "level": 2,
+        "children": [
+          {
+            "type": "text",
+            "text": "Result"
+          }
+        ]
+      },
+      {
+        "type": "paragraph",
+        "children": [
+          {
+            "type": "text",
+            "text": "Sub-200ms sync latency between clients in testing, supports 10+ concurrent editors per document."
+          }
+        ]
+      }
+    ],
+    "__component": "blocks.rich-text"
+  }
+]

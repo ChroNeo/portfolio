@@ -3,6 +3,7 @@ import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { Image } from "astro:assets";
 import TableOfContents from "../../components/TableOfContents.astro";
+import ProjectBody from "../../components/ProjectBody.astro";
 import "../../styles/project.css";
 import { FiArrowLeft } from "react-icons/fi";
 import { FaGithub, FaArrowUpRightFromSquare } from "react-icons/fa6";
@@ -19,6 +20,11 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content, headings } = await render(project);
+
+// A project authored in the CMS carries a snapshotted body; one still in MDX
+// falls back to its own body. Both feed the same table of contents.
+const usesSnapshot = project.data.body.length > 0;
+const tocHeadings = usesSnapshot ? project.data.headings : headings;
 ---
 
 <BaseLayout
@@ -114,10 +120,10 @@ const { Content, headings } = await render(project);
       <div
         class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-8 prose-h2:mb-4 max-w-none text-lg text-(--ink-soft) [--tw-prose-headings:var(--ink)]"
       >
-        <Content />
+        {usesSnapshot ? <ProjectBody blocks={project.data.body} /> : <Content />}
       </div>
     </article>
-    <TableOfContents headings={headings} />
+    <TableOfContents headings={tocHeadings} />
   </div>
 </BaseLayout>
 
