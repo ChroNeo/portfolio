@@ -149,6 +149,8 @@ const uid = `benchmark-${Math.random().toString(36).slice(2, 9)}`;
             <li
               class="benchmark-panel w-full shrink-0"
               data-index={index}
+              data-unit={benchmark.unit}
+              data-note={benchmark.note}
               aria-hidden={index === 0 ? "false" : "true"}
             >
               <h3 class="sr-only">
@@ -277,6 +279,8 @@ const uid = `benchmark-${Math.random().toString(36).slice(2, 9)}`;
           ?.querySelector(`.benchmark-dot[data-index="${panel.dataset.index}"]`)
           ?.getAttribute("aria-label")
           ?.replace("ไป benchmark ", ""),
+        unit: panel.dataset.unit ?? "",
+        note: panel.dataset.note ?? "",
         badge: `Fastify ${ratio}× ${direction} Express`,
       };
     });
@@ -320,12 +324,11 @@ const uid = `benchmark-${Math.random().toString(36).slice(2, 9)}`;
       });
 
       if (counter) counter.textContent = `${index + 1} / ${total}`;
-      if (label && datasets[index].label)
-        label.textContent = datasets[index].label;
-      if (note) note.textContent = datasets[index].note;
-      if (badge)
-        badge.textContent = datasets[index].badge;
-      if (unit) unit.textContent = `· ${datasets[index].unit}`;
+      const current = datasets[index];
+      if (label && current.label) label.textContent = current.label;
+      if (note) note.textContent = current.note;
+      if (badge) badge.textContent = current.badge;
+      if (unit) unit.textContent = `· ${current.unit}`;
 
       if (animate) animateBars(index);
     };

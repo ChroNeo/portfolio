@@ -60,16 +60,32 @@ const uid = `gallery-${Math.random().toString(36).slice(2, 9)}`;
                 data-full={item.full}
                 aria-label={`ซูมภาพ: ${item.alt}`}
               >
-                <Image
-                  src={item.src}
-                  alt={item.alt}
-                  width={item.width}
-                  height={item.height}
-                  fit="contain"
-                  loading={index === 0 ? "eager" : "lazy"}
-                  decoding="async"
-                  class="mx-auto block h-auto max-h-[70vh] w-auto max-w-full object-contain"
-                />
+                {
+                  // Narrowed so astro:assets sees a concrete src variant.
+                  typeof item.src === "string" ? (
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      width={item.width}
+                      height={item.height}
+                      fit="contain"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      class="mx-auto block h-auto max-h-[70vh] w-auto max-w-full object-contain"
+                    />
+                  ) : (
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      width={item.width}
+                      height={item.height}
+                      fit="contain"
+                      loading={index === 0 ? "eager" : "lazy"}
+                      decoding="async"
+                      class="mx-auto block h-auto max-h-[70vh] w-auto max-w-full object-contain"
+                    />
+                  )
+                }
               </button>
               {item.caption && (
                 <figcaption class="mt-2 text-center text-sm text-(--ink-soft)">
