@@ -21,36 +21,53 @@ const strapiProjectsLoader = (): Loader => {
   return {
     name: "strapi-projects",
     load: async (context) => {
-      await localLoader.load(context);
-
       const remoteProjects = await fetchStrapiProjects();
+
       if (remoteProjects === null) {
         context.logger.warn(
           "Strapi is unreachable — using local frontmatter for projects.",
         );
+        await localLoader.load(context);
         return;
       }
 
       const bySlug = new Map(remoteProjects.map((project) => [project.slug, project]));
+      const scopedStore = context.store;
 
-      for (const [id, entry] of context.store.entries()) {
-        const remote = bySlug.get(id);
-        if (!remote) {
-          context.logger.warn(`No Strapi entry for project "${id}" — using frontmatter.`);
-          continue;
+      // Overriding at the store boundary keeps dev in step with builds: the
+      // glob loader re-syncs entries from disk when a file changes, and that
+      // write goes through here too, so the CMS metadata is re-applied instead
+      // of being silently replaced by the frontmatter.
+      const store: typeof scopedStore = {
+        ...scopedStore,
+        set: (entry) => {
+          const remote = bySlug.get(entry.id);
+          const metadata = remote ? mapStrapiProject(remote) : {};
+
+          if (Object.keys(metadata).length === 0) {
+            return scopedStore.set(entry);
+          }
+
+          return scopedStore.set({
+            ...entry,
+            data: { ...entry.data, ...metadata },
+            // The store skips a write whose digest is unchanged, so the digest
+            // has to account for the merged metadata, not the MDX source alone.
+            digest: context.generateDigest(
+              `${entry.digest ?? ""}|${JSON.stringify(metadata)}`,
+            ),
+          });
+        },
+      };
+
+      await localLoader.load({ ...context, store });
+
+      for (const id of scopedStore.keys()) {
+        if (!bySlug.has(id)) {
+          context.logger.warn(
+            `No Strapi entry for project "${id}" — using frontmatter.`,
+          );
         }
-
-        const metadata = mapStrapiProject(remote);
-
-        context.store.set({
-          ...entry,
-          data: { ...entry.data, ...metadata },
-          // The store skips a write whose digest is unchanged, so the digest has
-          // to account for the merged metadata rather than the MDX source alone.
-          digest: context.generateDigest(
-            `${entry.digest ?? ""}|${JSON.stringify(metadata)}`,
-          ),
-        });
       }
     },
   };
