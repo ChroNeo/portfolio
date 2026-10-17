@@ -18,6 +18,11 @@ export interface StrapiMedia {
   caption?: string | null;
   width?: number | null;
   height?: number | null;
+  /**
+   * Set by `cms:sync` when the file is downloaded into the repo. The loader
+   * prefers it, so the build never has to reach the CMS for an image.
+   */
+  localPath?: string;
 }
 
 /* ------------------------------------------------------------------ *

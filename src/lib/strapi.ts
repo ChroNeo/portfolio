@@ -1,14 +1,12 @@
 /**
- * Project metadata sourced from the Strapi CMS.
+ * The Strapi API boundary: project metadata, and project bodies with their
+ * nested components populated.
  *
- * The site is statically generated, so Strapi is queried at build time and the
- * metadata it returns overrides the local MDX frontmatter. When the CMS cannot
- * be reached the caller keeps the frontmatter, which is what keeps builds and
- * tests working without a running CMS.
- *
- * The MDX body, images and embedded components are never touched by Strapi;
- * only the frontmatter fields mapped below are.
+ * `cms:sync` reads both and writes them into the repo, so the CMS is an
+ * authoring surface rather than a build dependency.
  */
+
+import type { ProjectBodyBlock } from "./strapiBlocks.ts";
 
 const DEFAULT_STRAPI_URL = "http://localhost:1337";
 
@@ -130,6 +128,63 @@ export const fetchStrapiProjects = async (
     }
 
     const payload = (await response.json()) as { data?: StrapiProject[] };
+    return payload.data ?? [];
+  } catch {
+    return null;
+  }
+};
+
+/** A project as returned with its body zone populated. */
+export interface StrapiProjectWithBody extends StrapiProject {
+  body: ProjectBodyBlock[] | null;
+}
+
+/** Every block component the body zone can hold. */
+const BODY_COMPONENTS = [
+  "blocks.rich-text",
+  "blocks.callout",
+  "blocks.data-table",
+  "blocks.image",
+  "blocks.gallery",
+  "blocks.benchmark",
+  "blocks.flow-diagram",
+  "blocks.project-glance",
+  "blocks.tech-badge",
+] as const;
+
+/**
+ * The populate query for a project body.
+ *
+ * `populate[body][populate]=*` is not enough: it fills the zone and its own
+ * components but silently drops media fields and components nested inside a
+ * component — a benchmark would come back with its datasets but no bars, and an
+ * image block with no url, and nothing would report an error. Every component
+ * is therefore named explicitly, and the one with a second level of nesting is
+ * given a path that reaches all the way down.
+ */
+export const bodyPopulateQuery = (): string =>
+  BODY_COMPONENTS.map((component) =>
+    component === "blocks.benchmark"
+      ? "populate[body][on][blocks.benchmark][populate][datasets][populate][bars]=*"
+      : `populate[body][on][${component}][populate]=*`,
+  ).join("&");
+
+/**
+ * Fetches every project with its body fully populated.
+ * Returns `null` when the CMS is unreachable, matching `fetchStrapiProjects`.
+ */
+export const fetchStrapiProjectsWithBodies = async (
+  url: string = getStrapiUrl(),
+): Promise<StrapiProjectWithBody[] | null> => {
+  try {
+    const query = `pagination[pageSize]=200&${bodyPopulateQuery()}`;
+    const response = await fetch(`${url}/api/projects?${query}`);
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const payload = (await response.json()) as { data?: StrapiProjectWithBody[] };
     return payload.data ?? [];
   } catch {
     return null;
