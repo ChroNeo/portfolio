@@ -106,24 +106,29 @@ const resolveMedia = (media?: StrapiMedia | null): ImageMetadata | undefined => 
         );
       }
 
-      case "blocks.benchmark":
+      case "blocks.benchmark": {
+        const datasets = (block.datasets ?? []).map((dataset) => ({
+          label: dataset.label ?? "",
+          unit: dataset.unit ?? "",
+          note: dataset.note ?? "",
+          bars: (dataset.bars ?? []).map((bar) => ({
+            name: bar.name ?? "",
+            value: typeof bar.value === "string" ? Number(bar.value) : (bar.value ?? 0),
+            version: bar.version ?? "",
+          })),
+        }));
+
         return (
           <BenchmarkChart
             source={block.source ?? undefined}
             sourceUrl={block.sourceUrl ?? undefined}
             dataUpdatedAt={block.dataUpdatedAt ?? undefined}
-            benchmarks={(block.datasets ?? []).map((dataset) => ({
-              label: dataset.label ?? "",
-              unit: dataset.unit ?? "",
-              note: dataset.note ?? "",
-              bars: (dataset.bars ?? []).map((bar) => ({
-                name: bar.name ?? "",
-                value: typeof bar.value === "string" ? Number(bar.value) : (bar.value ?? 0),
-                version: bar.version ?? "",
-              })),
-            }))}
+            // An empty array would defeat the component's own defaults — and it
+            // cannot render zero datasets — so the prop is left off instead.
+            benchmarks={datasets.length > 0 ? datasets : undefined}
           />
         );
+      }
 
       case "blocks.flow-diagram":
         return (
