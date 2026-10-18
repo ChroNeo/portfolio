@@ -14,7 +14,7 @@ stack:
   ]
 github: "https://github.com/ChroNeo/exhibitions-management-system"
 date: 2026-04-01
-thumbnail: "../../assets/images/projects/test.jpg"
+thumbnail: "../../assets/images/projects/senior_project_thumb.jpg"
 category: "Senior Project"
 ---
 
@@ -447,10 +447,22 @@ export async function dispatchLineEvent(event, config, log) {
     return handleFollowEvent(event.replyToken, config, log);
   }
   if (event.type === "postback" && event.postback?.data) {
-    return handlePostbackEvent(event.replyToken, userId, event.postback.data, config, log);
+    return handlePostbackEvent(
+      event.replyToken,
+      userId,
+      event.postback.data,
+      config,
+      log,
+    );
   }
   if (event.type === "message" && event.message?.type === "text") {
-    return handleMessageCommand(event.replyToken, userId, event.message.text, config, log);
+    return handleMessageCommand(
+      event.replyToken,
+      userId,
+      event.message.text,
+      config,
+      log,
+    );
   }
 }
 ```
