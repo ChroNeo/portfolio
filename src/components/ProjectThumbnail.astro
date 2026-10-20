@@ -1,0 +1,41 @@
+---
+import { Image } from "astro:assets";
+import { heightAt, type Thumbnail } from "../lib/thumbnails";
+
+interface Props {
+  thumbnail: Thumbnail;
+  width: number;
+  alt: string;
+  class?: string;
+  loading?: "lazy" | "eager";
+}
+
+const { thumbnail, width, alt, class: className, loading = "lazy" } = Astro.props;
+const height = heightAt(thumbnail, width);
+---
+
+{
+  // A CMS thumbnail is a remote url and a fallback is an imported asset; Astro
+  // resolves the two through different overloads, so they are separate calls.
+  typeof thumbnail.src === "string" ? (
+    <Image
+      src={thumbnail.src}
+      width={width}
+      height={height}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      class={className}
+    />
+  ) : (
+    <Image
+      src={thumbnail.src}
+      width={width}
+      height={height}
+      alt={alt}
+      loading={loading}
+      decoding="async"
+      class={className}
+    />
+  )
+}

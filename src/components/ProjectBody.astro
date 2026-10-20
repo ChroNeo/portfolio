@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import type { ImageMetadata } from "astro";
 import type { ProjectBodyBlock, StrapiMedia } from "../lib/strapiBlocks";
+import { mediaUrl } from "../lib/strapi";
 import BenchmarkChart from "./BenchmarkChart.astro";
 import Callout from "./Callout.astro";
 import CmsTable from "./CmsTable.astro";
@@ -20,20 +20,20 @@ const { blocks } = Astro.props;
 const items = blocks ?? [];
 
 /**
- * Every image `cms:sync` has downloaded into the repo, so the body can point at
- * a real asset and Astro optimises it. Importing eagerly is fine: these are
- * project screenshots that live in the repo either way.
+ * A CMS image, resolved to something `<Image>` can optimise at build time.
+ *
+ * Strapi reports `width`/`height` for every upload; the fallback keeps a build
+ * from failing on an image whose dimensions it never recorded.
  */
-const ASSETS = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/projects/**/*.{png,jpg,jpeg,webp,avif,gif}",
-  { eager: true },
-);
-
-const resolveMedia = (media?: StrapiMedia | null): ImageMetadata | undefined => {
-  if (!media?.localPath) {
+const resolveMedia = (
+  media?: StrapiMedia | null,
+): { src: string; width: number; height: number } | undefined => {
+  if (!media?.url) {
     return undefined;
   }
-  return ASSETS[`/${media.localPath}`]?.default;
+  const width = media.width ?? 1600;
+  const height = media.height ?? Math.round((width * 9) / 16);
+  return { src: mediaUrl(media.url), width, height };
 };
 ---
 
@@ -63,14 +63,16 @@ const resolveMedia = (media?: StrapiMedia | null): ImageMetadata | undefined => 
         const src = resolveMedia(block.image);
         if (src === undefined) {
           console.warn(
-            `ProjectBody: no downloaded file for image "${block.image?.url ?? "unknown"}" — run \`npm run cms:sync\`.`,
+            `ProjectBody: image block "${block.caption ?? block.__component}" has no media — check the CMS entry.`,
           );
           return null;
         }
         return (
           <figure class={`mx-auto my-8 ${block.wide ? "max-w-4xl" : "max-w-2xl"}`}>
             <Image
-              src={src}
+              src={src.src}
+              width={src.width}
+              height={src.height}
               alt={block.image?.alternativeText ?? ""}
               loading="lazy"
               decoding="async"
@@ -86,19 +88,23 @@ const resolveMedia = (media?: StrapiMedia | null): ImageMetadata | undefined => 
       }
 
       case "blocks.gallery": {
-        const images = (block.images ?? [])
-          .map((image) => ({ src: resolveMedia(image), image }))
-          .filter((item): item is { src: ImageMetadata; image: StrapiMedia } => item.src !== undefined);
+        const images: { media: { src: string; width: number; height: number }; image: StrapiMedia }[] = [];
+        for (const image of block.images ?? []) {
+          const media = resolveMedia(image);
+          if (media !== undefined) {
+            images.push({ media, image });
+          }
+        }
 
         if (images.length < (block.images ?? []).length) {
-          console.warn(`ProjectBody: gallery "${block.title ?? ""}" is missing a downloaded file.`);
+          console.warn(`ProjectBody: gallery "${block.title ?? ""}" is missing a media file.`);
         }
 
         return (
           <GalleryBox
             title={block.title ?? undefined}
-            items={images.map(({ src, image }) => ({
-              src,
+            items={images.map(({ media, image }) => ({
+              src: media.src,
               alt: image.alternativeText ?? "",
               caption: image.caption ?? undefined,
             }))}

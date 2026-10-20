@@ -1,6 +1,5 @@
 import { describe, expect, test } from "vitest";
 import { SiFastify, SiJavascript, SiReact } from "react-icons/si";
-import { getCollection } from "astro:content";
 import { getTechIcon, hasTechIcon } from "./techIcons";
 
 describe("getTechIcon", () => {
@@ -20,15 +19,5 @@ describe("hasTechIcon", () => {
     expect(hasTechIcon("React")).toBe(true);
     expect(hasTechIcon("SomeUnknownTech")).toBe(false);
     expect(hasTechIcon("")).toBe(false);
-  });
-
-  test("every stack entry used in content is supported", async () => {
-    const projects = await getCollection("projects");
-    const stacks = projects.flatMap((project) => project.data.stack);
-
-    expect(stacks.length).toBeGreaterThan(0);
-    for (const tech of stacks) {
-      expect(hasTechIcon(tech), `no icon mapped for "${tech}"`).toBe(true);
-    }
   });
 });

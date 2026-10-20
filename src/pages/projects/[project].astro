@@ -1,32 +1,25 @@
 ---
-import { getCollection, render } from "astro:content";
+import { getCollection } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { Image } from "astro:assets";
 import TableOfContents from "../../components/TableOfContents.astro";
 import ProjectBody from "../../components/ProjectBody.astro";
+import ProjectThumbnail from "../../components/ProjectThumbnail.astro";
 import "../../styles/project.css";
 import { FiArrowLeft } from "react-icons/fi";
 import { FaGithub, FaArrowUpRightFromSquare } from "react-icons/fa6";
+import { thumbnailFor } from "../../lib/thumbnails";
+import { staticPathsFor } from "./_staticPaths";
 
 export async function getStaticPaths() {
-  const projects = (await getCollection("projects")).sort(
-    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
-  );
-  return projects.map((project) => ({
-    params: { project: project.id },
-    props: { project },
-  }));
+  return staticPathsFor(await getCollection("projects"));
 }
 
 const { project } = Astro.props;
 
-// A project authored in the CMS carries a snapshotted body; one still in MDX
-// falls back to its own body. The MDX body is only rendered when it is actually
-// needed, so a migrated document costs nothing at build time.
-const usesSnapshot = project.data.body.length > 0;
-const rendered = usesSnapshot ? null : await render(project);
-const Content = rendered?.Content;
-const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?? []);
+// The form of the body is decided by the CMS: a project with no blocks simply
+// renders no article, which keeps an outline-only entry valid.
+const tocHeadings = project.data.headings;
+const thumbnail = thumbnailFor(project.data.slug, project.data.thumbnail);
 ---
 
 <BaseLayout
@@ -82,12 +75,12 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
       </div>
 
       {
-        project.data.thumbnail && (
+        thumbnail && (
           <div class="project-image mx-auto mb-10 max-w-2xl overflow-hidden rounded-2xl border border-(--paper-line) shadow-md">
-            <Image
-              src={project.data.thumbnail}
-              alt={project.data.title}
+            <ProjectThumbnail
+              thumbnail={thumbnail}
               width={1200}
+              alt={project.data.title}
               class="h-auto w-full object-cover"
             />
           </div>
@@ -122,7 +115,7 @@ const tocHeadings = usesSnapshot ? project.data.headings : (rendered?.headings ?
       <div
         class="prose prose-stone prose-h2:text-3xl prose-h2:font-semibold prose-h2:mt-8 prose-h2:mb-4 max-w-none text-lg text-(--ink-soft) [--tw-prose-headings:var(--ink)]"
       >
-        {Content ? <Content /> : <ProjectBody blocks={project.data.body} />}
+        <ProjectBody blocks={project.data.body} />
       </div>
     </article>
     <TableOfContents headings={tocHeadings} />

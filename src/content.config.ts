@@ -1,12 +1,12 @@
-import { readFile } from "node:fs/promises";
-import { defineCollection } from "astro:content";
-import { glob, type Loader, type LoaderContext } from "astro/loaders";
-import { z } from "astro/zod";
-import { snapshotName } from "./lib/cmsBodies";
+import { defineCollection, z } from "astro:content";
+import type { Loader, LoaderContext } from "astro/loaders";
+import { strapiLoader } from "strapi-community-astro-loader";
+import { projectPopulate, strapiApiUrl, type StrapiProject } from "./lib/strapi";
 import {
   blocksToMarkdown,
   type ProjectBodyBlock,
   type RichTextBlockNode,
+  type StrapiMedia,
 } from "./lib/strapiBlocks";
 
 export interface BodyHeading {
@@ -15,31 +15,18 @@ export interface BodyHeading {
   text: string;
 }
 
-/**
- * Reads a project's body snapshot, written by `npm run cms:sync`.
- * Returns null when the project has none — a project without a body is valid.
- */
-const readSnapshot = async (
-  context: LoaderContext,
-  slug: string,
-): Promise<ProjectBodyBlock[] | null> => {
-  const path = new URL(`src/content/projects/${snapshotName(slug)}`, context.config.root);
-
-  try {
-    const parsed: unknown = JSON.parse(await readFile(path, "utf8"));
-    return Array.isArray(parsed) ? (parsed as ProjectBodyBlock[]) : null;
-  } catch {
-    return null;
-  }
-};
+/** A project as Strapi returns it, with its body zone populated. */
+export interface StrapiProjectDocument extends StrapiProject {
+  body?: ProjectBodyBlock[] | null;
+  thumbnail?: StrapiMedia | null;
+}
 
 /**
  * Rich text is handed to Astro's own Markdown renderer, which is what keeps
  * syntax highlighting and heading ids identical to the rest of the site.
  *
- * Images inside rich text are dropped: a downloaded image lives in `src/assets`,
- * which a rendered `<img src>` cannot reach, and the CMS url would need the CMS
- * at build time. The content model has a dedicated image block for pictures.
+ * Images inside rich text are dropped: the content model has a dedicated image
+ * block, which can be laid out and captioned properly.
  */
 const renderRichText = async (
   nodes: RichTextBlockNode[] | null | undefined,
@@ -51,7 +38,7 @@ const renderRichText = async (
 
   if (images > 0) {
     context.logger.warn(
-      `${where}: dropped ${images} inline image(s) — use an Image block instead, so they can be optimised.`,
+      `${where}: dropped ${images} inline image(s) — use an Image block instead, so they can be laid out.`,
     );
   }
 
@@ -65,85 +52,128 @@ const renderRichText = async (
 };
 
 /**
- * Loads projects from the local MDX files, then attaches the body that
- * `cms:sync` snapshotted beside each one.
+ * Turns one CMS document into what the pages read: the body zone with its rich
+ * text pre-rendered, plus the headings the table of contents needs.
+ */
+const renderBody = async (
+  document: StrapiProjectDocument,
+  context: LoaderContext,
+  slug: string,
+): Promise<{ body: ProjectBodyBlock[]; headings: BodyHeading[] }> => {
+  const body: ProjectBodyBlock[] = [];
+  const headings: BodyHeading[] = [];
+
+  for (const block of document.body ?? []) {
+    if (block.__component === "blocks.rich-text") {
+      const rendered = await renderRichText(block.content, context, `${slug} rich text`);
+      headings.push(...rendered.headings);
+      body.push({ ...block, html: rendered.html });
+      continue;
+    }
+
+    if (block.__component === "blocks.callout") {
+      const rendered = await renderRichText(block.body, context, `${slug} callout`);
+      body.push({ ...block, bodyHtml: rendered.html });
+      continue;
+    }
+
+    body.push(block);
+  }
+
+  return { body, headings };
+};
+
+/**
+ * The Strapi collection loader, wrapped so rich text is rendered through Astro's
+ * Markdown pipeline.
  *
- * The MDX file carries the frontmatter; the snapshot carries the article. Both
- * are committed, so the build never reaches for the CMS — the CMS is an
- * authoring surface, and `cms:sync` is the bridge.
+ * `strapiLoader` fetches and paginates the content type; the wrapper only adds
+ * the two derived fields the pages expect, then recomputes the digest so the
+ * Content Layer cache notices a change.
  */
 const projectsLoader = (): Loader => {
-  const localLoader = glob({
-    pattern: "**/*.{md,mdx}",
-    base: "./src/content/projects",
+  const strapi = strapiLoader({
+    contentType: "project",
+    clientConfig: { baseURL: strapiApiUrl() },
+    params: { populate: projectPopulate },
   });
 
   return {
     name: "projects",
     load: async (context) => {
-      await localLoader.load(context);
+      await strapi.load(context);
 
       for (const [id, entry] of context.store.entries()) {
-        const snapshot = await readSnapshot(context, id);
-        if (snapshot === null) {
-          continue;
-        }
-
-        const body: ProjectBodyBlock[] = [];
-        const headings: BodyHeading[] = [];
-
-        for (const block of snapshot) {
-          if (block.__component === "blocks.rich-text") {
-            const rendered = await renderRichText(block.content, context, `${id} rich text`);
-            headings.push(...rendered.headings);
-            body.push({ ...block, html: rendered.html });
-            continue;
-          }
-
-          if (block.__component === "blocks.callout") {
-            const rendered = await renderRichText(block.body, context, `${id} callout`);
-            body.push({ ...block, bodyHtml: rendered.html });
-            continue;
-          }
-
-          body.push(block);
-        }
+        const document = entry.data as unknown as StrapiProjectDocument;
+        const slug = document.slug ?? id;
+        const { body, headings } = await renderBody(document, context, slug);
+        const data = { ...document, body, headings };
 
         context.store.set({
-          ...entry,
-          data: { ...entry.data, body, headings },
+          id,
+          data,
           // The store skips a write whose digest is unchanged, so the digest has
-          // to account for the snapshot rather than the MDX file alone.
-          digest: context.generateDigest(
-            `${entry.digest ?? ""}|${JSON.stringify(body)}`,
-          ),
+          // to account for the rendered body rather than the CMS document alone.
+          digest: context.generateDigest(JSON.stringify(data)),
         });
       }
     },
   };
 };
 
+/** A media field, as a project may not have one. */
+const media = z
+  .object({
+    url: z.string(),
+    width: z.number().nullish(),
+    height: z.number().nullish(),
+    alternativeText: z.string().nullish(),
+    caption: z.string().nullish(),
+  })
+  .nullish()
+  .transform((value) => value ?? undefined);
+
+const text = z
+  .string()
+  .nullish()
+  .transform((value) => value ?? undefined);
+
+/** Strapi sends a date field as `YYYY-MM-DD`. */
+const list = z
+  .array(z.string())
+  .nullish()
+  .transform((value) => value ?? []);
+
 const projects = defineCollection({
   loader: projectsLoader(),
-  schema: ({ image }) =>
-    z.object({
-      title: z.string(),
-      titleEn: z.string().optional(),
-      description: z.string(),
-      stack: z.array(z.string()),
-      github: z.url().optional(),
-      demo: z.url().optional(),
-      video: z.url().optional(),
-      thumbnail: image().optional(),
-      date: z.date(),
-      category: z.string().optional(),
-      tags: z.array(z.string()).default([]),
-      // Filled in by the loader from the project's body snapshot.
-      body: z.array(z.custom<ProjectBodyBlock>()).default([]),
-      headings: z
-        .array(z.object({ depth: z.number(), slug: z.string(), text: z.string() }))
-        .default([]),
-    }),
+  schema: z.object({
+    slug: z.string(),
+    title: z.string(),
+    titleEn: text,
+    description: z.string(),
+    stack: list,
+    github: z
+      .url()
+      .nullish()
+      .transform((value) => value ?? undefined),
+    demo: z
+      .url()
+      .nullish()
+      .transform((value) => value ?? undefined),
+    video: z
+      .url()
+      .nullish()
+      .transform((value) => value ?? undefined),
+    thumbnail: media,
+    date: z.coerce.date(),
+    category: text,
+    tags: list,
+    // Filled in by the loader from the CMS body.
+    body: z.array(z.custom<ProjectBodyBlock>()).default([]),
+    headings: z
+      .array(z.object({ depth: z.number(), slug: z.string(), text: z.string() }))
+      .default([]),
+  }),
 });
 
 export const collections = { projects };

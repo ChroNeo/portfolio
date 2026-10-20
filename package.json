@@ -11,8 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "cms": "npm --prefix cms run develop",
-    "cms:sync": "node scripts/cms-sync.ts",
-    "cms:sync:dry": "node scripts/cms-sync.ts --dry-run",
+    "cms:start": "npm --prefix cms run build && npm --prefix cms run start",
+    "cms:tunnel": "cloudflared tunnel run portfolio-cms",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
@@ -21,30 +21,30 @@
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
     "@astrojs/react": "^6.0.6",
+    "@strapi/client": "^1.6.2",
     "@tailwindcss/vite": "^4.3.1",
     "astro": "^7.3.3",
     "eslint-plugin-tailwindcss": "^4.2.0",
     "gsap": "^3.15.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "react-icons": "^5.7.0",
+    "strapi-community-astro-loader": "^4.0.0",
     "tailwindcss": "^4.3.1"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@eslint/js": "^10.0.1",
     "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "astro-eslint-parser": "^3.0.0",
     "eslint": "^10.8.0",
     "eslint-plugin-astro": "^3.0.1",
     "globals": "^17.8.0",
     "happy-dom": "^20.14.5",
-    "mdast-util-from-markdown": "^2.1.0",
-    "mdast-util-gfm": "^3.1.0",
-    "mdast-util-mdx": "^3.0.0",
-    "micromark-extension-gfm": "^3.0.0",
-    "micromark-extension-mdxjs": "^3.0.0",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.65.0",
-    "vitest": "^5.0.2",
-    "yaml": "^2.9.0"
+    "vitest": "^5.0.2"
   }
 }

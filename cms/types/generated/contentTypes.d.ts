@@ -486,6 +486,7 @@ export interface ApiProjectProject extends Struct.CollectionTypeSchema {
     slug: Schema.Attribute.UID<'title'> & Schema.Attribute.Required;
     stack: Schema.Attribute.JSON;
     tags: Schema.Attribute.JSON;
+    thumbnail: Schema.Attribute.Media<'images'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     titleEn: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;

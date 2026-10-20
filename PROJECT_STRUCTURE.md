@@ -4,9 +4,11 @@
 This is a personal portfolio website built with **Astro**, featuring a paper-themed design with animations and a content-driven project showcase.
 
 ## Tech Stack
-- **Astro 6.4.6** - Static site generator
+- **Astro 7** - Static site generator
+- **Strapi 5** - Headless CMS, the source of truth for project content
+- **strapi-community-astro-loader** - Fetches Strapi content through the Content Layer
 - **Tailwind CSS 4.3.1** - Utility-first CSS framework
-- **@astrojs/mdx** - MDX support for content
+- **@astrojs/mdx** - Markdown/MDX pages, if any are added as files
 - **GSAP 3.15.0** - Animation library
 - **TypeScript** - Type safety
 
@@ -15,7 +17,7 @@ This is a personal portfolio website built with **Astro**, featuring a paper-the
 ```
 portfolio/
 ├── public/                 # Static assets (favicon, etc.)
-├── cms/                    # Strapi CMS (project metadata, SQLite)
+├── cms/                    # Strapi CMS (project content, SQLite)
 ├── src/
 │   ├── assets/            # Images and media files
 │   ├── components/        # Reusable Astro components
@@ -27,20 +29,20 @@ portfolio/
 │   │   ├── Nav.astro
 │   │   ├── Project.astro
 │   │   └── TechBadge.astro
-│   ├── content/          # Content collections (MDX files)
-│   │   └── projects/     # Project markdown files
 │   ├── layouts/          # Page layouts
 │   │   └── BaseLayout.astro
 │   ├── lib/              # Shared helpers
-│   │   └── strapi.ts     # Reads project metadata from the CMS
+│   │   ├── strapi.ts     # CMS access: URL, media, populate query
+│   │   ├── strapiBlocks.ts # Body block types, rich text -> Markdown
+│   │   └── thumbnails.ts # Card thumbnail resolution
 │   ├── pages/            # File-based routing
 │   │   ├── index.astro   # Homepage
 │   │   └── projects/
 │   │       └── [project].astro  # Dynamic project pages
-│   └── styles/
-│       └── global.css    # Global styles
+│   ├── styles/
+│   │   └── global.css    # Global styles
+│   └── content.config.ts # Content collection (Strapi loader)
 ├── astro.config.mjs      # Astro configuration
-├── content.config.ts     # Content collection schema
 ├── package.json          # Dependencies
 └── tsconfig.json         # TypeScript config
 ```
@@ -49,13 +51,14 @@ portfolio/
 
 ### 1. Configuration
 **astro.config.mjs** sets up:
-- MDX integration for markdown content
+- Strapi loader for project content
 - Tailwind CSS via Vite plugin
 
 **content.config.ts** defines:
 - Project collection schema with validation
-- Fields: title, description, stack, github, demo, video, thumbnail, date, tags
-- Loads all `.md` and `.mdx` files from `src/content/projects`
+- Fields: slug, title, description, stack, github, demo, video, thumbnail, date, tags
+- Loads every published project from Strapi through `strapi-community-astro-loader`,
+  then renders each body block's rich text through Astro's Markdown pipeline
 
 ### 2. Routing System
 Astro uses file-based routing:
@@ -109,12 +112,13 @@ Astro uses file-based routing:
 - Follow same paper-themed design system
 
 #### Callout.astro & TechBadge.astro
-- Reusable components for MDX content
+- Reusable components used by project body blocks
 - Used within project markdown files
 
 ### 6. Dynamic Project Pages
 **`src/pages/projects/[project].astro`**:
 - Uses `getStaticPaths()` to generate routes for all projects
+- The route param is the CMS `slug`, so URLs stay readable and stable
 - Sorts projects by date (newest first)
 - Renders individual project page with:
   - Back link to homepage
@@ -122,42 +126,34 @@ Astro uses file-based routing:
   - Thumbnail image
   - Tech stack
   - Demo and GitHub links
-  - MDX content body
-- Uses `render()` from `astro:content` to render MDX
+  - The CMS body, block by block
+- The table of contents is built from the headings of the body's rich text
 
 ### 7. Content Management
-Projects are authored in the Strapi CMS and synced into the repo, so every
-project is a pair of files:
-
-- **`<slug>.mdx`** — the project record; its frontmatter is the metadata
-  (validated by the schema in `content.config.ts`).
-- **`<slug>.body.json`** — the article, as an ordered list of blocks.
-
-New projects are created in the CMS (`npm run cms`), written into the repo with
-`npm run cms:sync`, and committed. An MDX file with no snapshot still renders its
-own body, which is how the two coexist.
+Strapi is the source of truth. Nothing is copied into the repo, so editing in the
+CMS and rebuilding is the whole publishing loop.
 
 #### Strapi CMS (`cms/`)
-`cms:sync` is the bridge: it writes metadata into the MDX frontmatter, snapshots
-the body, and downloads the images the body references into
-`src/assets/images/projects/<slug>/`. The loader in `content.config.ts` reads
-those files and renders rich text through Astro's own Markdown renderer, which is
-what keeps syntax highlighting and heading ids identical to the rest of the site.
-`src/lib/strapi.ts` owns API access, `src/lib/cmsBodies.ts` the snapshot format,
-and `scripts/cms-sync.ts` the file writes.
+- **Project** collection type: `slug`, `title`, `titleEn`, `description`, `date`,
+  `stack`, `tags`, `category`, `github`, `demo`, `video`, `thumbnail`, and a
+  `body` dynamic zone.
+- `body` blocks: Rich text, Callout, Data table, Image, Gallery, Benchmark,
+  Flow diagram, Project glance, Tech badge.
+- The site reads it in `content.config.ts` with `strapi-community-astro-loader`
+  (`src/lib/strapi.ts` supplies the base URL and the populate query).
 
 Design notes:
-- The build never contacts the CMS, so CI and deploys cannot break when it is
-  down. A stale snapshot is the only way the repo and the CMS can disagree.
+- The build contacts the CMS. There is no committed fallback, so `npm run build`
+  and `npm run dev` need Strapi reachable — locally that means `npm run cms`.
 - Rich text is the pivot format: Strapi blocks become Markdown, which Astro then
   renders, instead of a hand-written HTML renderer.
-- Images inside rich text are dropped with a warning — a downloaded file lives in
-  `src/assets`, which rendered Markdown cannot reach. Pictures belong in an Image
-  block, where the renderer resolves the file into a real asset.
-- Binary snapshots are deterministic, so a sync with no CMS changes rewrites
-  nothing.
-- `scripts/migrate-mdx.ts` is one-off migration tooling for moving an existing
-  MDX document into the CMS; it is not part of the build.
+- Images inside rich text are dropped with a warning. Pictures belong in an Image
+  block or a Gallery block, where the renderer resolves the CMS file into an
+  optimised asset.
+- Media lives in Strapi and is optimised at build time. `astro.config.mjs`
+  whitelists the CMS host in `image.remotePatterns`, derived from `STRAPI_URL`.
+- A project's `thumbnail` is a media field; `src/lib/thumbnails.ts` keeps a local
+  fallback image per slug for entries whose thumbnail has not been uploaded yet.
 
 ### 8. Styling System
 **Tailwind CSS** with custom design:
@@ -184,19 +180,21 @@ Design notes:
 ### Commands
 ```bash
 npm install          # Install dependencies
+npm run cms          # Start the Strapi CMS at localhost:1337 (needed first)
 npm run dev          # Start dev server at localhost:4321
 npm run build        # Build for production to ./dist/
 npm run preview      # Preview production build
-npm run cms          # Start the Strapi CMS at localhost:1337
 ```
 
 ### Adding a New Project
-1. Create new MDX file in `src/content/projects/` (the file name is the slug)
-2. Add frontmatter with required fields
-3. Write project content in markdown
-4. Add thumbnail image to `src/assets/images/projects/`
-5. Optionally add a Strapi entry with the same slug to manage the metadata
-6. Project automatically appears on homepage and gets its own page
+1. Start Strapi (`npm run cms`) and open http://localhost:1337/admin
+2. Create a **Project** entry: fill in the metadata fields and set `slug` — it is
+   the page URL (`/projects/<slug>/`)
+3. Build the body from blocks (Rich text, Image, Gallery, …) and save
+4. Upload a file to the `thumbnail` field, if the card should have a picture
+5. Rebuild: the project appears on the homepage and gets its own page
+
+No code change and no commit is needed for content — the build reads the CMS.
 
 ### Modifying Design
 - Global styles: `src/styles/global.css`
@@ -206,7 +204,7 @@ npm run cms          # Start the Strapi CMS at localhost:1337
 ## Key Features
 - **Static Site Generation**: Fast, SEO-friendly output
 - **Content Collections**: Type-safe content management
-- **MDX Support**: Rich content with component embedding
+- **CMS blocks**: Rich content authored in Strapi
 - **File-based Routing**: Simple, intuitive routing
 - **Responsive Design**: Mobile-first approach
 - **Paper Theme**: Unique visual identity with rotation effects
